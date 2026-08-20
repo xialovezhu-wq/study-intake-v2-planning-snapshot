@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/english-legacy-disposition-receipt-v2.json",
+  "title": "English Legacy Disposition Receipt v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "issue_id", "subject", "inventory", "target",
+    "disposition", "user_authorization", "authority_key_id",
+    "model_call_count", "formal_write_count", "issued_at", "seal"
+  ],
+  "properties": {
+    "schema_version": {"const": "english_legacy_disposition_receipt_v2"},
+    "issue_id": {"const": "EN-P0-006"},
+    "subject": {"const": "english"},
+    "inventory": {"$ref": "#/$defs/inventory"},
+    "target": {"$ref": "#/$defs/target"},
+    "disposition": {"$ref": "#/$defs/disposition"},
+    "user_authorization": {"$ref": "#/$defs/authorization"},
+    "authority_key_id": {"$ref": "#/$defs/sha256"},
+    "model_call_count": {"const": 0},
+    "formal_write_count": {"const": 0},
+    "issued_at": {"type": "string", "format": "date-time"},
+    "seal": {"$ref": "#/$defs/seal"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "disposition": {
+      "enum": ["legacy_attestation", "deterministic_recuration", "rollback"]
+    },
+    "inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "inventory_id", "inventory_sha256", "target_set_sha256",
+        "authority_generation", "authority_fingerprint"
+      ],
+      "properties": {
+        "inventory_id": {"type": "string", "minLength": 1},
+        "inventory_sha256": {"$ref": "#/$defs/sha256"},
+        "target_set_sha256": {"$ref": "#/$defs/sha256"},
+        "authority_generation": {"type": "string", "minLength": 1},
+        "authority_fingerprint": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_id", "target_kind", "record_id", "authority_path",
+        "authority_file_sha256", "current_object_sha256"
+      ],
+      "properties": {
+        "target_id": {"type": "string", "minLength": 1},
+        "target_kind": {
+          "enum": [
+            "article_learning_page", "master_bank_row", "sentence_pattern_card"
+          ]
+        },
+        "record_id": {"type": "string", "minLength": 1},
+        "authority_path": {"type": "string", "minLength": 1},
+        "authority_file_sha256": {"$ref": "#/$defs/sha256"},
+        "current_object_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_id", "event_type", "issue_id", "inventory_sha256",
+        "target_id", "disposition", "authorization_scope",
+        "user_message_sha256", "authorized_at"
+      ],
+      "properties": {
+        "event_id": {"type": "string", "minLength": 1},
+        "event_type": {"const": "explicit_user_english_legacy_disposition"},
+        "issue_id": {"const": "EN-P0-006"},
+        "inventory_sha256": {"$ref": "#/$defs/sha256"},
+        "target_id": {"type": "string", "minLength": 1},
+        "disposition": {"$ref": "#/$defs/disposition"},
+        "authorization_scope": {"const": "single_target_only"},
+        "user_message_sha256": {"$ref": "#/$defs/sha256"},
+        "authorized_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "seal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "purpose", "hmac_sha256"],
+      "properties": {
+        "algorithm": {"const": "HMAC-SHA256"},
+        "purpose": {"const": "english-legacy-disposition-receipt-v2"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Private current-question evidence bundle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "context_id",
+    "request_id",
+    "session_id",
+    "item_id",
+    "source_id",
+    "source_kind",
+    "study_date",
+    "event_time",
+    "timezone",
+    "source_binding_sha256",
+    "current_question",
+    "learner_evidence",
+    "evaluation_evidence",
+    "assessment",
+    "frozen_assistant_feedback",
+    "provenance",
+    "missing_fields",
+    "attachment_objects",
+    "formal_write_count"
+  ],
+  "properties": {
+    "schema_version": {"type": "string", "const": "current-question-evidence-bundle-v1"},
+    "context_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "request_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "session_id": {"type": ["string", "null"], "maxLength": 256},
+    "item_id": {"type": ["string", "null"], "maxLength": 256},
+    "source_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "source_kind": {"type": "string", "minLength": 1, "maxLength": 80},
+    "study_date": {"type": "string", "format": "date"},
+    "event_time": {"type": "string", "format": "date-time"},
+    "timezone": {"type": "string", "const": "Asia/Shanghai"},
+    "source_binding_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "current_question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["public_text", "options", "response_instruction", "public_surface_sha256", "attachment_sha256s"],
+      "properties": {
+        "public_text": {"type": "string", "maxLength": 20000},
+        "options": {
+          "type": "array",
+          "maxItems": 12,
+          "items": {
+            "oneOf": [
+              {"type": "string", "maxLength": 4000},
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["label", "text"],
+                "properties": {
+                  "label": {"type": "string", "maxLength": 4000},
+                  "text": {"type": "string", "maxLength": 4000}
+                }
+              }
+            ]
+          }
+        },
+        "response_instruction": {"type": "string", "maxLength": 4000},
+        "public_surface_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "attachment_sha256s": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+        }
+      }
+    },
+    "learner_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["answer_text", "choice", "confidence", "first_action", "reasoning", "prompt_level", "observed_at"],
+      "properties": {
+        "answer_text": {"type": ["string", "null"], "maxLength": 12000},
+        "choice": {"type": ["string", "null"], "maxLength": 80},
+        "confidence": {"type": ["string", "null"], "maxLength": 80},
+        "first_action": {"type": ["string", "null"], "maxLength": 4000},
+        "reasoning": {"type": ["string", "null"], "maxLength": 16000},
+        "prompt_level": {"type": ["string", "null"], "maxLength": 80},
+        "observed_at": {"type": ["string", "null"], "maxLength": 80}
+      }
+    },
+    "evaluation_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["grader_capsule_id", "correct_answer", "correct_option", "standard_explanation", "grader_result", "grader_basis", "provided_by", "missing_fields"],
+      "properties": {
+        "grader_capsule_id": {"type": ["string", "null"], "maxLength": 256},
+        "correct_answer": {"type": ["string", "null"], "maxLength": 8000},
+        "correct_option": {"type": ["string", "null"], "maxLength": 80},
+        "standard_explanation": {"type": ["string", "null"], "maxLength": 24000},
+        "grader_result": {"type": ["string", "null"], "maxLength": 80},
+        "grader_basis": {"type": ["string", "null"], "maxLength": 8000},
+        "provided_by": {"type": ["string", "null"], "maxLength": 160},
+        "missing_fields": {"$ref": "#/$defs/textList"}
+      }
+    },
+    "assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["first_result", "choice_result", "reasoning_result", "confidence", "prompt_level", "first_break", "first_break_provenance", "first_action", "first_action_provenance"],
+      "properties": {
+        "first_result": {"type": ["string", "null"], "maxLength": 80},
+        "choice_result": {"type": ["string", "null"], "maxLength": 80},
+        "reasoning_result": {"type": ["string", "null"], "maxLength": 80},
+        "confidence": {"type": ["string", "null"], "maxLength": 80},
+        "prompt_level": {"type": ["string", "null"], "maxLength": 80},
+        "first_break": {"type": ["string", "null"], "maxLength": 4000},
+        "first_break_provenance": {"type": ["string", "null"], "maxLength": 80},
+        "first_action": {"type": ["string", "null"], "maxLength": 4000},
+        "first_action_provenance": {"type": ["string", "null"], "maxLength": 80}
+      }
+    },
+    "frozen_assistant_feedback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text", "sha256"],
+      "properties": {
+        "text": {"type": "string", "maxLength": 16000},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_locator", "source_sha256", "context_sha256", "attachment_provenance", "created_at", "missing_items"],
+      "properties": {
+        "source_locator": {"type": ["string", "null"], "maxLength": 1000},
+        "source_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "context_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "attachment_provenance": {"$ref": "#/$defs/attachments"},
+        "created_at": {"type": "string", "format": "date-time"},
+        "missing_items": {"$ref": "#/$defs/textList"}
+      }
+    },
+    "missing_fields": {"$ref": "#/$defs/textList"},
+    "attachment_objects": {"$ref": "#/$defs/attachments"},
+    "formal_write_count": {"type": "integer", "const": 0}
+  },
+  "$defs": {
+    "attachments": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sha256", "mime_type", "size_bytes", "label"],
+        "properties": {
+          "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "mime_type": {"type": "string", "minLength": 1, "maxLength": 80},
+          "size_bytes": {"type": "integer", "minimum": 1, "maximum": 16777216},
+          "label": {"type": "string", "minLength": 1, "maxLength": 160}
+        }
+      }
+    },
+    "textList": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {"type": "string", "minLength": 1, "maxLength": 4000}
+    }
+  }
+}

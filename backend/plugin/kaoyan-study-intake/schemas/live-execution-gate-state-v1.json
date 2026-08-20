@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/live-execution-gate-state-v1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "authorization", "remaining_tasks", "formal_write_count", "hmac_sha256"],
+  "properties": {
+    "schema_version": {"const": "study-intake-live-execution-gate-state-v1"},
+    "status": {"enum": ["locked", "armed_once"]},
+    "authorization": {"oneOf": [{"type": "null"}, {"type": "object"}]},
+    "remaining_tasks": {"type": "integer", "minimum": 0, "maximum": 1},
+    "formal_write_count": {"const": 0},
+    "hmac_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "allOf": [
+    {"if": {"properties": {"status": {"const": "locked"}}}, "then": {"properties": {"authorization": {"type": "null"}, "remaining_tasks": {"const": 0}}}},
+    {"if": {"properties": {"status": {"const": "armed_once"}}}, "then": {"properties": {"authorization": {"type": "object"}, "remaining_tasks": {"const": 1}}}}
+  ]
+}

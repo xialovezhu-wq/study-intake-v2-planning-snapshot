@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/english-legacy-recuration-execution-closure-v1.json",
+  "title": "English Legacy Recuration Execution Closure v1",
+  "type": "object", "additionalProperties": false,
+  "required": [
+    "schema_version", "issue_id", "batch_id", "batch_sha256", "subject",
+    "inventory_sha256", "target_set_sha256", "target_count",
+    "final_checkpoint_sha256", "item_outcomes", "committed_count",
+    "already_current_count", "failed_count", "omitted_count", "unknown_count",
+    "duplicate_count", "recovery_pending_count", "formal_write_count",
+    "status", "completed_at", "seal"
+  ],
+  "properties": {
+    "schema_version": {"const": "english_legacy_recuration_execution_closure_v1"},
+    "issue_id": {"const": "EN-P0-006"}, "batch_id": {"type": "string", "minLength": 1},
+    "batch_sha256": {"$ref": "#/$defs/sha256"}, "subject": {"const": "english"},
+    "inventory_sha256": {"$ref": "#/$defs/sha256"}, "target_set_sha256": {"$ref": "#/$defs/sha256"},
+    "target_count": {"type": "integer", "minimum": 1},
+    "final_checkpoint_sha256": {"$ref": "#/$defs/sha256"},
+    "item_outcomes": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/outcome"}},
+    "committed_count": {"type": "integer", "minimum": 0}, "already_current_count": {"type": "integer", "minimum": 0},
+    "failed_count": {"type": "integer", "minimum": 0}, "omitted_count": {"type": "integer", "minimum": 0},
+    "unknown_count": {"type": "integer", "minimum": 0}, "duplicate_count": {"type": "integer", "minimum": 0},
+    "recovery_pending_count": {"type": "integer", "minimum": 0},
+    "formal_write_count": {"type": "integer", "minimum": 0},
+    "status": {"enum": ["verified_complete", "complete_with_failures"]},
+    "completed_at": {"type": "string", "minLength": 1}, "seal": {"$ref": "#/$defs/seal"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "outcome": {"type": "object", "additionalProperties": false,
+      "required": ["ordinal", "target_id", "status", "attempt_count", "attempts", "final_receipt_sha256", "checkpoint_sha256", "formal_write_count"],
+      "properties": {"ordinal": {"type": "integer", "minimum": 1}, "target_id": {"type": "string", "minLength": 1},
+        "status": {"enum": ["committed", "already_current", "failed"]}, "attempt_count": {"type": "integer", "minimum": 1},
+        "attempts": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/attempt"}},
+        "final_receipt_sha256": {"$ref": "#/$defs/sha256"}, "checkpoint_sha256": {"$ref": "#/$defs/sha256"},
+        "formal_write_count": {"type": "integer", "minimum": 0}}
+    },
+    "attempt": {"type": "object", "additionalProperties": false,
+      "required": ["attempt", "fencing_token", "review_receipt_sha256", "apply_receipt_sha256", "failure_receipt_sha256", "recovery_receipt_sha256"],
+      "properties": {"attempt": {"type": "integer", "minimum": 1}, "fencing_token": {"type": "integer", "minimum": 1},
+        "review_receipt_sha256": {"$ref": "#/$defs/nullable_sha256"}, "apply_receipt_sha256": {"$ref": "#/$defs/nullable_sha256"},
+        "failure_receipt_sha256": {"$ref": "#/$defs/nullable_sha256"}, "recovery_receipt_sha256": {"$ref": "#/$defs/nullable_sha256"}}
+    },
+    "nullable_sha256": {"anyOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+    "seal": {"type": "object", "additionalProperties": false,
+      "required": ["algorithm", "purpose", "hmac_sha256"],
+      "properties": {"algorithm": {"const": "HMAC-SHA256"},
+        "purpose": {"const": "english-legacy-recuration-execution-closure-v1"}, "hmac_sha256": {"$ref": "#/$defs/sha256"}}
+    }
+  }
+}

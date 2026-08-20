@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "https://local.invalid/study-intake/processing-binding-v3.json",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "subject", "foreground_capture_skill", "producer", "capture_contract", "fixture_contract", "scanner_adapter", "background_processing_skill", "orchestrate_skill", "terra_agent_contract", "luna_reader_contract", "critical_reviewer_contract", "mcp_binding", "output_contracts", "formal_write_count", "binding_sha256"],
+  "properties": {
+    "schema_version": {"const": "processing_binding_v3"}, "subject": {"enum": ["math", "cs408", "english"]},
+    "foreground_capture_skill": {"type": "object"}, "producer": {"type": "object"}, "capture_contract": {"type": "object"}, "fixture_contract": {"type": "object"}, "scanner_adapter": {"type": "object"},
+    "background_processing_skill": {"type": "object"}, "orchestrate_skill": {"type": "object"}, "terra_agent_contract": {"type": "object"}, "luna_reader_contract": {"type": "object"}, "critical_reviewer_contract": {"type": "object"},
+    "mcp_binding": {"type": "object"}, "output_contracts": {"type": "object"}, "formal_write_count": {"const": 0}, "binding_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

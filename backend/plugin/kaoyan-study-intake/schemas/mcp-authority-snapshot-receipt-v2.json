@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MCP authority snapshot receipt v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "subject", "candidate_release_id", "mcp_server_release", "generation", "authority_fingerprint", "authority_snapshot_manifest_sha256", "file_count", "total_bytes", "formal_write_count", "created_at", "hmac_key_id", "hmac_sha256"],
+  "properties": {
+    "schema_version": {"const": "mcp_authority_snapshot_receipt_v2"},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "candidate_release_id": {"$ref": "#/$defs/sha256"},
+    "mcp_server_release": {"type": "string", "pattern": "^0\\.4\\.1\\+sha256\\.[0-9a-f]{64}$"},
+    "generation": {"type": "string", "minLength": 1, "maxLength": 160},
+    "authority_fingerprint": {"$ref": "#/$defs/sha256"},
+    "authority_snapshot_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "file_count": {"type": "integer", "minimum": 0, "maximum": 200000},
+    "total_bytes": {"type": "integer", "minimum": 0, "maximum": 1073741824},
+    "formal_write_count": {"const": 0},
+    "created_at": {"type": "string", "format": "date-time"},
+    "hmac_key_id": {"$ref": "#/$defs/sha256"},
+    "hmac_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {"sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+}

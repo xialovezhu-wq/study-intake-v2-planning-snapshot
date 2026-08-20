@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Patch-only critical review of deep mathematics Luna analysis",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "verdict", "summary", "relationship_decisions", "unsupported_claims", "evidence_misreads", "mathematical_errors", "visual_findings", "provenance_findings", "missing_analysis", "required_corrections", "sol_priority_checks", "correction_resolutions"],
+  "properties": {
+    "schema_version": {"type": "string", "const": "study-intake-luna-math-critical-review-v3"},
+    "verdict": {"type": "string", "enum": ["pass", "pass_with_warnings", "reject"]},
+    "summary": {"type": "string", "minLength": 1, "maxLength": 800},
+    "relationship_decisions": {"type": "array", "maxItems": 5, "items": {"$ref": "#/$defs/relationship_decision"}},
+    "unsupported_claims": {"$ref": "#/$defs/findings"},
+    "evidence_misreads": {"$ref": "#/$defs/findings"},
+    "mathematical_errors": {"$ref": "#/$defs/findings"},
+    "visual_findings": {"$ref": "#/$defs/findings"},
+    "provenance_findings": {"$ref": "#/$defs/findings"},
+    "missing_analysis": {"$ref": "#/$defs/findings"},
+    "required_corrections": {"$ref": "#/$defs/findings"},
+    "sol_priority_checks": {"$ref": "#/$defs/findings"},
+    "correction_resolutions": {"type": "array", "maxItems": 16, "items": {"$ref": "#/$defs/correction_resolution"}}
+  },
+  "$defs": {
+    "evidence_ref": {"type": "string", "minLength": 1, "maxLength": 320},
+    "analysis_ref": {"type": "string", "minLength": 1, "maxLength": 320},
+    "writable_correction_path": {"type": "string", "pattern": "^\\$(?:(?:\\.[A-Za-z_][A-Za-z0-9_]*)|(?:\\[[0-9]+\\]))*$"},
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["finding_id", "severity", "text", "analysis_refs", "evidence_refs", "affected_json_paths"],
+      "properties": {
+        "finding_id": {"type": "string", "minLength": 2, "maxLength": 128},
+        "severity": {"type": "string", "enum": ["info", "warning", "error", "blocking"]},
+        "text": {"type": "string", "minLength": 1, "maxLength": 1200},
+        "analysis_refs": {"type": "array", "maxItems": 12, "items": {"$ref": "#/$defs/analysis_ref"}},
+        "evidence_refs": {"type": "array", "maxItems": 12, "items": {"$ref": "#/$defs/evidence_ref"}},
+        "affected_json_paths": {"type": "array", "maxItems": 4, "items": {"$ref": "#/$defs/writable_correction_path"}}
+      }
+    },
+    "findings": {"type": "array", "maxItems": 8, "items": {"$ref": "#/$defs/finding"}},
+    "correction_delta_value": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["encoding", "canonical_json"],
+      "properties": {
+        "encoding": {"type": "string", "const": "canonical_json"},
+        "canonical_json": {"type": "string", "minLength": 1, "maxLength": 12000}
+      }
+    },
+    "correction_resolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["finding_id", "resolution", "affected_json_paths", "before", "after", "reason"],
+      "properties": {
+        "finding_id": {"type": "string", "minLength": 2, "maxLength": 128},
+        "resolution": {"type": "string", "enum": ["applied", "not_applicable", "unresolved"]},
+        "affected_json_paths": {"type": "array", "minItems": 1, "maxItems": 4, "items": {"$ref": "#/$defs/writable_correction_path"}},
+        "before": {"$ref": "#/$defs/correction_delta_value"},
+        "after": {"$ref": "#/$defs/correction_delta_value"},
+        "reason": {"type": "string", "minLength": 1, "maxLength": 800}
+      }
+    },
+    "relationship_ref": {"type": "string", "minLength": 1, "maxLength": 320},
+    "relationship_candidate_id": {"type": "string", "minLength": 1, "maxLength": 160},
+    "relationship_decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate_id", "verdict", "signal_types", "supporting_relationship_refs", "supporting_evidence_refs", "counterevidence_or_boundary", "confidence", "sol_verification_action"],
+      "properties": {
+        "candidate_id": {"$ref": "#/$defs/relationship_candidate_id"},
+        "verdict": {"type": "string", "enum": ["keep_proposal", "delete_proposal", "needs_user_decision"]},
+        "signal_types": {"type": "array", "minItems": 1, "maxItems": 7, "items": {"type": "string", "enum": ["knowledge", "method", "error", "trap", "question_type", "topic_chain", "existing_declaration"]}},
+        "supporting_relationship_refs": {"type": "array", "minItems": 1, "maxItems": 5, "items": {"$ref": "#/$defs/relationship_ref"}},
+        "supporting_evidence_refs": {"type": "array", "minItems": 1, "maxItems": 12, "items": {"$ref": "#/$defs/evidence_ref"}},
+        "counterevidence_or_boundary": {"type": "string", "maxLength": 800},
+        "confidence": {"type": "string", "enum": ["low", "medium", "high"]},
+        "sol_verification_action": {"type": "string", "minLength": 1, "maxLength": 800}
+      }
+    }
+  }
+}

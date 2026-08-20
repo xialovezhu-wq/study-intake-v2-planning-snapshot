@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Kaoyan MCP read route v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "caller_skill_id",
+    "caller_skill_version",
+    "plugin_version",
+    "route_request_id",
+    "evidence_scope_hash",
+    "required_mcp_tool",
+    "read_route",
+    "fallback_reason",
+    "chunk_index",
+    "chunk_count",
+    "consumed_duplicate_read_count"
+  ],
+  "properties": {
+    "caller_skill_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+    "caller_skill_version": {"type": "string", "minLength": 1},
+    "plugin_version": {"type": "string", "minLength": 1},
+    "route_request_id": {"type": "string", "minLength": 8},
+    "evidence_scope_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "required_mcp_tool": {
+      "enum": [
+        "mcp__kaoyan_math_read__math_read_bundle",
+        "mcp__kaoyan_cs408_read__cs408_read_bundle",
+        "mcp__kaoyan_english_read__english_read_bundle"
+      ]
+    },
+    "read_route": {
+      "enum": [
+        "mcp",
+        "mcp_chunked",
+        "terminal_fallback",
+        "not_eligible_hot_context"
+      ]
+    },
+    "fallback_reason": {
+      "anyOf": [
+        {"type": "null"},
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "pattern": "^[a-z0-9][a-z0-9_:-]*$"
+        }
+      ]
+    },
+    "chunk_index": {"type": "integer", "minimum": 0, "maximum": 256},
+    "chunk_count": {"type": "integer", "minimum": 0, "maximum": 256},
+    "consumed_duplicate_read_count": {"const": 0}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"read_route": {"const": "mcp"}}},
+      "then": {
+        "properties": {
+          "fallback_reason": {"type": "null"},
+          "chunk_index": {"const": 1},
+          "chunk_count": {"const": 1}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"read_route": {"const": "mcp_chunked"}}},
+      "then": {
+        "properties": {
+          "fallback_reason": {"type": "null"},
+          "chunk_index": {"minimum": 1},
+          "chunk_count": {"minimum": 2}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"read_route": {"const": "terminal_fallback"}}},
+      "then": {
+        "properties": {
+          "fallback_reason": {"type": "string", "minLength": 1},
+          "chunk_index": {"const": 0},
+          "chunk_count": {"const": 0}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"read_route": {"const": "not_eligible_hot_context"}}},
+      "then": {
+        "properties": {
+          "fallback_reason": {"type": "null"},
+          "chunk_index": {"const": 0},
+          "chunk_count": {"const": 0}
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Private current-question evidence bundle with bounded interaction trace",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "context_id", "request_id", "session_id", "item_id",
+    "source_id", "source_kind", "study_date", "event_time", "timezone",
+    "source_binding_sha256", "current_question", "learner_evidence",
+    "evaluation_evidence", "assessment", "frozen_assistant_feedback",
+    "provenance", "missing_fields", "attachment_objects", "interaction_trace",
+    "formal_write_count"
+  ],
+  "properties": {
+    "schema_version": {"const": "current-question-evidence-bundle-v2"},
+    "context_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "request_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "session_id": {"type": ["string", "null"], "maxLength": 256},
+    "item_id": {"type": ["string", "null"], "maxLength": 256},
+    "source_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "source_kind": {"type": "string", "minLength": 1, "maxLength": 80},
+    "study_date": {"type": "string", "format": "date"},
+    "event_time": {"type": "string", "format": "date-time"},
+    "timezone": {"const": "Asia/Shanghai"},
+    "source_binding_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "current_question": {"type": "object"},
+    "learner_evidence": {"type": "object"},
+    "evaluation_evidence": {"type": "object"},
+    "assessment": {"type": "object"},
+    "frozen_assistant_feedback": {"type": "object"},
+    "provenance": {"type": "object"},
+    "missing_fields": {"type": "array", "maxItems": 64},
+    "attachment_objects": {"type": "array", "maxItems": 8},
+    "interaction_trace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "events", "event_count", "truncated"],
+      "properties": {
+        "schema": {"const": "current-question-interaction-trace-v1"},
+        "events": {
+          "type": "array",
+          "maxItems": 24,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["ordinal", "role", "kind", "text"],
+            "properties": {
+              "ordinal": {"type": "integer", "minimum": 1, "maximum": 24},
+              "role": {"enum": ["learner", "assistant"]},
+              "kind": {"enum": ["utterance", "first_action", "reasoning", "hint", "correction", "restatement", "answer"]},
+              "text": {"type": "string", "minLength": 1, "maxLength": 2048}
+            }
+          }
+        },
+        "event_count": {"type": "integer", "minimum": 0, "maximum": 24},
+        "truncated": {"type": "boolean"}
+      }
+    },
+    "formal_write_count": {"const": 0}
+  }
+}

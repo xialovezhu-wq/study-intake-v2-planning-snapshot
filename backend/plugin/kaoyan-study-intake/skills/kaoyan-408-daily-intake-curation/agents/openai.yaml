@@ -1,0 +1,6 @@
+interface:
+  display_name: "408 日终错题编纂"
+  short_description: "按日期集中高质量编纂快速捕获的 408 错题"
+  default_prompt: "使用 $kaoyan-408-daily-intake-curation 编纂指定学习日期的待处理 Capture，保持用户事实不变并逐题正式验收。"
+policy:
+  allow_implicit_invocation: true

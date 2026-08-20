@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/production-canary-activation-receipt-v1.json",
+  "title": "Production canary activation receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "subject", "release_id", "activated_at",
+    "producer_authority_fingerprint", "producer_high_watermark_sha256",
+    "activation_id", "producer_authority", "producer_high_watermark",
+    "producer_capture_enabled", "sol_formal_curation_enabled",
+    "post_activation_only", "per_subject_limit", "keep_backlog_drained",
+    "production_accepted", "fast_mode_requested", "fast_mode_effective",
+    "model_call_count", "provider_request_count",
+    "formal_write_count", "sol_enabled", "authority"
+  ],
+  "properties": {
+    "schema_version": {"const": "study-intake-production-canary-activation-receipt-v1"},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "release_id": {"$ref": "#/$defs/sha256"},
+    "activated_at": {"type": "string", "format": "date-time"},
+    "producer_authority_fingerprint": {"$ref": "#/$defs/sha256"},
+    "producer_high_watermark_sha256": {"$ref": "#/$defs/sha256"},
+    "activation_id": {"$ref": "#/$defs/sha256"},
+    "producer_authority": {"type": "object"},
+    "producer_high_watermark": {"type": "object"},
+    "producer_capture_enabled": {"const": true},
+    "sol_formal_curation_enabled": {"const": false},
+    "post_activation_only": {"const": true},
+    "per_subject_limit": {"const": 1},
+    "keep_backlog_drained": {"const": true},
+    "production_accepted": {"const": false},
+    "fast_mode_requested": {"const": true},
+    "fast_mode_effective": {"enum": ["requested_unverified", "confirmed"]},
+    "model_call_count": {"const": 0},
+    "provider_request_count": {"const": 0},
+    "formal_write_count": {"const": 0},
+    "sol_enabled": {"const": false},
+    "authority": {"$ref": "#/$defs/authority"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "authority": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "algorithm", "key_id", "purpose", "hmac_sha256"],
+      "properties": {
+        "schema_version": {"const": "study-intake-dispatch-authority-v1"},
+        "algorithm": {"const": "HMAC-SHA256"},
+        "key_id": {"$ref": "#/$defs/sha256"},
+        "purpose": {"const": "dispatch-production-canary-activation"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

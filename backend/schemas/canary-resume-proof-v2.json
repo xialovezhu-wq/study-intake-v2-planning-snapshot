@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/canary-resume-proof-v2.json",
+  "title": "Subject-scoped production canary resume proof v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "release_id",
+    "subject",
+    "target_subjects",
+    "current_link_changed",
+    "gate_bindings_before",
+    "service_labels",
+    "initial_canary_inflight_limit",
+    "continuous_concurrency_limit",
+    "requested_service_tier",
+    "fast_mode_requested",
+    "fast_mode_effective",
+    "control_model_call_count",
+    "control_provider_request_count",
+    "formal_write_count",
+    "sol_enabled"
+  ],
+  "properties": {
+    "schema_version": {"const": "study-intake-canary-resume-proof-v2"},
+    "status": {
+      "enum": [
+        "canary_resume_planned",
+        "canary_resumed",
+        "canary_resume_failed_paused",
+        "canary_resume_failed_rollback_incomplete"
+      ]
+    },
+    "release_id": {"$ref": "#/$defs/sha256"},
+    "subject": {"enum": ["math", "cs408", "english", "all"]},
+    "target_subjects": {"$ref": "#/$defs/subjects"},
+    "current_link_changed": {"const": false},
+    "gate_bindings_before": {"$ref": "#/$defs/bindings"},
+    "service_labels": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "initial_canary_inflight_limit": {"const": 1},
+    "continuous_concurrency_limit": {"const": 20},
+    "requested_service_tier": {"type": "null"},
+    "fast_mode_requested": {"const": false},
+    "fast_mode_effective": {"const": "not_requested"},
+    "control_model_call_count": {"const": 0},
+    "control_provider_request_count": {"const": 0},
+    "formal_write_count": {"const": 0},
+    "sol_enabled": {"const": false},
+    "canary_gates_after": {"type": "object"},
+    "heartbeat_sha256s": {"$ref": "#/$defs/subjectHashes"},
+    "completed_at": {"type": "string", "format": "date-time"},
+    "error_code": {"type": "string", "minLength": 1},
+    "rollback_errors": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "failed_at": {"type": "string", "format": "date-time"},
+    "authority": {"$ref": "#/$defs/authority"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "subjects": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "uniqueItems": true,
+      "items": {"enum": ["math", "cs408", "english"]}
+    },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "subject",
+        "state",
+        "activation_id",
+        "activated_at",
+        "producer_authority_fingerprint",
+        "producer_high_watermark",
+        "producer_high_watermark_sha256",
+        "canary_queue_count",
+        "unlocked_once",
+        "initial_canary_inflight_limit",
+        "continuous_concurrency_limit",
+        "requested_service_tier",
+        "fast_mode_requested",
+        "fast_mode_effective",
+        "status_sha256"
+      ],
+      "properties": {
+        "subject": {"enum": ["math", "cs408", "english"]},
+        "state": {"enum": ["paused_drained", "failed_drained"]},
+        "activation_id": {"$ref": "#/$defs/sha256"},
+        "activated_at": {"type": "string", "format": "date-time"},
+        "producer_authority_fingerprint": {"$ref": "#/$defs/sha256"},
+        "producer_high_watermark": {"type": "object"},
+        "producer_high_watermark_sha256": {"$ref": "#/$defs/sha256"},
+        "canary_queue_count": {"type": "integer", "minimum": 0},
+        "unlocked_once": {"type": "boolean"},
+        "initial_canary_inflight_limit": {"const": 1},
+        "continuous_concurrency_limit": {"const": 20},
+        "requested_service_tier": {"type": "null"},
+        "fast_mode_requested": {"const": false},
+        "fast_mode_effective": {"const": "not_requested"},
+        "status_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "bindings": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 3,
+      "propertyNames": {"enum": ["math", "cs408", "english"]},
+      "additionalProperties": {"$ref": "#/$defs/binding"}
+    },
+    "subjectHashes": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 3,
+      "propertyNames": {"enum": ["math", "cs408", "english"]},
+      "additionalProperties": {"$ref": "#/$defs/sha256"}
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "algorithm", "key_id", "purpose", "hmac_sha256"],
+      "properties": {
+        "schema_version": {"const": "study-intake-deployment-authority-v1"},
+        "algorithm": {"const": "HMAC-SHA256"},
+        "key_id": {"$ref": "#/$defs/sha256"},
+        "purpose": {"const": "production-canary-subject-resume-proof"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

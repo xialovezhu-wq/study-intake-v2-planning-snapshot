@@ -1,0 +1,190 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Two-stage study intake preprocessing package",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "package_id",
+    "report_id",
+    "subject",
+    "capture_id",
+    "study_date",
+    "created_at",
+    "input_fingerprint",
+    "input_binding",
+    "processing_contract_sha256",
+    "processing_binding",
+    "processing_binding_sha256",
+    "capture_freeze_receipt_sha256",
+    "capture_freeze_receipt_ref",
+    "mcp_read_session_receipt_sha256",
+    "mcp_read_session_receipt_ref",
+    "read_session_id",
+    "read_session_manifest_sha256",
+    "evidence_generation",
+    "evidence_authority_fingerprint",
+    "host_semantic_prefetch",
+    "mcp_stage_transcripts",
+    "semantic_stage_count",
+    "provider_request_count",
+    "mcp_tool_call_count",
+    "model_call_count",
+    "consumed_terminal_duplicate_read_count",
+    "processing_fingerprint",
+    "evidence_manifest_sha256",
+    "evidence_bundle_sha256",
+    "report_json_ref",
+    "report_json_sha256",
+    "report_markdown_ref",
+    "report_markdown_sha256",
+    "renderer_build_sha256",
+    "quality_receipt_sha256",
+    "pipeline_status",
+    "model",
+    "reasoning_effort",
+    "stage_receipts",
+    "quality_receipt",
+    "luna_proposal",
+    "luna_proposal_sha256",
+    "allowed_evidence_refs",
+    "formal_write_count"
+  ],
+  "properties": {
+    "schema_version": {"type": "string", "const": "study-intake-preprocess-package-v2"},
+    "package_id": {"type": "string", "pattern": "^SIP-PKG-[A-F0-9]{24}$"},
+    "report_id": {"type": "string", "pattern": "^SIP-REPORT-[A-F0-9]{24}$"},
+    "subject": {"type": "string", "enum": ["math", "cs408", "english"]},
+    "capture_id": {"type": "string", "minLength": 2, "maxLength": 256},
+    "study_date": {"type": "string", "format": "date"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "input_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "input_binding": {"type": "object"},
+    "processing_contract_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "processing_binding": {"type": "object"},
+    "processing_binding_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "capture_freeze_receipt_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "capture_freeze_receipt_ref": {"type": "string", "pattern": "^study-intake-capture-freeze://sha256/[a-f0-9]{64}$"},
+    "mcp_read_session_receipt_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "mcp_read_session_receipt_ref": {"type": "string", "pattern": "^study-intake-mcp-read-session://sha256/[a-f0-9]{64}$"},
+    "read_session_id": {"type": "string", "minLength": 8, "maxLength": 160},
+    "read_session_manifest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "evidence_generation": {"type": "string", "minLength": 1, "maxLength": 160},
+    "evidence_authority_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "host_semantic_prefetch": {"const": false},
+    "mcp_stage_transcripts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["analysis", "critical_review"],
+      "properties": {
+        "analysis": {"$ref": "#/$defs/stage_transcript"},
+        "critical_review": {"$ref": "#/$defs/stage_transcript"}
+      }
+    },
+    "semantic_stage_count": {"const": 2},
+    "provider_request_count": {"type": "integer", "minimum": 4},
+    "mcp_tool_call_count": {"type": "integer", "minimum": 2},
+    "model_call_count": {"const": 2},
+    "consumed_terminal_duplicate_read_count": {"const": 0},
+    "processing_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "evidence_manifest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "evidence_bundle_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "report_json_ref": {"type": "string", "pattern": "^study-intake-report://sha256/[a-f0-9]{64}$"},
+    "report_json_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "report_markdown_ref": {"type": "string", "pattern": "^study-intake-report-markdown://sha256/[a-f0-9]{64}$"},
+    "report_markdown_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "renderer_build_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "quality_receipt_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "pipeline_status": {"type": "string", "enum": ["two_pass_ready", "single_pass_degraded"]},
+    "model": {"type": "string", "const": "gpt-5.6-luna"},
+    "reasoning_effort": {"type": "string", "const": "max"},
+    "stage_receipts": {"type": "object"},
+    "quality_receipt": {"type": "object"},
+    "luna_proposal": {"$ref": "#/$defs/lunaProposal"},
+    "luna_proposal_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "allowed_evidence_refs": {
+      "type": "array",
+      "maxItems": 2000,
+      "items": {"type": "string", "minLength": 1, "maxLength": 320}
+    },
+    "formal_write_count": {"type": "integer", "const": 0}
+  },
+  "$defs": {
+    "stage_transcript": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["transcript_sha256", "transcript_ref", "call_receipt_sha256", "call_receipt_ref", "grounding_manifest_sha256", "grounding_refs", "provider_request_count", "mcp_tool_call_count"],
+      "properties": {
+        "transcript_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "transcript_ref": {"type": "string", "pattern": "^study-intake-mcp-stage-transcript://sha256/[a-f0-9]{64}$"},
+        "call_receipt_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "call_receipt_ref": {"type": "string", "pattern": "^study-intake-mcp-read-session-call://sha256/[a-f0-9]{64}$"},
+        "grounding_manifest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "grounding_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "pattern": "^mcp-item:(?:math|cs408|english):[a-f0-9]{64}$"}
+        },
+        "provider_request_count": {"type": "integer", "minimum": 2},
+        "mcp_tool_call_count": {"type": "integer", "minimum": 1}
+      }
+    },
+    "lunaProposal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "subject", "capture_id", "processing_binding_sha256", "capture_freeze_receipt_sha256", "capture_freeze_receipt_ref", "read_session_id", "read_session_manifest_sha256", "mcp_read_session_receipt_sha256", "mcp_read_session_receipt_ref", "mcp_stage_transcript_sha256s", "mcp_grounding_manifest_sha256s", "consumed_mcp_evidence_refs", "operations", "review_status", "critical_review_outcome", "host_semantic_prefetch", "formal_write_count"],
+      "allOf": [
+        {
+          "if": {"properties": {"critical_review_outcome": {"const": "rejected"}}},
+          "then": {"properties": {"review_status": {"const": "rejected"}}},
+          "else": {"properties": {"review_status": {"const": "proposal_ready"}}}
+        }
+      ],
+      "properties": {
+        "schema_version": {"type": "string", "const": "luna_proposal_v2"},
+        "subject": {"type": "string", "enum": ["math", "cs408", "english"]},
+        "capture_id": {"type": "string", "minLength": 1},
+        "processing_binding_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "capture_freeze_receipt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "capture_freeze_receipt_ref": {"type": "string", "pattern": "^study-intake-capture-freeze://sha256/[0-9a-f]{64}$"},
+        "read_session_id": {"type": "string", "minLength": 8, "maxLength": 160},
+        "read_session_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "mcp_read_session_receipt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "mcp_read_session_receipt_ref": {"type": "string", "pattern": "^study-intake-mcp-read-session://sha256/[0-9a-f]{64}$"},
+        "mcp_stage_transcript_sha256s": {"type": "array", "minItems": 2, "maxItems": 2, "uniqueItems": true, "items": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+        "mcp_grounding_manifest_sha256s": {"type": "array", "minItems": 2, "maxItems": 2, "uniqueItems": true, "items": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+        "consumed_mcp_evidence_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^mcp-item:(?:math|cs408|english):[0-9a-f]{64}$"}},
+        "operations": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["operation", "target", "proposal", "evidence_refs", "sol_verification_action"],
+            "properties": {
+              "operation": {"type": "string", "enum": ["mark_existing_item", "propose_item_update", "propose_new_item", "mark_existing_knowledge", "propose_new_knowledge", "propose_relation", "mark_status", "propose_status_change", "needs_review"]},
+              "target": {"type": "string", "minLength": 1},
+              "proposal": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["subject_payload_sha256", "subject_payload_role", "host_semantic_projection"],
+                "properties": {
+                  "subject_payload_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+                  "subject_payload_role": {"type": "string", "const": "critical_review_revised"},
+                  "host_semantic_projection": {"type": "string", "const": "none"}
+                }
+              },
+              "evidence_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^mcp-item:(?:math|cs408|english):[0-9a-f]{64}$"}},
+              "sol_verification_action": {"type": "string", "minLength": 1}
+            }
+          }
+        },
+        "review_status": {"type": "string", "enum": ["proposal_ready", "rejected"]},
+        "critical_review_outcome": {"type": "string", "enum": ["accepted", "corrected", "rejected"]},
+        "host_semantic_prefetch": {"type": "boolean", "const": false},
+        "formal_write_count": {"type": "integer", "const": 0}
+      }
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/en-p0-006-remediation-gate-v1.json",
+  "title": "EN-P0-006 Remediation Gate v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "issue_id", "subject", "status",
+    "authorization_gate", "execution_gate", "decision", "allowed_lanes",
+    "blocked_lanes", "authorization_expansion_closure_sha256",
+    "batch_authorization_sha256", "inventory_sha256", "target_set_sha256",
+    "target_count", "model_call_count", "formal_write_count"
+  ],
+  "properties": {
+    "schema_version": {"const": "en_p0_006_remediation_gate_v1"},
+    "issue_id": {"const": "EN-P0-006"},
+    "subject": {"const": "english"},
+    "status": {"const": "authorization_ready_execution_pending"},
+    "authorization_gate": {"const": "passed"},
+    "execution_gate": {"const": "pending"},
+    "decision": {"const": "allow_en_p0_006_luna_recuration_only"},
+    "allowed_lanes": {"const": ["en_p0_006_luna_recuration"]},
+    "blocked_lanes": {"const": ["ordinary_english_luna", "english_golden_replay", "english_sol_apply_before_quality_ready"]},
+    "authorization_expansion_closure_sha256": {"$ref": "#/$defs/sha256"},
+    "batch_authorization_sha256": {"$ref": "#/$defs/sha256"},
+    "inventory_sha256": {"$ref": "#/$defs/sha256"},
+    "target_set_sha256": {"$ref": "#/$defs/sha256"},
+    "target_count": {"type": "integer", "minimum": 1},
+    "model_call_count": {"const": 0},
+    "formal_write_count": {"const": 0}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

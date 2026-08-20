@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "study-intake-production-canary-preclaim-failure-receipt-v2",
+  "type": "object",
+  "required": [
+    "activation_gate_authority_sha256", "activation_id", "activation_receipt_sha256",
+    "authority", "continuous_concurrency_limit", "error_code", "failed_at",
+    "failure_evidence", "failure_id", "failure_stage", "fast_mode_effective",
+    "fast_mode_requested", "formal_write_count", "initial_canary_inflight_limit",
+    "keep_backlog_drained", "luna_consumer_enabled", "mcp_tool_call_count",
+    "model_call_count", "model_submission_started", "post_activation_only",
+    "producer_authority_fingerprint", "producer_capture_enabled",
+    "producer_high_watermark_sha256", "production_accepted", "provider_request_count",
+    "queue_entry_preserved", "queue_status_after", "release_id",
+    "requested_service_tier", "schema_version", "sol_enabled",
+    "sol_formal_curation_enabled", "state_after", "subject"
+  ],
+  "properties": {
+    "activation_gate_authority_sha256": {"$ref": "#/$defs/sha256"},
+    "activation_id": {"$ref": "#/$defs/sha256"},
+    "activation_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "authority": {"$ref": "#/$defs/authority"},
+    "continuous_concurrency_limit": {"type": "integer", "minimum": 1, "maximum": 64},
+    "error_code": {"type": "string", "minLength": 1},
+    "failed_at": {"$ref": "#/$defs/timestamp"},
+    "failure_evidence": {"$ref": "#/$defs/failure_evidence"},
+    "failure_id": {"$ref": "#/$defs/sha256"},
+    "failure_stage": {
+      "enum": [
+        "producer_contract", "materialize", "consumer_admission", "pre_claim",
+        "submit_generation_fence"
+      ]
+    },
+    "fast_mode_effective": {"const": "not_requested"},
+    "fast_mode_requested": {"const": false},
+    "formal_write_count": {"const": 0},
+    "initial_canary_inflight_limit": {"const": 1},
+    "keep_backlog_drained": {"const": true},
+    "luna_consumer_enabled": {"const": false},
+    "mcp_tool_call_count": {"const": 0},
+    "model_call_count": {"const": 0},
+    "model_submission_started": {"const": false},
+    "post_activation_only": {"const": true},
+    "producer_authority_fingerprint": {"$ref": "#/$defs/sha256"},
+    "producer_capture_enabled": {"const": true},
+    "producer_high_watermark_sha256": {"$ref": "#/$defs/sha256"},
+    "production_accepted": {"const": false},
+    "provider_request_count": {"const": 0},
+    "queue_entry_preserved": {"type": "boolean"},
+    "queue_status_after": {"enum": ["pending", null]},
+    "release_id": {"$ref": "#/$defs/sha256"},
+    "requested_service_tier": {"type": "null"},
+    "schema_version": {"const": "study-intake-production-canary-preclaim-failure-receipt-v2"},
+    "sol_enabled": {"const": false},
+    "sol_formal_curation_enabled": {"const": false},
+    "state_after": {"const": "failed_drained"},
+    "subject": {"$ref": "#/$defs/subject"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"queue_entry_preserved": {"const": true}}, "required": ["queue_entry_preserved"]},
+      "then": {"properties": {"queue_status_after": {"const": "pending"}}},
+      "else": {"properties": {"queue_status_after": {"type": "null"}}}
+    }
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nullable_sha256": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+    "timestamp": {"type": "string", "format": "date-time", "minLength": 1},
+    "nullable_timestamp": {"oneOf": [{"$ref": "#/$defs/timestamp"}, {"type": "null"}]},
+    "nullable_nonempty_string": {"type": ["string", "null"], "minLength": 1},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "authority": {
+      "type": "object",
+      "required": ["schema_version", "algorithm", "key_id", "purpose", "hmac_sha256"],
+      "properties": {
+        "schema_version": {"const": "study-intake-dispatch-authority-v1"},
+        "algorithm": {"const": "HMAC-SHA256"},
+        "key_id": {"$ref": "#/$defs/sha256"},
+        "purpose": {"const": "dispatch-production-canary-preclaim-failure"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "additionalProperties": false
+    },
+    "failure_evidence": {
+      "type": "object",
+      "required": [
+        "unit_sha256", "frozen_payload_sha256", "task_subject", "capture_id",
+        "producer_unit_id", "producer_recorded_at", "producer_input_contract_sha256",
+        "source_event_set_sha256", "queue_entry_sha256", "queue_status_before",
+        "canary_gate_sha256", "lease_fence", "evidence_sha256"
+      ],
+      "properties": {
+        "unit_sha256": {"$ref": "#/$defs/nullable_sha256"},
+        "frozen_payload_sha256": {"$ref": "#/$defs/nullable_sha256"},
+        "task_subject": {"oneOf": [{"$ref": "#/$defs/subject"}, {"type": "null"}]},
+        "capture_id": {"$ref": "#/$defs/nullable_nonempty_string"},
+        "producer_unit_id": {"$ref": "#/$defs/nullable_nonempty_string"},
+        "producer_recorded_at": {"$ref": "#/$defs/nullable_timestamp"},
+        "producer_input_contract_sha256": {"$ref": "#/$defs/nullable_sha256"},
+        "source_event_set_sha256": {"$ref": "#/$defs/nullable_sha256"},
+        "queue_entry_sha256": {"$ref": "#/$defs/nullable_sha256"},
+        "queue_status_before": {"enum": ["pending", "claimed", "succeeded", "failed", null]},
+        "canary_gate_sha256": {"$ref": "#/$defs/nullable_sha256"},
+        "lease_fence": {"oneOf": [{"type": "integer", "minimum": 1}, {"type": "null"}]},
+        "evidence_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

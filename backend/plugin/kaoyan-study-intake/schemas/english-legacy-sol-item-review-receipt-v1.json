@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/english-legacy-sol-item-review-receipt-v1.json",
+  "title": "English Legacy Sol Item Review Receipt v1",
+  "type": "object", "additionalProperties": false,
+  "required": [
+    "schema_version", "issue_id", "batch_id", "batch_sha256", "subject",
+    "target_id", "target_kind", "ordinal", "fencing_token", "attempt",
+    "previous_checkpoint_sha256", "canonical_evidence_sha256", "authority_checkpoint_sha256",
+    "current_object_sha256", "decision", "desired_object_sha256", "reason",
+    "status", "formal_write_count", "completed_at", "seal"
+  ],
+  "properties": {
+    "schema_version": {"const": "english_legacy_sol_item_review_receipt_v1"},
+    "issue_id": {"const": "EN-P0-006"}, "batch_id": {"type": "string", "minLength": 1},
+    "batch_sha256": {"$ref": "#/$defs/sha256"}, "subject": {"const": "english"},
+    "target_id": {"type": "string", "minLength": 1},
+    "target_kind": {"enum": ["master_bank_row", "sentence_pattern_card", "article_learning_page"]},
+    "ordinal": {"type": "integer", "minimum": 1},
+    "fencing_token": {"type": "integer", "minimum": 1},
+    "attempt": {"type": "integer", "minimum": 1},
+    "previous_checkpoint_sha256": {"$ref": "#/$defs/nullable_sha256"},
+    "canonical_evidence_sha256": {"$ref": "#/$defs/sha256"},
+    "authority_checkpoint_sha256": {"$ref": "#/$defs/sha256"},
+    "current_object_sha256": {"$ref": "#/$defs/sha256"},
+    "decision": {"enum": ["update_existing", "already_current", "reject"]},
+    "desired_object_sha256": {"$ref": "#/$defs/nullable_sha256"},
+    "reason": {"type": "string", "minLength": 1},
+    "status": {"enum": ["approved", "rejected", "failed"]},
+    "formal_write_count": {"const": 0}, "completed_at": {"type": "string", "minLength": 1},
+    "seal": {"$ref": "#/$defs/seal"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nullable_sha256": {"anyOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+    "seal": {"type": "object", "additionalProperties": false,
+      "required": ["algorithm", "purpose", "hmac_sha256"],
+      "properties": {"algorithm": {"const": "HMAC-SHA256"},
+        "purpose": {"const": "english-legacy-sol-item-review-receipt-v1"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}}
+    }
+  }
+}

@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/english-legacy-target-inventory-v2.json",
+  "title": "English Legacy Target Inventory v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "issue_id", "subject", "originating_thread_id",
+    "inventory_id", "inventory_status", "authority", "targets",
+    "target_count", "target_set_sha256", "unidentified_target_count",
+    "mastered_items_boundary", "independent_inventory_review",
+    "model_call_count", "formal_write_count", "issued_at",
+    "authority_key_id", "seal"
+  ],
+  "properties": {
+    "schema_version": {"const": "english_legacy_target_inventory_v2"},
+    "issue_id": {"const": "EN-P0-006"},
+    "subject": {"const": "english"},
+    "originating_thread_id": {"type": "string", "minLength": 1},
+    "inventory_id": {"type": "string", "minLength": 1},
+    "inventory_status": {"const": "complete"},
+    "authority": {"$ref": "#/$defs/authority"},
+    "targets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/target"}
+    },
+    "target_count": {"type": "integer", "minimum": 1},
+    "target_set_sha256": {"$ref": "#/$defs/sha256"},
+    "unidentified_target_count": {"const": 0},
+    "mastered_items_boundary": {"$ref": "#/$defs/mastered_items"},
+    "independent_inventory_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "receipt_sha256"],
+      "properties": {
+        "status": {"const": "completed"},
+        "receipt_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "model_call_count": {"const": 0},
+    "formal_write_count": {"const": 0},
+    "issued_at": {"type": "string", "format": "date-time"},
+    "authority_key_id": {"$ref": "#/$defs/sha256"},
+    "seal": {"$ref": "#/$defs/seal"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authority_path", "sha256", "role"],
+      "properties": {
+        "authority_path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "role": {
+          "enum": [
+            "article_learning_page", "master_bank_row",
+            "mastered_items_boundary", "sentence_pattern_card"
+          ]
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["generation", "fingerprint", "files"],
+      "properties": {
+        "generation": {"type": "string", "minLength": 1},
+        "fingerprint": {"$ref": "#/$defs/sha256"},
+        "files": {
+          "type": "array", "minItems": 4, "maxItems": 4,
+          "items": {"$ref": "#/$defs/file"}
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "verdict", "receipt_sha256"],
+      "properties": {
+        "status": {"const": "completed"},
+        "verdict": {
+          "enum": [
+            "attestable", "evidence_incomplete", "recuration_recommended",
+            "rollback_supported"
+          ]
+        },
+        "receipt_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_id", "target_kind", "record_id", "authority_path",
+        "authority_file_sha256", "current_object_sha256", "prehash_status",
+        "prehash_sha256", "originating_thread_id", "independent_review"
+      ],
+      "properties": {
+        "target_id": {"type": "string", "minLength": 1},
+        "target_kind": {
+          "enum": [
+            "article_learning_page", "master_bank_row", "sentence_pattern_card"
+          ]
+        },
+        "record_id": {"type": "string", "minLength": 1},
+        "authority_path": {"type": "string", "minLength": 1},
+        "authority_file_sha256": {"$ref": "#/$defs/sha256"},
+        "current_object_sha256": {"$ref": "#/$defs/sha256"},
+        "prehash_status": {"enum": ["verified", "evidence_incomplete"]},
+        "prehash_sha256": {
+          "anyOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]
+        },
+        "originating_thread_id": {"type": "string", "minLength": 1},
+        "independent_review": {"$ref": "#/$defs/review"}
+      }
+    },
+    "mastered_items": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority_path", "sha256", "row_count", "inference_forbidden",
+        "used_for_disposition"
+      ],
+      "properties": {
+        "authority_path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "row_count": {"type": "integer", "minimum": 0},
+        "inference_forbidden": {"const": true},
+        "used_for_disposition": {"const": false}
+      }
+    },
+    "seal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "purpose", "hmac_sha256"],
+      "properties": {
+        "algorithm": {"const": "HMAC-SHA256"},
+        "purpose": {"const": "english-legacy-target-inventory-v2"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

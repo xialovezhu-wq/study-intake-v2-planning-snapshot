@@ -1,0 +1,55 @@
+{
+  "attestation_relative_root": "intake/producer-binding-attestations",
+  "attestation_required_after": "2026-08-17T06:30:00+00:00",
+  "capture_contract": {
+    "contract_id": "english-capture",
+    "contract_version": "v2",
+    "files": [
+      {
+        "path": "/Users/xiazhibin/Documents/kaoyan-english/schema/english_pipeline/capture-event-v2.schema.json",
+        "sha256": "b84d6364045ae7100ef53157ecec0d6b92131837142793cbf5e84b779c699d85"
+      },
+      {
+        "path": "/Users/xiazhibin/Documents/kaoyan-english/schema/english_pipeline/capture-receipt-v2.schema.json",
+        "sha256": "0325f5215678b5b19480cfb013cfd151524cd18d3d0f2fec222e2d6ebf0bc132"
+      }
+    ],
+    "files_sha256": "ff36f9043b236460ef9aa5b281818f01c9ef018a75add4a666402aec8fabb2da"
+  },
+  "descriptor_content_sha256": "c2526748d364a40d04a9647bf6a4d2d6bbdf573f7cf04002256dc5ca03c4a19b",
+  "foreground_skill": {
+    "authoritative_path": "/Users/xiazhibin/Documents/kaoyan-english/codex-skill-sources/kaoyan-english-intensive-reading/SKILL.md",
+    "authoritative_sha256": "cb60672254c18b9eaf0b410af2c0af70a5f596046ef474e7bc32e5f81bbdd25f",
+    "id": "kaoyan-english-intensive-reading",
+    "installed_path": "/Users/xiazhibin/.codex/skills/kaoyan-english-intensive-reading/SKILL.md",
+    "installed_sha256": "cb60672254c18b9eaf0b410af2c0af70a5f596046ef474e7bc32e5f81bbdd25f",
+    "version": "content-sha256-v1"
+  },
+  "formal_write_count": 0,
+  "producer": {
+    "contract_id": "english-learning-pipeline-producer",
+    "contract_version": "v2",
+    "entrypoint_path": "/Users/xiazhibin/Documents/kaoyan-english/english_pipeline/events.py",
+    "source_closure_sha256": "22e4074021c919bd5f1d688fb43469bda7f2e509f08e45be01623735a63d8392",
+    "source_files": [
+      {
+        "path": "/Users/xiazhibin/Documents/kaoyan-english/english_pipeline/events.py",
+        "sha256": "06f04af255fda4da1f930418be52cdff4ea048c8c9c9e412d0d553d2ac852ff5"
+      },
+      {
+        "path": "/Users/xiazhibin/Documents/kaoyan-english/english_pipeline/cli.py",
+        "sha256": "b8a58526506ff70ddf518ca048cfc176b70e22434ee2252e71f2fa8ab1650ae1"
+      },
+      {
+        "path": "/Users/xiazhibin/Documents/kaoyan-english/english_pipeline/producer_binding_attestation.py",
+        "sha256": "cfc110be9c22072d17765e2860299268a357e05eee9e422b6f992be9488a3429"
+      },
+      {
+        "path": "/Users/xiazhibin/Documents/kaoyan-english/scripts/english_learning_pipeline.py",
+        "sha256": "27502e2fe1ee4fef01b33886db2839b61417aa319ddff99343131e0e01ba52ff"
+      }
+    ]
+  },
+  "schema_version": "producer_binding_descriptor_v1",
+  "subject": "english"
+}

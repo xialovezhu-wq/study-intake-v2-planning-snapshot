@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/english-legacy-rolling-authority-checkpoint-v1.json",
+  "title": "English Legacy Rolling Authority Checkpoint v1",
+  "type": "object", "additionalProperties": false,
+  "required": [
+    "schema_version", "issue_id", "batch_id", "batch_sha256", "subject",
+    "fencing_token", "attempt", "ordinal", "target_id", "outcome",
+    "previous_checkpoint_sha256", "item_result_receipt_sha256",
+    "pre_authority_sha256", "post_authority_sha256", "completed_target_count",
+    "committed_count", "already_current_count", "failed_count", "next_ordinal",
+    "formal_write_count", "issued_at", "seal"
+  ],
+  "properties": {
+    "schema_version": {"const": "english_legacy_rolling_authority_checkpoint_v1"},
+    "issue_id": {"const": "EN-P0-006"}, "batch_id": {"type": "string", "minLength": 1},
+    "batch_sha256": {"$ref": "#/$defs/sha256"}, "subject": {"const": "english"},
+    "fencing_token": {"type": "integer", "minimum": 1}, "attempt": {"type": "integer", "minimum": 1},
+    "ordinal": {"type": "integer", "minimum": 1}, "target_id": {"type": "string", "minLength": 1},
+    "outcome": {"enum": ["committed", "already_current", "failed"]},
+    "previous_checkpoint_sha256": {"$ref": "#/$defs/nullable_sha256"},
+    "item_result_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "pre_authority_sha256": {"$ref": "#/$defs/sha256"}, "post_authority_sha256": {"$ref": "#/$defs/sha256"},
+    "completed_target_count": {"type": "integer", "minimum": 0},
+    "committed_count": {"type": "integer", "minimum": 0},
+    "already_current_count": {"type": "integer", "minimum": 0},
+    "failed_count": {"type": "integer", "minimum": 0},
+    "next_ordinal": {"type": ["integer", "null"], "minimum": 1},
+    "formal_write_count": {"type": "integer", "minimum": 0},
+    "issued_at": {"type": "string", "minLength": 1}, "seal": {"$ref": "#/$defs/seal"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nullable_sha256": {"anyOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+    "seal": {"type": "object", "additionalProperties": false,
+      "required": ["algorithm", "purpose", "hmac_sha256"],
+      "properties": {"algorithm": {"const": "HMAC-SHA256"},
+        "purpose": {"const": "english-legacy-rolling-authority-checkpoint-v1"}, "hmac_sha256": {"$ref": "#/$defs/sha256"}}
+    }
+  }
+}

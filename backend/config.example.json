@@ -1,0 +1,250 @@
+{
+  "schema_version": "study-intake-preprocessor-config-v1",
+  "execution_mode": "offline",
+  "runtime_root": "${RUNTIME_DATA_ROOT}",
+  "timezone": "Asia/Shanghai",
+  "release": {
+    "manifest_path": "${RELEASE_ROOT}/release.json"
+  },
+  "live_execution_gate": {
+    "enabled": true,
+    "default_locked": true,
+    "authorization_required": true,
+    "authorization_state_path": "${RUNTIME_DATA_ROOT}/dispatch/manual-live-authorization-v1/state.json"
+  },
+  "fixture_execution": {
+    "allowed_executable_roots": [
+      "${RELEASE_ROOT}/tests/fixtures"
+    ]
+  },
+  "branch_scheduler": {
+    "logical_branch_limit": null,
+    "physical_concurrency_mode": "dynamic",
+    "configured_maximum_active_branches": 8,
+    "overflow_policy": "queue_in_waves",
+    "drop_policy": "never",
+    "fairness_policy": "round_robin_tasks",
+    "stall_timeout_seconds": 120
+  },
+  "models": {
+    "orchestrator": {
+      "model": "gpt-5.6-terra",
+      "reasoning_effort": "ultra",
+      "agents_enabled": true,
+      "fresh_context": true,
+      "sandbox_mode": "workspace-write",
+      "agent_config_path": "${RELEASE_ROOT}/plugin/kaoyan-study-intake/agents/terra-orchestrator.toml",
+      "tool_policy_path": "${RELEASE_ROOT}/plugin/kaoyan-study-intake/agents/terra-orchestrator-tool-policy.json"
+    },
+    "reader": {
+      "model": "gpt-5.6-luna",
+      "reasoning_effort": "max",
+      "agents_enabled": false,
+      "fresh_context": true,
+      "sandbox_mode": "read-only",
+      "agent_config_path": "${RELEASE_ROOT}/plugin/kaoyan-study-intake/agents/luna-reader.toml",
+      "tool_policy_path": "${RELEASE_ROOT}/plugin/kaoyan-study-intake/agents/luna-reader-tool-policy.json"
+    },
+    "critical_reviewer": {
+      "model": "gpt-5.6-terra",
+      "reasoning_effort": "ultra",
+      "agents_enabled": false,
+      "fresh_context": true,
+      "sandbox_mode": "read-only",
+      "agent_config_path": "${RELEASE_ROOT}/plugin/kaoyan-study-intake/agents/terra-critical-reviewer.toml",
+      "tool_policy_path": "${RELEASE_ROOT}/plugin/kaoyan-study-intake/agents/terra-critical-reviewer-tool-policy.json"
+    }
+  },
+  "processing_plugin": {
+    "enabled": true,
+    "root": "${RELEASE_ROOT}/plugin/kaoyan-study-intake",
+    "component_lock_path": "${RELEASE_ROOT}/plugin/kaoyan-study-intake/component-lock.json",
+    "mcp_client_python": "/Users/xiazhibin/Documents/Codex/local-study-read-mcp/.venv/bin/python",
+    "mcp_project_root": "/Users/xiazhibin/.codex/local-study-read-mcp/releases/21d738a1d74586aab72c8a63dc62c680aa10c6ac837c2bd5041e757ba0e63425",
+    "authority_key_path": "${RUNTIME_DATA_ROOT}/dispatch/state/authority.key",
+    "profile": "background",
+    "timeout_seconds": 30
+  },
+  "worker": {
+    "enabled": true,
+    "poll_interval_seconds": 1,
+    "english_poll_interval_seconds": 1,
+    "debounce_seconds": 90,
+    "status_timeout_seconds": 30,
+    "model_timeout_seconds": 900,
+    "max_attempts": 3,
+    "retry_base_seconds": 60,
+    "log_path": "${RUNTIME_DATA_ROOT}/logs/worker.log",
+    "lock_path": "${RUNTIME_DATA_ROOT}/state/worker.lock"
+  },
+  "dispatch": {
+    "authority_required": true,
+    "heartbeat_interval_seconds": 15,
+    "lease_ttl_seconds": 120,
+    "infrastructure_recovery_attempts": 1,
+    "production_canary": {
+      "enabled": true,
+      "status": "production_canary_active",
+      "admission": "first_post_activation_producer_capture",
+      "keep_backlog_drained": true,
+      "post_activation_only": true,
+      "initial_canary_inflight_limit": 1,
+      "continuous_concurrency_limit": 20
+    }
+  },
+  "model": {
+    "codex_path": "/Applications/ChatGPT.app/Contents/Resources/codex",
+    "model": "gpt-5.6-luna",
+    "reasoning_effort": "max",
+    "output_schema": "${RELEASE_ROOT}/schemas/luna-analysis-v1.json",
+    "prompt_version": "study-intake-luna-prompt-v1",
+    "max_prompt_bytes": 131072,
+    "max_images": 8
+  },
+  "private_evidence": {
+    "current_question_root": "${RUNTIME_DATA_ROOT}/private/current-question-evidence",
+    "max_bundle_bytes": 262144
+  },
+  "math_deep_v2": {
+    "enabled": true,
+    "mode": "production",
+    "canary_percent": 10,
+    "shadow_evaluation_start_at": "2026-08-05T00:00:00+08:00",
+    "shadow_evaluation_target_count": 20,
+    "analysis_output_schema": "${RELEASE_ROOT}/schemas/luna-math-analysis-v2.json",
+    "critical_review_output_schema": "${RELEASE_ROOT}/schemas/luna-math-critical-review-v3.json",
+    "package_output_schema": "${RELEASE_ROOT}/schemas/preprocess-package-v3.json",
+    "analysis_prompt_version": "study-intake-math-deep-analysis-v2",
+    "critical_review_prompt_version": "study-intake-math-critical-review-v3-patch-only",
+    "soft_runtime_warning_seconds": 3600,
+    "stall_timeout_seconds": 1800,
+    "stall_probe_interval_seconds": 60,
+    "stall_probe_required_consecutive_failures": 2,
+    "max_prompt_bytes": 524288,
+    "max_output_bytes": 262144,
+    "min_complete_chinese_chars": 0,
+    "max_chinese_chars": 6000,
+    "gs111_cold_replay_max_seconds": 1800,
+    "three_replay_p95_max_seconds": 1200
+  },
+  "math_knowledge_snapshot": {
+    "enabled": true,
+    "max_source_bytes": 8388608,
+    "max_distribution_terms": 64,
+    "max_local_neighbors": 8,
+    "max_relationship_candidates": 5,
+    "golden_regressions": {
+      "GS-111": ["GS-110", "GS-112", "GS-119"]
+    },
+    "max_snapshot_bytes": 131072,
+    "sources": {
+      "graph": "错题知识网络/生成/知识网络图.mmd",
+      "projection": "错题知识网络/生成/wrong_questions.json",
+      "taxonomy": "错题知识网络/知识点库.md",
+      "relationship_policy": "错题知识网络/schema/relationship_signal_policy.json"
+    }
+  },
+  "cs408_deep_v2": {
+    "enabled": true,
+    "analysis_output_schema": "${RELEASE_ROOT}/schemas/luna-analysis-v2.json",
+    "critical_review_output_schema": "${RELEASE_ROOT}/schemas/luna-critical-review-v2.json",
+    "package_output_schema": "${RELEASE_ROOT}/schemas/preprocess-package-v3.json",
+    "controlled_contract_path": "${RELEASE_ROOT}/schemas/luna-cs408-controlled-contract-v3.json",
+    "analysis_prompt_version": "study-intake-cs408-deep-analysis-v2",
+    "critical_review_prompt_version": "study-intake-cs408-critical-review-v2",
+    "soft_runtime_warning_seconds": 1800,
+    "stall_timeout_seconds": 1800,
+    "stall_probe_interval_seconds": 60,
+    "stall_probe_required_consecutive_failures": 2,
+    "max_prompt_bytes": 524288,
+    "max_output_bytes": 262144
+  },
+  "english_two_pass_v1": {
+    "enabled": true,
+    "analysis_output_schema": "${RELEASE_ROOT}/schemas/luna-english-candidate-draft-v1.json",
+    "critical_review_output_schema": "${RELEASE_ROOT}/schemas/luna-english-critical-review-v1.json",
+    "package_output_schema": "${RELEASE_ROOT}/schemas/preprocess-package-v3.json",
+    "controlled_contract_path": "${RELEASE_ROOT}/schemas/luna-english-controlled-contract-v1.json",
+    "analysis_prompt_version": "study-intake-english-luna-analysis-v1",
+    "critical_review_prompt_version": "study-intake-english-luna-critical-review-v2",
+    "soft_runtime_warning_seconds": 1800,
+    "stall_timeout_seconds": 1800,
+    "stall_probe_interval_seconds": 60,
+    "stall_probe_required_consecutive_failures": 2,
+    "max_prompt_bytes": 1048576,
+    "max_output_bytes": 524288
+  },
+  "english_legacy_recuration_v1": {
+    "enabled": true,
+    "analysis_output_schema": "${RELEASE_ROOT}/schemas/luna-english-legacy-recuration-analysis-v1.json",
+    "critical_review_output_schema": "${RELEASE_ROOT}/schemas/luna-english-legacy-recuration-critical-review-v1.json",
+    "analysis_prompt_version": "study-intake-english-legacy-recuration-analysis-v1",
+    "critical_review_prompt_version": "study-intake-english-legacy-recuration-critical-review-v1",
+    "stage_timeout_seconds": 1800,
+    "max_prompt_bytes": 262144,
+    "max_output_bytes": 131072
+  },
+  "cs408_knowledge_snapshot": {
+    "enabled": true,
+    "max_source_bytes": 8388608,
+    "max_taxonomy_candidates": 12,
+    "max_history_candidates": 12,
+    "max_relation_candidates": 16,
+    "max_review_timeline_entries": 32,
+    "sources": {
+      "taxonomy": "知识点标签表.md",
+      "nodes": "节点总表.md",
+      "relations": "关系边表.md",
+      "review_records": "错题复做记录.md",
+      "review_unit_mapping": "复习单元节点映射.md"
+    },
+    "controlled_aliases": {
+      "二分查找": [
+        "DS07-04"
+      ]
+    }
+  },
+  "dashboard": {
+    "projection_schema_version": "study-intake-dashboard-projection-v5",
+    "projection_path": "${RUNTIME_DATA_ROOT}/state/dashboard_projection.json"
+  },
+  "adapters": {
+    "math": {
+      "enabled": true,
+      "adapter_version": "math-pending-v1",
+      "python_path": "/usr/local/bin/python3",
+      "repo_root": "/Users/xiazhibin/Documents/kaoyan-math",
+      "status_script": "/Users/xiazhibin/Documents/kaoyan-math/数学一回滚复习系统/scripts/quick_intake.py"
+    },
+    "cs408": {
+      "enabled": true,
+      "adapter_version": "cs408-awaiting-curation-v2",
+      "python_path": "/usr/local/bin/python3",
+      "repo_root": "/Users/xiazhibin/Documents/kaoyan-408",
+      "status_script": "/Users/xiazhibin/Documents/kaoyan-408/scripts/intake_fact_capture_408.py"
+    },
+    "english": {
+      "enabled": true,
+      "adapter_version": "english-microbatch-v1",
+      "python_path": "/usr/local/bin/python3",
+      "repo_root": "/Users/xiazhibin/Documents/kaoyan-english",
+      "status_script": "/Users/xiazhibin/Documents/kaoyan-english/scripts/english_learning_pipeline.py",
+      "state_dir": "/Users/xiazhibin/Documents/kaoyan-english/intake",
+      "candidate_root": "/Users/xiazhibin/Documents/kaoyan-english/intake/candidates",
+      "candidate_schema": "/Users/xiazhibin/Documents/kaoyan-english/schema/english_pipeline/luna-candidate-v2.schema.json",
+      "foundation_script": "/Users/xiazhibin/Documents/kaoyan-english/scripts/select_bbdc_foundation.py",
+      "review_status_script": "/Users/xiazhibin/Documents/kaoyan-english/scripts/build_review_status_proposals.py",
+      "microbatch_capture_count": 5,
+      "quiet_seconds": 180,
+      "max_events_per_scan": 4000,
+      "max_event_bytes": 262144,
+      "max_batch_bytes": 1048576,
+      "max_foundation_items": 24,
+      "max_mastered_matches": 24,
+      "max_master_bank_matches": 24,
+      "max_sentence_pattern_matches": 24,
+      "max_formal_prefetch_bytes": 262144,
+      "max_candidate_documents": 2000
+    }
+  }
+}

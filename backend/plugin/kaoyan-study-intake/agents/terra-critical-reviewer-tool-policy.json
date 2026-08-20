@@ -1,0 +1,7 @@
+{
+  "schema_version": "study-intake-agent-tool-policy-v1",
+  "role": "critical_reviewer",
+  "allow": ["get_task_context", "read_task_artifact", "read_plan", "read_bundle", "read_candidate", "read_receipt"],
+  "deny": ["subject_database_read", "subject_database_write", "spawn_agent", "formal_writer", "shell", "web", "sql"],
+  "formal_write_count": 0
+}

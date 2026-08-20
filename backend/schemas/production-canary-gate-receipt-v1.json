@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/production-canary-gate-receipt-v1.json",
+  "title": "Production canary task gate receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "activation_id", "subject", "release_id",
+    "producer_authority_fingerprint", "producer_high_watermark_sha256",
+    "activation_receipt_sha256", "activation_gate_authority_sha256",
+    "state_before", "state_after", "selected", "admitted_at",
+    "producer_capture_enabled", "sol_formal_curation_enabled",
+    "post_activation_only", "per_subject_limit", "keep_backlog_drained",
+    "production_accepted", "fast_mode_requested", "fast_mode_effective",
+    "model_call_count", "provider_request_count",
+    "formal_write_count", "sol_enabled", "authority"
+  ],
+  "properties": {
+    "schema_version": {"const": "study-intake-production-canary-gate-receipt-v1"},
+    "activation_id": {"$ref": "#/$defs/sha256"},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "release_id": {"$ref": "#/$defs/sha256"},
+    "producer_authority_fingerprint": {"$ref": "#/$defs/sha256"},
+    "producer_high_watermark_sha256": {"$ref": "#/$defs/sha256"},
+    "activation_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "activation_gate_authority_sha256": {"$ref": "#/$defs/sha256"},
+    "state_before": {"enum": ["armed", "continuous_consumption_unlocked"]},
+    "state_after": {"enum": ["canary_in_flight", "continuous_consumption_unlocked"]},
+    "selected": {"$ref": "#/$defs/selected"},
+    "admitted_at": {"type": "string", "format": "date-time"},
+    "producer_capture_enabled": {"const": true},
+    "sol_formal_curation_enabled": {"const": false},
+    "post_activation_only": {"const": true},
+    "per_subject_limit": {"const": 1},
+    "keep_backlog_drained": {"const": true},
+    "production_accepted": {"const": false},
+    "fast_mode_requested": {"const": true},
+    "fast_mode_effective": {"enum": ["requested_unverified", "confirmed"]},
+    "model_call_count": {"const": 0},
+    "provider_request_count": {"const": 0},
+    "formal_write_count": {"const": 0},
+    "sol_enabled": {"const": false},
+    "authority": {"$ref": "#/$defs/authority"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "selected": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "producer_unit_id", "producer_recorded_at",
+        "producer_input_contract_sha256", "source_event_set_sha256",
+        "unit_sha256", "frozen_payload_sha256"
+      ],
+      "properties": {
+        "producer_unit_id": {"type": "string", "minLength": 1},
+        "producer_recorded_at": {"type": "string", "format": "date-time"},
+        "producer_input_contract_sha256": {"$ref": "#/$defs/sha256"},
+        "source_event_set_sha256": {"$ref": "#/$defs/sha256"},
+        "unit_sha256": {"$ref": "#/$defs/sha256"},
+        "frozen_payload_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "authority": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "algorithm", "key_id", "purpose", "hmac_sha256"],
+      "properties": {
+        "schema_version": {"const": "study-intake-dispatch-authority-v1"},
+        "algorithm": {"const": "HMAC-SHA256"},
+        "key_id": {"$ref": "#/$defs/sha256"},
+        "purpose": {"const": "dispatch-production-canary-gate"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

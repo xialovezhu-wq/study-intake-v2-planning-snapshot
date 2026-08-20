@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://xiazhibin.local/schemas/stage-authorization-v1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "fixture_only", "stage", "subject", "capture_id", "capture_content_sha256", "central_release_id", "activation_id", "live_authorization_sha256", "issuer_authorization_receipt_sha256", "maximum_tasks", "not_before", "expires_at", "nonce", "verified_terra_plan_sha256", "formal_write_allowed", "formal_write_count", "receipt_sha256"],
+  "properties": {
+    "schema_version": {"const": "study-intake-stage-authorization-v1"},
+    "fixture_only": {"type": "boolean"},
+    "stage": {"enum": ["terra", "luna"]},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "capture_id": {"type": "string", "minLength": 1},
+    "capture_content_sha256": {"$ref": "#/$defs/sha"},
+    "central_release_id": {"$ref": "#/$defs/sha"},
+    "activation_id": {"$ref": "#/$defs/sha"},
+    "live_authorization_sha256": {"$ref": "#/$defs/sha"},
+    "issuer_authorization_receipt_sha256": {"$ref": "#/$defs/sha"},
+    "maximum_tasks": {"const": 1},
+    "not_before": {"type": "string", "format": "date-time"},
+    "expires_at": {"type": "string", "format": "date-time"},
+    "nonce": {"type": "string", "minLength": 16},
+    "verified_terra_plan_sha256": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/sha"}]},
+    "formal_write_allowed": {"const": false},
+    "formal_write_count": {"const": 0},
+    "receipt_sha256": {"$ref": "#/$defs/sha"}
+  },
+  "$defs": {"sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+}

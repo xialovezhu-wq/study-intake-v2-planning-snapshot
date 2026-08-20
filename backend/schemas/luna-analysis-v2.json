@@ -1,0 +1,197 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Deep 408 Luna analysis",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "report_profile",
+    "executive_summary",
+    "question_structure",
+    "correct_reasoning_reconstruction",
+    "evidence_assessment",
+    "reasoning_diagnosis",
+    "concept_method_analysis",
+    "knowledge_network_context",
+    "formalization_candidates",
+    "sol_verification_plan",
+    "risk_flags",
+    "unresolved",
+    "atomic_signals"
+  ],
+  "properties": {
+    "schema_version": {"type": "string", "const": "study-intake-luna-analysis-v2"},
+    "report_profile": {"type": "string", "const": "cs408_deep"},
+    "executive_summary": {"type": "string", "minLength": 1, "maxLength": 4000},
+    "question_structure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["objects", "conditions", "asked_task", "mechanism_structure"],
+      "properties": {
+        "objects": {"$ref": "#/$defs/claims"},
+        "conditions": {"$ref": "#/$defs/claims"},
+        "asked_task": {"$ref": "#/$defs/claims"},
+        "mechanism_structure": {"$ref": "#/$defs/claims"}
+      }
+    },
+    "correct_reasoning_reconstruction": {"$ref": "#/$defs/claims"},
+    "evidence_assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["completeness", "evidence_inventory", "observed_facts", "inferences", "contradictions", "gaps"],
+      "properties": {
+        "completeness": {"type": "string", "enum": ["complete", "limited_by_evidence"]},
+        "evidence_inventory": {"$ref": "#/$defs/claims"},
+        "observed_facts": {"$ref": "#/$defs/claims"},
+        "inferences": {"$ref": "#/$defs/claims"},
+        "contradictions": {"$ref": "#/$defs/claims"},
+        "gaps": {"$ref": "#/$defs/claims"}
+      }
+    },
+    "reasoning_diagnosis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["independent_correct_steps", "first_break", "later_breaks", "hint_dependencies", "self_corrections", "root_cause_hypotheses", "alternative_explanations"],
+      "properties": {
+        "independent_correct_steps": {"$ref": "#/$defs/claims"},
+        "first_break": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "required": ["claim_type", "text", "evidence_refs", "confidence", "counterevidence_or_boundary", "sol_verification_action"],
+          "properties": {
+            "claim_type": {"type": "string", "enum": ["observed_fact", "evidence_bound_inference", "standard_408_candidate", "unresolved"]},
+            "text": {"type": "string", "minLength": 1, "maxLength": 4000},
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 24,
+              "items": {"$ref": "#/$defs/evidence_ref"}
+            },
+            "confidence": {"type": "string", "enum": ["low", "medium", "high"]},
+            "counterevidence_or_boundary": {"type": "string", "maxLength": 3000},
+            "sol_verification_action": {"type": "string", "minLength": 1, "maxLength": 3000}
+          }
+        },
+        "later_breaks": {"$ref": "#/$defs/claims"},
+        "hint_dependencies": {"$ref": "#/$defs/claims"},
+        "self_corrections": {"$ref": "#/$defs/claims"},
+        "root_cause_hypotheses": {"$ref": "#/$defs/claims"},
+        "alternative_explanations": {"$ref": "#/$defs/claims"}
+      }
+    },
+    "concept_method_analysis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mechanism", "method_trigger", "applicability_conditions", "boundary_conditions", "common_confusions", "transfer_risks"],
+      "properties": {
+        "mechanism": {"$ref": "#/$defs/claims"},
+        "method_trigger": {"$ref": "#/$defs/claims"},
+        "applicability_conditions": {"$ref": "#/$defs/claims"},
+        "boundary_conditions": {"$ref": "#/$defs/claims"},
+        "common_confusions": {"$ref": "#/$defs/claims"},
+        "transfer_risks": {"$ref": "#/$defs/claims"}
+      }
+    },
+    "knowledge_network_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["knowledge_alignment", "exposed_problem_summary", "prior_mistake_comparison", "subject_chapter_classification", "chapter_history_summary", "relationship_candidates", "limitations"],
+      "properties": {
+        "knowledge_alignment": {"$ref": "#/$defs/claims"},
+        "exposed_problem_summary": {"$ref": "#/$defs/claims"},
+        "prior_mistake_comparison": {"$ref": "#/$defs/claims"},
+        "subject_chapter_classification": {"$ref": "#/$defs/claims"},
+        "chapter_history_summary": {"$ref": "#/$defs/claims"},
+        "relationship_candidates": {"$ref": "#/$defs/claims"},
+        "limitations": {"$ref": "#/$defs/claims"}
+      }
+    },
+    "formalization_candidates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["safe_summary", "key_parameters", "question_type", "main_knowledge", "secondary_knowledge", "hit_knowledge", "fuzzy_concepts", "error_tags", "redo_first_action", "topic_intents", "relationship_search_intents"],
+      "properties": {
+        "safe_summary": {"$ref": "#/$defs/claims"},
+        "key_parameters": {"$ref": "#/$defs/claims"},
+        "question_type": {"$ref": "#/$defs/claims"},
+        "main_knowledge": {"$ref": "#/$defs/claims"},
+        "secondary_knowledge": {"$ref": "#/$defs/claims"},
+        "hit_knowledge": {"$ref": "#/$defs/claims"},
+        "fuzzy_concepts": {"$ref": "#/$defs/claims"},
+        "error_tags": {"$ref": "#/$defs/claims"},
+        "redo_first_action": {"$ref": "#/$defs/claims"},
+        "topic_intents": {"$ref": "#/$defs/claims"},
+        "relationship_search_intents": {"$ref": "#/$defs/claims"}
+      }
+    },
+    "sol_verification_plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["must_verify", "reject_if", "source_checks", "conflict_handling_suggestions", "recommended_disposition"],
+      "properties": {
+        "must_verify": {"$ref": "#/$defs/claims"},
+        "reject_if": {"$ref": "#/$defs/claims"},
+        "source_checks": {"$ref": "#/$defs/claims"},
+        "conflict_handling_suggestions": {"$ref": "#/$defs/claims"},
+        "recommended_disposition": {"type": "string", "enum": ["new_candidate", "update_existing_candidate", "needs_user", "insufficient_evidence"]}
+      }
+    },
+    "risk_flags": {"$ref": "#/$defs/claims"},
+    "unresolved": {"$ref": "#/$defs/claims"},
+    "atomic_signals": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {"$ref": "#/$defs/atomic_signal"}
+    }
+  },
+  "$defs": {
+    "evidence_ref": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 320
+    },
+    "atomic_signal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["signal_id", "signal_type", "canonical_term", "surface_form", "importance", "provenance", "evidence_refs", "confidence", "error_role", "specificity", "applicability_boundary", "truth_library_match_status"],
+      "properties": {
+        "signal_id": {"type": "string", "minLength": 2, "maxLength": 128},
+        "signal_type": {"type": "string", "enum": ["knowledge", "method", "error", "trap", "question_type"]},
+        "canonical_term": {"type": "string", "minLength": 1, "maxLength": 500},
+        "surface_form": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "importance": {"type": "string", "enum": ["primary", "secondary"]},
+        "provenance": {"type": "string", "minLength": 1, "maxLength": 500},
+        "evidence_refs": {"type": "array", "minItems": 1, "maxItems": 24, "items": {"$ref": "#/$defs/evidence_ref"}},
+        "confidence": {"type": "string", "enum": ["low", "medium", "high"]},
+        "error_role": {"type": "string", "enum": ["none", "first_error", "later_error", "historical_error", "current_error"]},
+        "specificity": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "applicability_boundary": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "truth_library_match_status": {"type": "string", "enum": ["exact", "alias", "related", "unmatched"]}
+      }
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claim_type", "text", "evidence_refs", "confidence", "counterevidence_or_boundary", "sol_verification_action"],
+      "properties": {
+        "claim_type": {"type": "string", "enum": ["observed_fact", "evidence_bound_inference", "standard_408_candidate", "unresolved"]},
+        "text": {"type": "string", "minLength": 1, "maxLength": 4000},
+        "evidence_refs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 24,
+          "items": {"$ref": "#/$defs/evidence_ref"}
+        },
+        "confidence": {"type": "string", "enum": ["low", "medium", "high"]}
+        ,"counterevidence_or_boundary": {"type": "string", "maxLength": 3000}
+        ,"sol_verification_action": {"type": "string", "minLength": 1, "maxLength": 3000}
+      }
+    },
+    "claims": {
+      "type": "array",
+      "maxItems": 32,
+      "items": {"$ref": "#/$defs/claim"}
+    }
+  }
+}

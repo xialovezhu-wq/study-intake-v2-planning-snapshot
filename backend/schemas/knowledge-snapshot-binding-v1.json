@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Evidence-pinned 408 knowledge snapshot binding",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "evidence_manifest_sha256", "query_binding_sha256",
+    "snapshot_locator", "snapshot_object_sha256", "snapshot_payload_sha256",
+    "knowledge_source_hashes", "created_at", "formal_write_count"
+  ],
+  "properties": {
+    "schema_version": {"const": "study-intake-408-knowledge-snapshot-binding-v1"},
+    "evidence_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "query_binding_sha256": {"$ref": "#/$defs/sha256"},
+    "snapshot_locator": {"type": "string", "pattern": "^study-intake-408-knowledge-snapshot://sha256/[a-f0-9]{64}$"},
+    "snapshot_object_sha256": {"$ref": "#/$defs/sha256"},
+    "snapshot_payload_sha256": {"$ref": "#/$defs/sha256"},
+    "knowledge_source_hashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["taxonomy", "nodes", "relations", "review_records"],
+      "properties": {
+        "taxonomy": {"$ref": "#/$defs/sha256"},
+        "nodes": {"$ref": "#/$defs/sha256"},
+        "relations": {"$ref": "#/$defs/sha256"},
+        "review_records": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "created_at": {"type": "string", "format": "date-time"},
+    "formal_write_count": {"const": 0}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

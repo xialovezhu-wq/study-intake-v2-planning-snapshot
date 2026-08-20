@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Private current-question evidence bundle v3",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "question_mode", "context_id", "request_id", "session_id",
+    "item_id", "source_id", "source_kind", "study_date", "event_time", "timezone",
+    "source_binding_sha256", "current_question", "learner_evidence",
+    "evaluation_evidence", "assessment", "frozen_assistant_feedback", "provenance",
+    "missing_fields", "attachment_objects", "interaction_trace", "formal_write_count"
+  ],
+  "properties": {
+    "schema_version": {"const": "current-question-evidence-bundle-v3"},
+    "question_mode": {"enum": ["dialogue_only", "image_question"]},
+    "context_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "request_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "session_id": {"type": ["string", "null"], "maxLength": 256},
+    "item_id": {"type": ["string", "null"], "maxLength": 256},
+    "source_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "source_kind": {"type": "string", "minLength": 1, "maxLength": 80},
+    "study_date": {"type": "string", "format": "date"},
+    "event_time": {"type": "string", "format": "date-time"},
+    "timezone": {"const": "Asia/Shanghai"},
+    "source_binding_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "current_question": {"type": "object"},
+    "learner_evidence": {"type": "object"},
+    "evaluation_evidence": {"type": "object"},
+    "assessment": {"type": "object"},
+    "frozen_assistant_feedback": {"type": "object"},
+    "provenance": {"type": "object"},
+    "missing_fields": {"type": "array", "maxItems": 64},
+    "attachment_objects": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["ordinal", "role", "original_bytes_ref", "sha256", "declared_mime_type", "detected_mime_type", "detected_format", "byte_count", "label"],
+        "properties": {
+          "ordinal": {"type": "integer", "minimum": 1, "maximum": 8},
+          "role": {"enum": ["question_image", "solution_image"]},
+          "original_bytes_ref": {"type": "string", "pattern": "^current-question-attachment://sha256/[a-f0-9]{64}$"},
+          "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "declared_mime_type": {"enum": ["image/png", "image/jpeg", "image/webp"]},
+          "detected_mime_type": {"enum": ["image/png", "image/jpeg", "image/webp"]},
+          "detected_format": {"enum": ["png", "jpeg", "webp"]},
+          "byte_count": {"type": "integer", "minimum": 1, "maximum": 16777216},
+          "label": {"type": "string", "minLength": 1, "maxLength": 160}
+        }
+      }
+    },
+    "interaction_trace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "events", "original_event_count", "included_event_count", "omitted_event_count", "omitted_ranges", "truncation_reason", "full_trace_sha256"],
+      "properties": {
+        "schema": {"const": "current-question-interaction-trace-v2"},
+        "events": {"type": "array", "maxItems": 24},
+        "original_event_count": {"type": "integer", "minimum": 0},
+        "included_event_count": {"type": "integer", "minimum": 0, "maximum": 24},
+        "omitted_event_count": {"type": "integer", "minimum": 0},
+        "omitted_ranges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["start_ordinal", "end_ordinal"],
+            "properties": {
+              "start_ordinal": {"type": "integer", "minimum": 1},
+              "end_ordinal": {"type": "integer", "minimum": 1}
+            }
+          }
+        },
+        "truncation_reason": {"type": ["string", "null"]},
+        "full_trace_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "formal_write_count": {"const": 0}
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://xiazhibin.local/schemas/validation-console-state-v1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "mode", "revision", "central_release_id", "execution_mode", "live_gate", "manual_authorization_present", "production_accepted", "formal_write_count", "emergency_locked", "terra_state", "luna_state", "sol_handoff_state", "active_authorizations", "consumed_authorizations", "campaigns", "used_nonces", "fixture_promotion_apply_count", "production_promotion_attempt_count", "created_at", "updated_at"],
+  "properties": {
+    "schema_version": {"const": "study-intake-validation-console-state-v1"},
+    "mode": {"enum": ["fixture", "production"]},
+    "revision": {"type": "integer", "minimum": 0},
+    "central_release_id": {"$ref": "#/$defs/sha"},
+    "execution_mode": {"enum": ["fixture", "offline"]},
+    "live_gate": {"const": "locked"},
+    "manual_authorization_present": {"type": "boolean"},
+    "production_accepted": {"const": false},
+    "formal_write_count": {"const": 0},
+    "emergency_locked": {"type": "boolean"},
+    "terra_state": {"type": "string"},
+    "luna_state": {"type": "string"},
+    "sol_handoff_state": {"type": "string"},
+    "active_authorizations": {"type": "object"},
+    "consumed_authorizations": {"type": "object"},
+    "campaigns": {"type": "object"},
+    "used_nonces": {"type": "array", "items": {"type": "string"}},
+    "fixture_promotion_apply_count": {"type": "integer", "minimum": 0},
+    "production_promotion_attempt_count": {"const": 0},
+    "created_at": {"type": "string", "format": "date-time"},
+    "updated_at": {"type": "string", "format": "date-time"}
+  },
+  "$defs": {"sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+}

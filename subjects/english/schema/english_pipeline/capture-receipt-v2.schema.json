@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.kaoyan-english/schema/english_pipeline/capture-receipt-v2.schema.json",
+  "title": "Foreground capture receipt v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "receipt_id",
+    "capture_id",
+    "status",
+    "original_status",
+    "replayed",
+    "event_path",
+    "event_sha256",
+    "request_sha256",
+    "formal_write_count",
+    "formal_writeback",
+    "supersedes_event_id",
+    "stages",
+    "receipt_path",
+    "projection_status",
+    "view_path",
+    "view_sha256",
+    "projection_error"
+  ],
+  "properties": {
+    "schema_version": {"const": "english_capture_receipt_v2"},
+    "receipt_id": {"type": "string", "pattern": "^CAPTURE-[0-9]{8}-[A-F0-9]{16}$"},
+    "capture_id": {"type": "string", "pattern": "^EVT-[0-9]{8}-[A-F0-9]{16}$"},
+    "status": {"enum": ["created", "idempotent_noop", "capture_saved_but_projection_failed"]},
+    "original_status": {"const": "created"},
+    "replayed": {"type": "boolean"},
+    "event_path": {"type": "string", "minLength": 1},
+    "event_sha256": {"$ref": "#/$defs/sha256"},
+    "request_sha256": {"$ref": "#/$defs/sha256"},
+    "formal_write_count": {"const": 0},
+    "formal_writeback": {"const": "none"},
+    "producer_binding_status": {
+      "enum": ["attested", "historical_pre_attestation"]
+    },
+    "producer_binding_attestation_path": {"type": ["string", "null"]},
+    "producer_binding_attestation_sha256": {
+      "type": ["string", "null"],
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "supersedes_event_id": {
+      "type": ["string", "null"],
+      "pattern": "^EVT-[0-9]{8}-[A-F0-9]{16}$"
+    },
+    "stages": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["event_written", "schema_validated", "dispatcher_accepted", "package_visible"],
+      "properties": {
+        "event_written": {"const": true},
+        "schema_validated": {"const": true},
+        "dispatcher_accepted": {"const": false},
+        "package_visible": {"const": false}
+      }
+    },
+    "receipt_path": {"type": "string", "minLength": 1},
+    "projection_status": {"enum": ["pending", "rendered", "failed"]},
+    "view_path": {"type": ["string", "null"]},
+    "view_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "projection_error": {"type": ["string", "null"]}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

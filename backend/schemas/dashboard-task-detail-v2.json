@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/dashboard-task-detail-v2.json",
+  "title": "Dashboard task detail v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "subject", "capture_id", "unit_sha256", "release_id",
+    "attempt", "fence", "identity", "dispatch", "evidence", "analysis",
+    "critical_review", "server_queue", "sol_review", "formal_write",
+    "progress", "terminal", "artifacts", "generated_at"
+  ],
+  "properties": {
+    "schema_version": {"const": "study-intake-dashboard-task-detail-v2"},
+    "subject": {"$ref": "#/$defs/subject"},
+    "capture_id": {"$ref": "#/$defs/nonempty"},
+    "unit_sha256": {"$ref": "#/$defs/sha256"},
+    "release_id": {"$ref": "#/$defs/sha256"},
+    "attempt": {"type": "integer", "minimum": 1},
+    "fence": {"type": "integer", "minimum": 1},
+    "identity": {"$ref": "#/$defs/identity"},
+    "dispatch": {"$ref": "#/$defs/dispatch"},
+    "evidence": {"$ref": "#/$defs/evidence"},
+    "analysis": {"$ref": "#/$defs/stage"},
+    "critical_review": {"$ref": "#/$defs/stage"},
+    "server_queue": {"$ref": "#/$defs/serverQueue"},
+    "sol_review": {"$ref": "#/$defs/solReview"},
+    "formal_write": {"$ref": "#/$defs/formalWrite"},
+    "progress": {"$ref": "#/$defs/progress"},
+    "terminal": {"$ref": "#/$defs/terminal"},
+    "artifacts": {"$ref": "#/$defs/artifacts"},
+    "generated_at": {"$ref": "#/$defs/timestamp"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nullableSha256": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+    "nonempty": {"type": "string", "minLength": 1},
+    "nullableCode": {"oneOf": [{"$ref": "#/$defs/nonempty"}, {"type": "null"}]},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "nullableTimestamp": {"oneOf": [{"$ref": "#/$defs/timestamp"}, {"type": "null"}]},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "warnings": {
+      "type": "array", "uniqueItems": true,
+      "items": {"$ref": "#/$defs/nonempty"}
+    },
+    "identity": {
+      "type": "object", "additionalProperties": false,
+      "required": ["owner_id", "frozen_payload_sha256", "input_fingerprint"],
+      "properties": {
+        "owner_id": {"$ref": "#/$defs/nonempty"},
+        "frozen_payload_sha256": {"$ref": "#/$defs/sha256"},
+        "input_fingerprint": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "dispatch": {
+      "type": "object", "additionalProperties": false,
+      "required": ["local_dispatch_status", "current_stage", "last_event_sha256"],
+      "properties": {
+        "local_dispatch_status": {
+          "enum": [
+            "pending", "pending_consumer_paused", "claimed", "running",
+            "retrying", "terminal", "cancelled", "stalled"
+          ]
+        },
+        "current_stage": {
+          "enum": ["dispatch", "analysis", "critical_review", "packaging", "terminal"]
+        },
+        "last_event_sha256": {"$ref": "#/$defs/nullableSha256"}
+      }
+    },
+    "evidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["evidence_access_status", "authority_snapshot_sha256", "exact_error_code"],
+      "properties": {
+        "evidence_access_status": {"enum": ["unverified", "ready", "missing", "quarantined"]},
+        "authority_snapshot_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "exact_error_code": {"$ref": "#/$defs/nullableCode"}
+      }
+    },
+    "stage": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "execution_status", "report_status", "raw_output_sha256",
+        "execution_receipt_sha256", "normalization_receipt_sha256",
+        "report_sha256", "warning_codes", "error_code"
+      ],
+      "properties": {
+        "execution_status": {"enum": ["not_started", "running", "completed", "failed", "cancelled", "stalled"]},
+        "report_status": {"enum": ["not_started", "available", "available_with_warnings", "normalization_failed", "quarantined"]},
+        "raw_output_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "execution_receipt_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "normalization_receipt_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "report_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "warning_codes": {"$ref": "#/$defs/warnings"},
+        "error_code": {"$ref": "#/$defs/nullableCode"}
+      }
+    },
+    "serverQueue": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "confirmation", "error_code"],
+      "properties": {
+        "status": {"enum": ["unknown", "confirmed_rate_limited", "clear"]},
+        "confirmation": {"enum": ["unconfirmed", "confirmed_event", "provider_receipt_verified"]},
+        "error_code": {"$ref": "#/$defs/nullableCode"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"status": {"const": "unknown"}}, "required": ["status"]},
+          "then": {
+            "properties": {
+              "confirmation": {"const": "unconfirmed"},
+              "error_code": {"type": "null"}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"status": {"const": "confirmed_rate_limited"}}, "required": ["status"]},
+          "then": {
+            "properties": {
+              "confirmation": {"enum": ["confirmed_event", "provider_receipt_verified"]},
+              "error_code": {"$ref": "#/$defs/nonempty"}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"status": {"const": "clear"}}, "required": ["status"]},
+          "then": {
+            "properties": {
+              "confirmation": {"const": "provider_receipt_verified"},
+              "error_code": {"type": "null"}
+            }
+          }
+        }
+      ]
+    },
+    "solReview": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "receipt_sha256"],
+      "properties": {
+        "status": {"enum": ["not_eligible", "pending", "reviewing", "adopted", "modified", "rejected"]},
+        "receipt_sha256": {"$ref": "#/$defs/nullableSha256"}
+      }
+    },
+    "formalWrite": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "formal_write_count", "receipt_sha256"],
+      "properties": {
+        "status": {"enum": ["not_authorized", "pending", "committed", "failed"]},
+        "formal_write_count": {"type": "integer", "minimum": 0},
+        "receipt_sha256": {"$ref": "#/$defs/nullableSha256"}
+      }
+    },
+    "progress": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "elapsed_runtime_seconds", "last_meaningful_progress_at",
+        "soft_timeout_warning", "stall_probe_status"
+      ],
+      "properties": {
+        "elapsed_runtime_seconds": {"type": ["number", "null"], "minimum": 0},
+        "last_meaningful_progress_at": {"$ref": "#/$defs/nullableTimestamp"},
+        "soft_timeout_warning": {"type": "boolean"},
+        "stall_probe_status": {"enum": ["not_applicable", "healthy", "stall_suspected", "probing", "stalled", "cancelled"]}
+      }
+    },
+    "terminal": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "error_code", "receipt_sha256", "issued_at"],
+      "properties": {
+        "status": {"enum": ["not_terminal", "workflow_complete", "workflow_complete_with_warnings", "workflow_partial", "execution_failed", "cancelled", "stalled"]},
+        "error_code": {"$ref": "#/$defs/nullableCode"},
+        "receipt_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "issued_at": {"$ref": "#/$defs/nullableTimestamp"}
+      }
+    },
+    "artifacts": {
+      "type": "object", "additionalProperties": false,
+      "required": ["package_sha256", "sol_handoff_envelope_sha256"],
+      "properties": {
+        "package_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "sol_handoff_envelope_sha256": {"$ref": "#/$defs/nullableSha256"}
+      }
+    }
+  }
+}

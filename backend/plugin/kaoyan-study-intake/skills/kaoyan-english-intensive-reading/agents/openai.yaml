@@ -1,0 +1,4 @@
+interface:
+  display_name: "考研英语逐句精读"
+  short_description: "逐句诊断、精翻与零正式写入快速捕获"
+  default_prompt: "Use $kaoyan-english-intensive-reading to处理当前句：保留我的第一遍翻译，先定位第一个真实断点；学习模式每轮只问一个问题，直接讲解请求立即回答。当前句解决后调用 english_learning_pipeline.py capture 并返回真实 receipt；白天始终 formal_write_count=0。"

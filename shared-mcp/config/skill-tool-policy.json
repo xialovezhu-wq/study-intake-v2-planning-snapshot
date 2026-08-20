@@ -1,0 +1,51 @@
+{
+  "schema_version": "study-read-mcp-policy.v4",
+  "server_release": "0.4.1",
+  "default_profile": "ordinary",
+  "subject_luna_servers": {
+    "math": {"server": "kaoyan_math_read", "launcher_mode": "subject-server", "subject": "math", "skill": "background-math-processing", "read_session_schema": "study-read-mcp-read-session.v4"},
+    "cs408": {"server": "kaoyan_cs408_read", "launcher_mode": "subject-server", "subject": "cs408", "skill": "background-cs408-processing", "read_session_schema": "study-read-mcp-read-session.v4"},
+    "english": {"server": "kaoyan_english_read", "launcher_mode": "subject-server", "subject": "english", "skill": "background-english-processing", "read_session_schema": "study-read-mcp-read-session.v4"}
+  },
+  "sealed_launcher_contract": {
+    "schema_version": "study-read-mcp-sealed-launcher.v1",
+    "required_component_fields": ["python_executable", "release_root", "release_id", "release_manifest_sha256", "sealed_launcher_path", "sealed_launcher_sha256"],
+    "python_flags": ["-I", "-S"],
+    "modes": ["server", "client", "subject-server", "preflight-server", "snapshot"],
+    "environment_allowlist": ["PATH", "PYTHONUTF8", "PYTHONDONTWRITEBYTECODE", "PYTHONNOUSERSITE", "PYTHONSAFEPATH", "PYTHONPATH", "STUDY_READ_MCP_EXPECTED_PROJECT_ROOT", "STUDY_READ_MCP_EXPECTED_RELEASE_ID", "STUDY_READ_MCP_EXPECTED_RELEASE_MANIFEST_SHA256"]
+  },
+  "production_launcher_profiles": {
+    "ordinary": {"mode": "server", "profile": "ordinary", "subjects": "math,cs408,english"},
+    "background": {"mode": "client", "profile": "background", "subject": "required"},
+    "morning_preparation": {"mode": "client", "profile": "morning_preparation", "subject": "cs408"},
+    "analysis": {"mode": "subject-server", "subject": "required", "read_session_manifest": "required", "preprocessor_root": "required"},
+    "critical_review": {"mode": "subject-server", "subject": "required", "read_session_manifest": "required", "preprocessor_root": "required"},
+    "infrastructure_preflight": {"mode": "preflight-server", "subject": "required", "preflight_session_manifest": "required", "preprocessor_root": "required", "tool_policy": "required"},
+    "authority_snapshot": {"mode": "snapshot", "subject": "required", "source_root": "required", "output_root": "required"}
+  },
+  "subject_luna_tools": ["get_task_context", "read_task_artifact", "list_records", "get_records", "search_records", "query_relations"],
+  "subject_preflight_tools": ["list_records", "get_records", "search_records", "query_relations"],
+  "rules": [
+    {"skill": "kaoyan-math-visual-review", "tools": ["math_read_bundle"], "operations": ["formal_cards", "activity_window", "direct_relations", "review_snapshot"], "hot_path": false, "eligibility": "named cold evidence absent from prompt", "fallback": "whole_scope_canonical_terminal", "stage": "mcp_first"},
+    {"skill": "kaoyan-math-daily-filter", "tools": [], "shadow_tools": ["math_read_bundle"], "operations": ["formal_cards", "activity_window", "review_snapshot"], "hot_path": false, "fallback": "existing canonical skill path", "stage": "canary-1", "mode": "shadow_only_until_recommendation_equivalence_exists"},
+    {"skill": "kaoyan-math-weak-edge-audit", "tools": ["math_read_bundle"], "operations": ["formal_cards", "direct_relations"], "hot_path": false, "eligibility": "bounded named pair set", "fallback": "whole_scope_canonical_terminal", "stage": "mcp_first"},
+    {"skill": "kaoyan-english-vocab-export", "tools": ["english_read_bundle"], "operations": ["article", "sentences", "vocab_status", "patterns", "coverage"], "hot_path": false, "eligibility": "completion receipt exists and cold evidence is needed", "fallback": "whole_scope_canonical_terminal", "stage": "mcp_first"},
+    {"skill": "kaoyan-english-intensive-reading", "tools": ["english_read_bundle"], "operations": ["article", "sentences"], "hot_path": false, "condition": "only when article is absent from conversation", "fallback": "whole_scope_canonical_terminal", "stage": "mcp_first"},
+    {"skill": "kaoyan-math-nightly-qa", "tools": ["math_read_bundle"], "operations": ["formal_cards", "activity_window", "direct_relations", "review_snapshot"], "hot_path": false, "eligibility": "canonical freeze completed", "fallback": "whole_scope_canonical_terminal", "stage": "mcp_first"},
+    {"skill": "kaoyan-408-daily-intake-curation", "tools": ["cs408_read_bundle"], "operations": ["curation_inventory", "knowledge_nodes", "direct_edges", "review_identity"], "hot_path": false, "eligibility": "date inventory frozen", "fallback": "whole_scope_canonical_terminal", "stage": "mcp_first"},
+    {"skill": "kaoyan-english-reading-intake", "tools": ["authority_bundle", "english_read_bundle"], "operations": ["article", "coverage"], "hot_path": false, "fallback": "existing canonical skill path", "stage": "future-after-canary-4", "mode": "read_only_duplicate_preflight_only"},
+    {"skill": "kaoyan-english-daily-intake-curation", "tools": ["authority_bundle", "verify_evidence_batch", "english_read_bundle"], "operations": ["day_events", "article", "vocab_status", "patterns"], "hot_path": false, "fallback": "existing canonical skill path", "stage": "future-after-canary-4", "mode": "frozen_inventory_and_evidence_only"}
+  ],
+  "never_route": [
+    "kaoyan-math-question-worker",
+    "kaoyan-math-wrong-intake",
+    "kaoyan-math-warmup",
+    "kaoyan-408-daily-study-loop",
+    "kaoyan-408-question-worker",
+    "kaoyan-408-wrong-intake",
+    "kaoyan-408-morning-control",
+    "kaoyan-408-intake-coordinator",
+    "kaoyan-408-qa-template",
+    "kaoyan-408-rollback-review"
+  ]
+}

@@ -1,0 +1,253 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "study-intake-preprocess-package-v3",
+  "type": "object",
+  "required": [
+    "analysis", "capture_id", "content_processing_id", "critical_review",
+    "formal_write_count", "lease_fence", "loaded_core_sha256", "model_contract",
+    "pipeline", "release_id", "schema_version", "stage_runtime", "subject", "task",
+    "unit_sha256"
+  ],
+  "properties": {
+    "analysis": {"$ref": "#/$defs/nonempty_json_object"},
+    "capture_id": {"type": "string", "minLength": 1},
+    "content_processing_id": {"$ref": "#/$defs/nullable_sha256"},
+    "critical_review": {"$ref": "#/$defs/nonempty_json_object"},
+    "formal_write_count": {"const": 0},
+    "lease_fence": {"type": "integer", "minimum": 1},
+    "loaded_core_sha256": {"$ref": "#/$defs/nullable_sha256"},
+    "model_contract": {
+      "type": "object",
+      "required": ["model", "reasoning_effort"],
+      "properties": {
+        "model": {"const": "gpt-5.6-luna"},
+        "reasoning_effort": {"const": "max"}
+      },
+      "additionalProperties": false
+    },
+    "pipeline": {
+      "type": "array",
+      "prefixItems": [{"const": "analysis"}, {"const": "critical_review"}],
+      "items": false,
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "release_id": {"$ref": "#/$defs/sha256"},
+    "schema_version": {"const": "study-intake-preprocess-package-v3"},
+    "stage_runtime": {
+      "type": "object",
+      "required": ["analysis", "critical_review"],
+      "properties": {
+        "analysis": {"$ref": "#/$defs/stage_runtime"},
+        "critical_review": {"$ref": "#/$defs/stage_runtime"}
+      },
+      "additionalProperties": false
+    },
+    "subject": {"$ref": "#/$defs/subject"},
+    "task": {"$ref": "#/$defs/frozen_task"},
+    "unit_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nullable_sha256": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "nullable_nonempty_string": {"oneOf": [{"type": "string", "minLength": 1}, {"type": "null"}]},
+    "nonempty_string_array": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "json_scalar": {"type": ["string", "number", "integer", "boolean", "null"]},
+    "json_array": {"type": "array", "items": {"$ref": "#/$defs/json_value"}},
+    "json_object": {
+      "type": "object",
+      "propertyNames": {"type": "string", "minLength": 1},
+      "additionalProperties": {"$ref": "#/$defs/json_value"}
+    },
+    "nonempty_json_object": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {"type": "string", "minLength": 1},
+      "additionalProperties": {"$ref": "#/$defs/json_value"}
+    },
+    "json_value": {
+      "oneOf": [
+        {"$ref": "#/$defs/json_scalar"},
+        {"$ref": "#/$defs/json_array"},
+        {"$ref": "#/$defs/json_object"}
+      ]
+    },
+    "frozen_task": {
+      "type": "object",
+      "required": [
+        "schema_version", "frozen_payload", "requested_model",
+        "requested_reasoning_effort", "unit_sha256"
+      ],
+      "properties": {
+        "schema_version": {"const": "study-intake-frozen-task-v1"},
+        "frozen_payload": {"$ref": "#/$defs/nonempty_json_object"},
+        "requested_model": {"const": "gpt-5.6-luna"},
+        "requested_reasoning_effort": {"const": "max"},
+        "unit_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "additionalProperties": false
+    },
+    "normalization_warning": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {"type": "string", "minLength": 1},
+      "additionalProperties": {"$ref": "#/$defs/json_value"}
+    },
+    "stage_runtime": {
+      "type": "object",
+      "required": [
+        "consumed_terminal_duplicate_read_count", "duration_ms", "mcp_tool_call_count",
+        "model_call_count", "normalization_status", "normalization_warning_count",
+        "normalization_warnings", "provider_request_count", "raw_output_object_ref",
+        "raw_output_object_sha256", "read_session_id", "requested_model",
+        "requested_reasoning_effort", "runtime_identity_status", "runtime_metadata_provenance",
+        "runtime_model", "runtime_reasoning_effort", "semantic_stage_count",
+        "stage_execution_receipt_ref", "stage_execution_receipt_sha256",
+        "stage_normalization_receipt_ref", "stage_normalization_receipt_sha256"
+      ],
+      "properties": {
+        "consumed_terminal_duplicate_read_count": {"const": 0},
+        "duration_ms": {"type": "integer", "minimum": 0},
+        "mcp_tool_call_count": {"type": "integer", "minimum": 0},
+        "model_call_count": {"const": 1},
+        "normalization_status": {
+          "enum": ["normalized", "normalized_with_warnings", null]
+        },
+        "normalization_warning_count": {"type": "integer", "minimum": 0},
+        "normalization_warnings": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/normalization_warning"}
+        },
+        "provider_request_count": {"type": "integer", "minimum": 1},
+        "raw_output_object_ref": {
+          "oneOf": [
+            {"type": "string", "pattern": "^study-intake-model-stage-raw-output://sha256/[0-9a-f]{64}$"},
+            {"type": "null"}
+          ]
+        },
+        "raw_output_object_sha256": {"$ref": "#/$defs/nullable_sha256"},
+        "read_session_id": {"$ref": "#/$defs/nullable_nonempty_string"},
+        "requested_model": {"const": "gpt-5.6-luna"},
+        "requested_reasoning_effort": {"const": "max"},
+        "runtime_identity_status": {"enum": ["confirmed", "requested_unverified"]},
+        "runtime_metadata_provenance": {"enum": ["codex_json_attestation_v1", "unavailable"]},
+        "runtime_model": {"enum": ["gpt-5.6-luna", null]},
+        "runtime_reasoning_effort": {"enum": ["max", null]},
+        "semantic_stage_count": {"const": 1},
+        "stage_execution_receipt_ref": {
+          "oneOf": [
+            {"type": "string", "pattern": "^study-intake-model-stage-execution://sha256/[0-9a-f]{64}$"},
+            {"type": "null"}
+          ]
+        },
+        "stage_execution_receipt_sha256": {"$ref": "#/$defs/nullable_sha256"},
+        "stage_normalization_receipt_ref": {
+          "oneOf": [
+            {"type": "string", "pattern": "^study-intake-model-stage-normalization://sha256/[0-9a-f]{64}$"},
+            {"type": "null"}
+          ]
+        },
+        "stage_normalization_receipt_sha256": {"$ref": "#/$defs/nullable_sha256"},
+        "read_session_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "authority_snapshot_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "capture_freeze_receipt_sha256": {"$ref": "#/$defs/sha256"},
+        "mcp_read_session_receipt_sha256": {"$ref": "#/$defs/sha256"},
+        "evidence_generation": {"type": "string", "minLength": 1},
+        "evidence_authority_fingerprint": {"$ref": "#/$defs/sha256"},
+        "evidence_subject": {"$ref": "#/$defs/subject"},
+        "evidence_release_id": {"$ref": "#/$defs/sha256"},
+        "mcp_grounding_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "mcp_transcript_sha256": {"$ref": "#/$defs/sha256"},
+        "mcp_consumed_evidence_refs": {"$ref": "#/$defs/nonempty_string_array"},
+        "mcp_cited_evidence_refs": {"$ref": "#/$defs/nonempty_string_array"},
+        "mcp_stage_grounded_evidence_refs": {"$ref": "#/$defs/nonempty_string_array"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"runtime_identity_status": {"const": "confirmed"}}, "required": ["runtime_identity_status"]},
+          "then": {
+            "properties": {
+              "runtime_model": {"const": "gpt-5.6-luna"},
+              "runtime_reasoning_effort": {"const": "max"},
+              "runtime_metadata_provenance": {"const": "codex_json_attestation_v1"}
+            }
+          },
+          "else": {
+            "properties": {
+              "runtime_model": {"const": null},
+              "runtime_reasoning_effort": {"const": null},
+              "runtime_metadata_provenance": {"const": "unavailable"}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"raw_output_object_sha256": {"type": "string"}}, "required": ["raw_output_object_sha256"]},
+          "then": {
+            "properties": {
+              "raw_output_object_ref": {"type": "string"},
+              "stage_execution_receipt_sha256": {"$ref": "#/$defs/sha256"},
+              "stage_execution_receipt_ref": {"type": "string"},
+              "stage_normalization_receipt_sha256": {"$ref": "#/$defs/sha256"},
+              "stage_normalization_receipt_ref": {"type": "string"},
+              "normalization_status": {"enum": ["normalized", "normalized_with_warnings"]}
+            }
+          },
+          "else": {
+            "properties": {
+              "raw_output_object_ref": {"const": null},
+              "stage_execution_receipt_sha256": {"const": null},
+              "stage_execution_receipt_ref": {"const": null},
+              "stage_normalization_receipt_sha256": {"const": null},
+              "stage_normalization_receipt_ref": {"const": null},
+              "normalization_status": {"const": null},
+              "normalization_warning_count": {"const": 0},
+              "normalization_warnings": {"maxItems": 0}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"read_session_id": {"type": "string"}}, "required": ["read_session_id"]},
+          "then": {
+            "required": [
+              "read_session_manifest_sha256", "authority_snapshot_manifest_sha256",
+              "capture_freeze_receipt_sha256", "mcp_read_session_receipt_sha256",
+              "evidence_generation",
+              "evidence_authority_fingerprint", "evidence_subject", "evidence_release_id",
+              "mcp_grounding_manifest_sha256", "mcp_transcript_sha256",
+              "mcp_consumed_evidence_refs",
+              "mcp_cited_evidence_refs", "mcp_stage_grounded_evidence_refs"
+            ],
+            "properties": {"mcp_tool_call_count": {"type": "integer", "minimum": 1}}
+          },
+          "else": {
+            "not": {
+              "anyOf": [
+                {"required": ["read_session_manifest_sha256"]},
+                {"required": ["authority_snapshot_manifest_sha256"]},
+                {"required": ["capture_freeze_receipt_sha256"]},
+                {"required": ["mcp_read_session_receipt_sha256"]},
+                {"required": ["evidence_generation"]},
+                {"required": ["evidence_authority_fingerprint"]},
+                {"required": ["evidence_subject"]},
+                {"required": ["evidence_release_id"]},
+                {"required": ["mcp_grounding_manifest_sha256"]},
+                {"required": ["mcp_transcript_sha256"]},
+                {"required": ["mcp_consumed_evidence_refs"]},
+                {"required": ["mcp_cited_evidence_refs"]},
+                {"required": ["mcp_stage_grounded_evidence_refs"]}
+              ]
+            }
+          }
+        }
+      ],
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

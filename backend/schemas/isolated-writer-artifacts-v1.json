@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/isolated-writer-artifacts-v1.json",
+  "title": "Isolated Writer Content Addressed Artifacts v1",
+  "oneOf": [
+    {"$ref": "#/$defs/process"},
+    {"$ref": "#/$defs/transaction"},
+    {"$ref": "#/$defs/operations"},
+    {"$ref": "#/$defs/endEvidence"}
+  ],
+  "$defs": {
+    "sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "base": {
+      "type": "object",
+      "required": ["batch_id", "subject", "fencing_token", "formal_write_count", "seal"],
+      "properties": {
+        "batch_id": {"type": "string", "minLength": 1},
+        "subject": {"enum": ["math", "cs408", "english"]},
+        "fencing_token": {"type": "integer", "minimum": 1},
+        "formal_write_count": {"type": "integer", "minimum": 0},
+        "seal": {"type": "object"}
+      }
+    },
+    "process": {
+      "allOf": [
+        {"$ref": "#/$defs/base"},
+        {"type": "object", "additionalProperties": false, "required": ["schema_version", "batch_id", "subject", "fencing_token", "adapter_run_id", "pid", "terminal_state", "exit_code", "stopped_at", "formal_write_count", "seal"], "properties": {"schema_version": {"const": "isolated_writer_process_artifact_v1"}, "batch_id": {"type": "string"}, "subject": {"type": "string"}, "fencing_token": {"type": "integer"}, "adapter_run_id": {"type": "string"}, "pid": {"type": "integer"}, "terminal_state": {"const": "stopped"}, "exit_code": {"type": "integer", "minimum": 0}, "stopped_at": {"type": "string", "format": "date-time"}, "formal_write_count": {"const": 0}, "seal": {"type": "object"}}}
+      ]
+    },
+    "transaction": {
+      "allOf": [
+        {"$ref": "#/$defs/base"},
+        {"type": "object", "additionalProperties": false, "required": ["schema_version", "batch_id", "subject", "fencing_token", "transaction_id", "state", "ended_at", "formal_write_count", "seal"], "properties": {"schema_version": {"const": "isolated_writer_transaction_artifact_v1"}, "batch_id": {"type": "string"}, "subject": {"type": "string"}, "fencing_token": {"type": "integer"}, "transaction_id": {"type": "string"}, "state": {"enum": ["committed", "already_current", "failed", "rolled_back"]}, "ended_at": {"type": "string", "format": "date-time"}, "formal_write_count": {"const": 0}, "seal": {"type": "object"}}}
+      ]
+    },
+    "operations": {
+      "allOf": [
+        {"$ref": "#/$defs/base"},
+        {"type": "object", "additionalProperties": false, "required": ["schema_version", "batch_id", "subject", "fencing_token", "pre_state_sha256", "post_state_sha256", "operations", "formal_write_count", "seal"], "properties": {"schema_version": {"const": "isolated_writer_operations_artifact_v1"}, "batch_id": {"type": "string"}, "subject": {"type": "string"}, "fencing_token": {"type": "integer"}, "pre_state_sha256": {"$ref": "#/$defs/sha"}, "post_state_sha256": {"$ref": "#/$defs/sha"}, "operations": {"type": "array", "items": {"type": "object"}}, "formal_write_count": {"type": "integer", "minimum": 0}, "seal": {"type": "object"}}}
+      ]
+    },
+    "endEvidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "batch_id", "subject", "fencing_token", "writer_process_artifact_sha256", "transaction_artifact_sha256", "state_sha256", "formal_write_count", "seal"],
+      "properties": {
+        "schema_version": {"enum": ["isolated_writer_recovery_position_artifact_v1", "isolated_writer_rollback_artifact_v1"]},
+        "batch_id": {"type": "string"}, "subject": {"type": "string"}, "fencing_token": {"type": "integer"},
+        "writer_process_artifact_sha256": {"$ref": "#/$defs/sha"}, "transaction_artifact_sha256": {"$ref": "#/$defs/sha"}, "state_sha256": {"$ref": "#/$defs/sha"},
+        "formal_write_count": {"const": 0}, "seal": {"type": "object"}
+      }
+    }
+  }
+}

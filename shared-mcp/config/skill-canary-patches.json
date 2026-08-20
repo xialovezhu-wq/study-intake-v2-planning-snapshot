@@ -1,0 +1,71 @@
+{
+  "schema_version": "study-read-mcp-skill-patches.v1",
+  "status": "applied_without_codex_restart",
+  "applied_at": "2026-08-07",
+  "minimum_server_schema": "study-read-mcp.v1",
+  "patches": [
+    {
+      "stage": "canary-1",
+      "skill": "kaoyan-math-visual-review",
+      "path": "/Users/xiazhibin/.codex/skills/kaoyan-math-visual-review/SKILL.md",
+      "before_sha256": "3ffbbc3dffe3e3cb9e780cd7495abee0f7d1d8f029925a0fceb00b987c86c9ca",
+      "after_sha256": "9da63773a3dd38b0e51044528d94809dc371e58bab73db0c04156500872a25a3",
+      "mode": "actual_canary_when_tool_visible",
+      "review_draft_section": "## Optional MCP read bundle\n\nUse `math_read_bundle` at most once for the normalized evidence table only after the canary is explicitly enabled in the versioned policy. Bind `schema_version`, `server_release`, `generation`, and `authority_fingerprint`, and require `formal_write_count=0` and `model_call_count=0`. Request only the named formal IDs, the necessary activity window, direct relations, and review snapshot. Treat projection and candidate roles as non-formal. After a successful MCP response, do not reread that generation through the terminal. On any unavailable, mismatch, drift, timeout, or output-limit result, discard the whole MCP result and use the existing evidence route for one freshly bound generation. Never call MCP for a current question, warmup, or capture.\n"
+    },
+    {
+      "stage": "canary-1",
+      "skill": "kaoyan-math-daily-filter",
+      "path": "/Users/xiazhibin/.codex/skills/kaoyan-math-daily-filter/SKILL.md",
+      "before_sha256": "43e85978b2830557b0f2b950280b27adce38af91a6126d388162c8a4b73b7df6",
+      "after_sha256": "51e1d2f8c7228dee19a2c3ef9232a993b2c979c8f54aeb58887f069b40a579c7",
+      "mode": "shadow_only_schema_gap",
+      "review_draft_section": "## MCP shadow boundary\n\nDo not replace the canonical `intake_recommend_activity_safe.py` command with MCP in the current schema. `math_read_bundle` can verify already named formal cards and activity windows, but it cannot produce the canonical recommendation pool or permanent-delivery exclusions. A benchmark-only shadow may compare one MCP bundle with the canonical command outside a live learning turn. Do not mix either result into the other, and do not enable an actual canary until output equivalence and a 25 percent read-stage P95 reduction are both demonstrated.\n"
+    },
+    {
+      "stage": "canary-1",
+      "skill": "kaoyan-math-weak-edge-audit",
+      "path": "/Users/xiazhibin/.codex/skills/kaoyan-math-weak-edge-audit/SKILL.md",
+      "before_sha256": "e1c6214b27ebfe95c6808ab99e9f360e004a0464f0ed341b70be32d28b5e9b4e",
+      "after_sha256": "f9287c1af7ce41d2c148709cbb2752f64c80a067289de39f77307e087dc6dbae",
+      "mode": "actual_canary_when_tool_visible",
+      "review_draft_section": "## Optional MCP evidence bundle\n\nWhen the canary is explicitly enabled, use one `math_read_bundle` call for the bounded pair set, requesting both formal-card summaries and direct relations. Bind the response generation and fingerprint and preserve each relation's formal, projection, or candidate role. Existing `related`, projected similarities, and weak-edge candidates remain non-self-validating. Require both zero-count invariants. On any failure, discard the complete MCP result and follow the existing bounded formal-card route; never combine partial sources or rerun the same generation through the terminal after MCP success.\n"
+    },
+    {
+      "stage": "canary-2",
+      "skill": "kaoyan-english-vocab-export",
+      "path": "/Users/xiazhibin/.codex/skills/kaoyan-english-vocab-export/SKILL.md",
+      "before_sha256": "95233ef54daa38187ef15acafe932ddf9c911e3ac405b33f461b1ed6e91942b7",
+      "after_sha256": "e5bf6f5508ec83dc0034528c6f98b5e39d03101144e349bfd68e24c61d648585",
+      "mode": "actual_canary_when_tool_visible",
+      "review_draft_section": "## Optional MCP export bundle\n\nThe deterministic `complete-article` receipt remains mandatory and is not an MCP operation. After it succeeds, an explicitly enabled canary may use one `english_read_bundle` call to obtain the bound article sentences, requested vocabulary status, patterns, and coverage. Require the exact article ID, schema and release, generation and fingerprint, source roles, and both zero-count invariants. The MCP response never substitutes for mastered-items exclusions or the completion receipt. Do not poll Luna. After success, do not reread the same article, bank, or pattern generation through terminal tools; on failure discard the complete response and use the existing evidence route.\n"
+    },
+    {
+      "stage": "canary-2",
+      "skill": "kaoyan-english-intensive-reading",
+      "path": "/Users/xiazhibin/.codex/skills/kaoyan-english-intensive-reading/SKILL.md",
+      "before_sha256": "89cd003bbf7ca9bf1ee8787c93858b89766e2c692a7a52ac625137e223758bf3",
+      "after_sha256": "9de7cc36d73203b36b290c9db12b1b52485fa157d3b2899b0c0d96b2c785bb7f",
+      "mode": "actual_canary_when_tool_visible",
+      "review_draft_section": "## Optional article lookup through MCP\n\nUse `english_read_bundle` only when the active article or sentence is absent from the prompt and saved context, and only after this canary is explicitly enabled. Make one request for the exact article ID and necessary sentence IDs. Validate the schema, release, generation, fingerprint, formal source role, and both zero-count invariants. Never request questions, answers, explanations, protected pages, capture state, or another article. The deterministic quick-capture command remains unchanged and must not be routed through MCP. After a successful article lookup, do not reread that generation through terminal tools; on failure discard the result and use the existing source-resolution route.\n"
+    },
+    {
+      "stage": "canary-3",
+      "skill": "kaoyan-math-nightly-qa",
+      "path": "/Users/xiazhibin/.codex/skills/kaoyan-math-nightly-qa/SKILL.md",
+      "before_sha256": "09b763fbf69d3b39b10a8045b667d9ef1761f0014c59cba13158b9e03dfd7786",
+      "after_sha256": "c546615cfbfbc4d07c4ab7e5ff9295a00e18c2e7d05522b0b435ad90c7e8f5d1",
+      "mode": "read_preparation_when_tool_visible",
+      "review_draft_section": "## Optional MCP preparation bundle\n\nOnly the pre-write evidence preparation may use MCP after this stage is explicitly enabled. Freeze through the canonical ledger first, then make at most one `math_read_bundle` request for the frozen formal IDs, activity evidence, direct relations, and review snapshots; use `verify_evidence_batch` only when the frozen contract requires explicit artifact hashes and the policy counts it as the single business verification call. Bind schema, release, generation, fingerprint, and both zero-count invariants. MCP never performs freeze, formal edits, rebuild, Wiki writes, close, or receipt creation. Before any write, the existing deterministic writer independently reopens canonical sources. On MCP failure discard all MCP data and use the existing canonical preparation path for one generation.\n"
+    },
+    {
+      "stage": "canary-4",
+      "skill": "kaoyan-408-daily-intake-curation",
+      "path": "/Users/xiazhibin/.codex/skills/kaoyan-408-daily-intake-curation/SKILL.md",
+      "before_sha256": "8616f15d52cd51851cfde448903f562088b1d079140a5d06faf009f16a62a60e",
+      "after_sha256": "0d72cf418798cbfd2e734b19db916861e331a79dd71494bfb1d0928dcb7b7681",
+      "mode": "inventory_and_evidence_when_tool_visible",
+      "review_draft_section": "## Optional MCP read-only preflight\n\nAfter this stage is explicitly enabled, one `cs408_read_bundle` call may supply the selected date's curation inventory, named formal-node summaries, direct edges, and review identities. If explicit artifact hashes are required, use the policy-approved `verify_evidence_batch` variant instead of adding repeated reads. Bind the exact event-ledger authority, projection build, schema and release, generation and fingerprint, role labels, and both zero-count invariants. SQLite remains a manifest-bound projection and cannot replace the event ledger or formal nodes. MCP never starts or extends a batch, seals a decision, calls Luna, allocates an ID, applies, marks a result, closes, or prepares the next morning. The canonical transaction must independently revalidate before writes. On failure discard all MCP data and use the existing canonical preflight for one freshly bound generation.\n"
+    }
+  ]
+}

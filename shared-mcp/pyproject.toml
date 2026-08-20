@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools==80.9.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "study-read-mcp"
+version = "0.4.1"
+description = "Local read-only MCP for the user's math, 408, and English study repositories"
+requires-python = ">=3.13,<3.14"
+dependencies = ["jsonschema==4.26.0", "mcp==1.27.2"]
+
+[project.scripts]
+study-read-mcp = "study_read_mcp.__main__:main"
+study-read-mcp-client = "study_read_mcp.client:main"
+study-read-mcp-math = "study_read_mcp.launchers:math_main"
+study-read-mcp-cs408 = "study_read_mcp.launchers:cs408_main"
+study-read-mcp-english = "study_read_mcp.launchers:english_main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

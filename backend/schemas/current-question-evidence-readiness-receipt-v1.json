@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Current-question evidence readiness receipt interface",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "capture_id",
+    "evidence_manifest_sha256",
+    "evidence_bundle_sha256",
+    "question_mode",
+    "attachment_rows_sha256",
+    "required_roles",
+    "present_roles",
+    "missing_roles",
+    "trace_full_sha256",
+    "controlled_contract_path",
+    "controlled_contract_sha256",
+    "producer_build_sha256",
+    "created_at",
+    "model_enqueue_allowed",
+    "formal_write_count"
+  ],
+  "properties": {
+    "schema_version": {"const": "current-question-evidence-readiness-receipt-v1"},
+    "status": {"enum": ["ready", "evidence_pending"]},
+    "capture_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "evidence_manifest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "evidence_bundle_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "question_mode": {"enum": ["dialogue_only", "image_question"]},
+    "attachment_rows_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "required_roles": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"enum": ["question_image", "solution_image"]}
+    },
+    "present_roles": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"enum": ["question_image", "solution_image"]}
+    },
+    "missing_roles": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"enum": ["question_image", "solution_image"]}
+    },
+    "trace_full_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "controlled_contract_path": {"type": "string", "minLength": 1, "maxLength": 2048},
+    "controlled_contract_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "producer_build_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "model_enqueue_allowed": {"type": "boolean"},
+    "formal_write_count": {"const": 0}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"const": "ready"}}},
+      "then": {
+        "properties": {"model_enqueue_allowed": {"const": true}},
+        "required": ["model_enqueue_allowed"]
+      }
+    },
+    {
+      "if": {"properties": {"status": {"const": "evidence_pending"}}},
+      "then": {
+        "properties": {"model_enqueue_allowed": {"const": false}},
+        "required": ["model_enqueue_allowed"]
+      }
+    }
+  ]
+}

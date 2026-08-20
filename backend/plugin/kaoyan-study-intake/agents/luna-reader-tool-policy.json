@@ -1,0 +1,7 @@
+{
+  "schema_version": "study-intake-agent-tool-policy-v1",
+  "role": "reader",
+  "allow": ["get_task_context", "read_task_artifact", "list_records", "get_records", "search_records", "query_relations"],
+  "deny": ["spawn_agent", "cross_subject", "formal_writer", "shell", "terminal", "web", "sql", "arbitrary_path"],
+  "formal_write_count": 0
+}

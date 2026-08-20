@@ -1,0 +1,55 @@
+{
+  "attestation_relative_root": "wiki/study_vaults/408-full/state/intake-curation/producer-binding-attestations",
+  "attestation_required_after": "2026-08-17T06:30:00+00:00",
+  "capture_contract": {
+    "contract_id": "intake_fact_capture",
+    "contract_version": "v1",
+    "files": [
+      {
+        "path": "/Users/xiazhibin/Documents/kaoyan-408/schema/current-question-evidence-bundle-v3.md",
+        "sha256": "2394de5f95568171dbe8db132f963cbe50f5380eb915b177d19270adafdf9945"
+      }
+    ],
+    "files_sha256": "583aeefc2dd4ccd2a87425dc37191debcbb08550800234f26d9cc37450136f9a"
+  },
+  "descriptor_content_sha256": "3dbd0061ca5cedb22e5ca7fab9bf6cd090ac6b9e91371812e1867d02cbfed6f8",
+  "foreground_skill": {
+    "authoritative_path": "/Users/xiazhibin/Documents/kaoyan-408/codex-skill-sources/kaoyan-408-wrong-intake/SKILL.md",
+    "authoritative_sha256": "8079229c8041407e4097ec89aaea8312cbc4b2c2d1e6e810f8b3fbc2a10407eb",
+    "id": "kaoyan-408-wrong-intake",
+    "installed_path": "/Users/xiazhibin/.codex/skills/kaoyan-408-wrong-intake/SKILL.md",
+    "installed_sha256": "8079229c8041407e4097ec89aaea8312cbc4b2c2d1e6e810f8b3fbc2a10407eb",
+    "version": "content-sha256-v1"
+  },
+  "formal_write_count": 0,
+  "producer": {
+    "contract_id": "cs408-current-question-capture-producer",
+    "contract_version": "v3",
+    "entrypoint_path": "/Users/xiazhibin/Documents/kaoyan-408/scripts/intake_fact_capture_408.py",
+    "source_closure_sha256": "a9d8669faa13d6ef43df6eccd9e6aa584e1aa3b79807696397154122f7513b08",
+    "source_files": [
+      {
+        "path": "/Users/xiazhibin/Documents/kaoyan-408/scripts/intake_fact_capture_408.py",
+        "sha256": "f459b18a174ca93de303ddc1446b75317536d5d6f1816fb97392ca3024310559"
+      },
+      {
+        "path": "/Users/xiazhibin/Documents/kaoyan-408/scripts/producer_binding_attestation_408.py",
+        "sha256": "cfc110be9c22072d17765e2860299268a357e05eee9e422b6f992be9488a3429"
+      },
+      {
+        "path": "/Users/xiazhibin/Documents/kaoyan-408/scripts/managed_408_current_turn.py",
+        "sha256": "e9e807597696f31696c1f1dcd748b98a30a16d867ae65ddd7e37d16986503837"
+      },
+      {
+        "path": "/Users/xiazhibin/Documents/kaoyan-408/scripts/current_question_context_408.py",
+        "sha256": "320a23bdc140c27f9a15f91fff978352b5efc8ad3ff142344032b6b355f312ab"
+      },
+      {
+        "path": "/Users/xiazhibin/Documents/kaoyan-408/scripts/current_question_evidence_408.py",
+        "sha256": "6d6e5498dc609aeb2da5955d68df856e16872ebaac740680c3b16b679914ab45"
+      }
+    ]
+  },
+  "schema_version": "producer_binding_descriptor_v1",
+  "subject": "cs408"
+}

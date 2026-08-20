@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/isolated-writer-execution-result-v1.json",
+  "title": "Isolated Writer Execution Result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "batch_id", "subject", "fencing_token", "writer",
+    "writer_adapter", "sol_review_receipt_sha256",
+    "writer_process_artifact_sha256", "transaction_artifact_sha256",
+    "operations_artifact_sha256", "recovery_position_artifact_sha256",
+    "rollback_artifact_sha256", "status", "dispatcher_effect", "completed_at",
+    "seal"
+  ],
+  "properties": {
+    "schema_version": {"const": "isolated_writer_execution_result_v1"},
+    "batch_id": {"type": "string", "minLength": 1},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "fencing_token": {"type": "integer", "minimum": 1},
+    "writer": {"const": "sol"},
+    "writer_adapter": {"enum": ["math_nightly_writer_v1", "cs408_daily_intake_writer_v1", "english_daily_intake_writer_v1"]},
+    "sol_review_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "writer_process_artifact_sha256": {"$ref": "#/$defs/sha256"},
+    "transaction_artifact_sha256": {"$ref": "#/$defs/sha256"},
+    "operations_artifact_sha256": {"$ref": "#/$defs/sha256"},
+    "recovery_position_artifact_sha256": {"$ref": "#/$defs/nullableSha"},
+    "rollback_artifact_sha256": {"$ref": "#/$defs/nullableSha"},
+    "status": {"enum": ["committed", "already_current", "failed", "rolled_back"]},
+    "dispatcher_effect": {"type": "object"},
+    "completed_at": {"type": "string", "format": "date-time"},
+    "seal": {"$ref": "#/$defs/seal"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nullableSha": {"anyOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+    "seal": {
+      "type": "object", "additionalProperties": false,
+      "required": ["algorithm", "purpose", "hmac_sha256"],
+      "properties": {
+        "algorithm": {"const": "HMAC-SHA256"},
+        "purpose": {"const": "isolated-writer-execution-result"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

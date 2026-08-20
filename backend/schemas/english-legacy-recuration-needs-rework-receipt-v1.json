@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EN-P0-006 Luna needs-rework terminal receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "work_item_sha256", "target_id", "target_kind",
+    "ordinal", "attempt", "inventory_sha256", "batch_authorization_sha256",
+    "target_authorization_receipt_sha256", "authority", "analysis",
+    "critical_review", "stage_receipts", "processing_publication",
+    "final_read_session_receipt_sha256", "proposal_action", "proposal_sha256",
+    "quality_outcome", "terminal_status", "reason_code", "model_call_count",
+    "formal_write_count", "issued_at", "hmac_key_id", "hmac_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "english_legacy_recuration_needs_rework_receipt_v1"},
+    "work_item_sha256": {"$ref": "#/$defs/sha256"},
+    "target_id": {"type": "string", "minLength": 1, "maxLength": 240},
+    "target_kind": {
+      "enum": ["master_bank_row", "sentence_pattern_card", "article_learning_page"]
+    },
+    "ordinal": {"type": "integer", "minimum": 1},
+    "attempt": {"type": "integer", "minimum": 1},
+    "inventory_sha256": {"$ref": "#/$defs/sha256"},
+    "batch_authorization_sha256": {"$ref": "#/$defs/sha256"},
+    "target_authorization_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["generation", "authority_fingerprint"],
+      "properties": {
+        "generation": {"type": "string", "minLength": 1, "maxLength": 160},
+        "authority_fingerprint": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "analysis": {"$ref": "#/$defs/stage"},
+    "critical_review": {"$ref": "#/$defs/stage"},
+    "stage_receipts": {"type": "object"},
+    "processing_publication": {"type": "object"},
+    "final_read_session_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "proposal_action": {
+      "enum": [
+        "update_existing_proposal", "already_current_proposal",
+        "conflict", "evidence_incomplete"
+      ]
+    },
+    "proposal_sha256": {"$ref": "#/$defs/sha256"},
+    "quality_outcome": {"enum": ["accepted", "corrected", "rejected"]},
+    "terminal_status": {"const": "needs_rework"},
+    "reason_code": {
+      "enum": ["critical_review_rejected", "proposal_not_sol_ready"]
+    },
+    "model_call_count": {"const": 2},
+    "formal_write_count": {"const": 0},
+    "issued_at": {"type": "string", "format": "date-time"},
+    "hmac_key_id": {"$ref": "#/$defs/sha256"},
+    "hmac_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"quality_outcome": {"const": "rejected"}}},
+      "then": {"properties": {"reason_code": {"const": "critical_review_rejected"}}},
+      "else": {
+        "properties": {
+          "proposal_action": {"enum": ["conflict", "evidence_incomplete"]},
+          "reason_code": {"const": "proposal_not_sol_ready"}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "stage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "output_sha256", "transcript_sha256", "call_receipt_sha256",
+        "provider_request_count", "mcp_tool_call_count"
+      ],
+      "properties": {
+        "output_sha256": {"$ref": "#/$defs/sha256"},
+        "transcript_sha256": {"$ref": "#/$defs/sha256"},
+        "call_receipt_sha256": {"$ref": "#/$defs/sha256"},
+        "provider_request_count": {"type": "integer", "minimum": 2},
+        "mcp_tool_call_count": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

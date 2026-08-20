@@ -1,0 +1,61 @@
+{
+  "skill_name": "kaoyan-math-visual-review",
+  "evals": [
+    {
+      "id": 1,
+      "name": "生成十到十五分钟数学复盘",
+      "prompt": "根据今天已经完成的 GS-633、GS-634、GS-635，生成一个 10-15 分钟数学可视化复盘稿。",
+      "expected_output": "应触发 visual-review，读取稳定证据并生成聊天内复盘叙事；未明确要求保存或同步 Tutor 时不做任何写入。",
+      "files": [],
+      "expectations": ["生成 10-15 分钟结构化复盘", "使用已验证正式证据", "普通复盘保持 chat-only", "不修改 Tutor、正式卡、生成和回滚"]
+    },
+    {
+      "id": 2,
+      "name": "HTML 复盘保存边界",
+      "prompt": "把今天数学学习整理成单文件 HTML 复盘并保存。",
+      "expected_output": "应生成纯 HTML/CSS/Vanilla JS，保存到安全 review 位置；不得写入错题卡、生成目录或回滚系统。",
+      "files": [],
+      "expectations": ["单文件 HTML 无外部依赖", "保存位置属于安全 review/wiki 层", "正式数据不变"]
+    },
+    {
+      "id": 3,
+      "name": "当前屏幕只作定位",
+      "prompt": "根据我当前屏幕和刚才的数学学习生成日终复盘，信息不全就标待确认。",
+      "expected_output": "应使用 Chronicle 作定位雷达，再从 Obsidian/wiki/卡片验证；不从屏幕编造时长、ID、错因、mastery 或复做结果。",
+      "files": [],
+      "expectations": ["Chronicle 仅定位", "稳定文件验证事实", "缺失标待确认/未记录"]
+    },
+    {
+      "id": 4,
+      "name": "命名卡更新让路同步维护",
+      "prompt": "生成数学日终复盘，另外单独补一下 GS-638 的 method_gap 并正式入库。",
+      "expected_output": "visual-review 只完成复盘；命名卡同步维护路由 wrong-intake，并由后者按当前轻量同步流程完成。visual-review 自身不改卡。",
+      "files": [],
+      "expectations": ["复盘部分由 visual-review", "卡更新路由 wrong-intake", "visual-review 不写正式卡"]
+    },
+    {
+      "id": 5,
+      "name": "当前题入库让路 wrong intake",
+      "prompt": "把今天数学做成复盘稿，并把当前这道题提交到主库，我继续下一题。",
+      "expected_output": "复盘部分可由 visual-review 处理；当前题提交必须路由 wrong-intake 单题同步入库，visual-review 不直接落库。",
+      "files": [],
+      "expectations": ["提交路由到 wrong-intake", "单题轻量同步完成", "visual-review 不写正式库"]
+    },
+    {
+      "id": 7,
+      "name": "显式统一筛题让路 daily filter",
+      "prompt": "学习结束，统一筛题，然后把筛出的旧题做成 HTML 复盘。",
+      "expected_output": "先由 daily-filter 使用逐题正式完成的 ID 集合统一筛题，再由 visual-review 使用结果；visual-review 不自己运行 intake_recommend。",
+      "files": [],
+      "expectations": ["筛题路由 daily-filter", "visual-review 不运行 intake_recommend", "只消费已确认 shortlist"]
+    },
+    {
+      "id": 8,
+      "name": "Tutor closure 仍是安全派生层",
+      "prompt": "生成数学日终复盘，并把今天暴露的条件边界问题同步到 Tutor，不要改错题卡。",
+      "expected_output": "可同步高层 knowledge/wrong_point/method_gap/第一动作到安全 Tutor source，不复制题干图片长解析，不反写卡、回滚或 mastery，也不自动启动 quiz。",
+      "files": [],
+      "expectations": ["Tutor 只接收高层安全字段", "不复制受保护材料", "不反写正式卡或回滚", "不自动启动 quiz"]
+    }
+  ]
+}

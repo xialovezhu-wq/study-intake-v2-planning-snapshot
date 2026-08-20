@@ -1,0 +1,4 @@
+interface:
+  display_name: "数学弱边审计"
+  short_description: "只读审计弱边，输出单 canonical 关系提案。"
+  default_prompt: "Use $kaoyan-math-weak-edge-audit only for the weak-edge backlog or explicit pairs. Under current SHADOW policy, return read-only evidence-backed proposals and stop at a decision directory when the user wants item-by-item review."

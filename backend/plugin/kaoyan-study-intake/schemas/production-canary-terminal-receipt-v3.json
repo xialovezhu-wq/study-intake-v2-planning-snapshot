@@ -1,0 +1,365 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "study-intake-production-canary-terminal-receipt-v3",
+  "type": "object",
+  "required": [
+    "activation_gate_authority_sha256",
+    "activation_id",
+    "activation_receipt_sha256",
+    "authority",
+    "canary_gate_authority_sha256",
+    "canary_gate_sha256",
+    "completion_path",
+    "completion_receipt_path",
+    "completion_receipt_sha256",
+    "completion_sha256",
+    "continuous_concurrency_limit",
+    "counter_scope",
+    "error_code",
+    "evidence_authority_fingerprint",
+    "evidence_generation",
+    "fast_mode_effective",
+    "fast_mode_requested",
+    "finished_at",
+    "formal_write_count",
+    "initial_canary_inflight_limit",
+    "keep_backlog_drained",
+    "late_result_fenced",
+    "mcp_stage_grounding",
+    "mcp_tool_call_count",
+    "model_call_count",
+    "observed_mcp_tool_call_count",
+    "observed_model_call_count",
+    "observed_provider_request_count",
+    "outcome",
+    "package_path",
+    "package_ref",
+    "package_sha256",
+    "post_activation_only",
+    "process_execution",
+    "producer_authority_fingerprint",
+    "producer_capture_enabled",
+    "producer_high_watermark_sha256",
+    "production_accepted",
+    "provider_request_count",
+    "read_session_id",
+    "release_id",
+    "requested_service_tier",
+    "report_json_ref",
+    "report_json_sha256",
+    "report_markdown_ref",
+    "report_markdown_sha256",
+    "report_reopen_status",
+    "schema_version",
+    "selected",
+    "sol_enabled",
+    "sol_formal_curation_enabled",
+    "state_after",
+    "subject",
+    "task_declared_evidence_refs_sha256",
+    "terminal_kind"
+  ],
+  "properties": {
+    "activation_gate_authority_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "activation_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "activation_receipt_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "algorithm",
+        "key_id",
+        "purpose",
+        "hmac_sha256"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "study-intake-dispatch-authority-v1"
+        },
+        "algorithm": {
+          "const": "HMAC-SHA256"
+        },
+        "key_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "purpose": {
+          "const": "dispatch-production-canary-terminal"
+        },
+        "hmac_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "canary_gate_authority_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "canary_gate_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "completion_path": {"type": ["string", "null"]},
+    "completion_receipt_path": {"type": ["string", "null"]},
+    "completion_receipt_sha256": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "completion_sha256": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "continuous_concurrency_limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 64
+    },
+    "counter_scope": {
+      "const": "current_control_plane_operation"
+    },
+    "error_code": {"type": ["string", "null"]},
+    "evidence_authority_fingerprint": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "evidence_generation": {"type": ["string", "null"]},
+    "fast_mode_effective": {"const": "not_requested"},
+    "fast_mode_requested": {"const": false},
+    "finished_at": {"type": "string", "format": "date-time"},
+    "formal_write_count": {"const": 0},
+    "initial_canary_inflight_limit": {"const": 1},
+    "keep_backlog_drained": {"const": true},
+    "late_result_fenced": {"type": "boolean"},
+    "mcp_stage_grounding": {"type": ["object", "null"]},
+    "mcp_tool_call_count": {"const": 0},
+    "model_call_count": {"const": 0},
+    "observed_mcp_tool_call_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "observed_model_call_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "observed_provider_request_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "outcome": {
+      "enum": [
+        "succeeded",
+        "failed",
+        "cancelled",
+        "timed_out",
+        "stalled",
+        "needs_rework"
+      ]
+    },
+    "package_path": {"type": ["string", "null"]},
+    "package_ref": {
+      "type": ["string", "null"],
+      "pattern": "^study-intake-dispatch-package://sha256/[0-9a-f]{64}$"
+    },
+    "package_sha256": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "post_activation_only": {"const": true},
+    "prior_terminal_receipt_sha256": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "process_execution": {"type": ["object", "null"]},
+    "producer_authority_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "producer_capture_enabled": {"const": true},
+    "producer_high_watermark_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "production_accepted": {"const": false},
+    "provider_request_count": {"const": 0},
+    "read_session_id": {"type": ["string", "null"]},
+    "release_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "requested_service_tier": {"type": "null"},
+    "report_json_ref": {
+      "type": ["string", "null"],
+      "pattern": "^study-intake-report://sha256/[0-9a-f]{64}$"
+    },
+    "report_json_sha256": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "report_markdown_ref": {
+      "type": ["string", "null"],
+      "pattern": "^study-intake-report-markdown://sha256/[0-9a-f]{64}$"
+    },
+    "report_markdown_sha256": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "report_reopen_status": {
+      "enum": ["not_available", "json_markdown_package_verified"]
+    },
+    "schema_version": {
+      "const": "study-intake-production-canary-terminal-receipt-v3"
+    },
+    "selected": {"type": ["object", "null"]},
+    "sol_enabled": {"const": false},
+    "sol_formal_curation_enabled": {"const": false},
+    "state_after": {
+      "enum": ["continuous_concurrent_unlocked", "failed_drained"]
+    },
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "task_declared_evidence_refs_sha256": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "terminal_kind": {
+      "enum": [
+        "normal",
+        "emergency_hard_cancel",
+        "fail_closed_recovery",
+        "post_terminal_projection_failure"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"outcome": {"const": "succeeded"}},
+        "required": ["outcome"]
+      },
+      "then": {
+        "properties": {
+          "completion_path": {"type": "string", "minLength": 1},
+          "completion_receipt_path": {"type": "string", "minLength": 1},
+          "completion_receipt_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "completion_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "error_code": {"const": null},
+          "late_result_fenced": {"const": false},
+          "evidence_authority_fingerprint": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "evidence_generation": {"type": "string", "minLength": 1},
+          "mcp_stage_grounding": {"type": "object", "minProperties": 2},
+          "observed_mcp_tool_call_count": {"type": "integer", "minimum": 1},
+          "observed_model_call_count": {"type": "integer", "minimum": 1},
+          "observed_provider_request_count": {"type": "integer", "minimum": 1},
+          "package_path": {"type": "string", "minLength": 1},
+          "package_ref": {
+            "type": "string",
+            "pattern": "^study-intake-dispatch-package://sha256/[0-9a-f]{64}$"
+          },
+          "package_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "process_execution": {"type": "object"},
+          "read_session_id": {"type": "string", "minLength": 1},
+          "report_json_ref": {
+            "type": "string",
+            "pattern": "^study-intake-report://sha256/[0-9a-f]{64}$"
+          },
+          "report_json_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "report_markdown_ref": {
+            "type": "string",
+            "pattern": "^study-intake-report-markdown://sha256/[0-9a-f]{64}$"
+          },
+          "report_markdown_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "report_reopen_status": {
+            "const": "json_markdown_package_verified"
+          },
+          "selected": {"type": "object"},
+          "task_declared_evidence_refs_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "enum": ["failed", "cancelled", "timed_out", "stalled", "needs_rework"]
+          }
+        },
+        "required": ["outcome"]
+      },
+      "then": {
+        "properties": {"late_result_fenced": {"const": true}}
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "report_reopen_status": {"const": "not_available"}
+        },
+        "required": ["report_reopen_status"]
+      },
+      "then": {
+        "properties": {
+          "package_path": {"const": null},
+          "package_ref": {"const": null},
+          "package_sha256": {"const": null},
+          "report_json_ref": {"const": null},
+          "report_json_sha256": {"const": null},
+          "report_markdown_ref": {"const": null},
+          "report_markdown_sha256": {"const": null}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "report_reopen_status": {
+            "const": "json_markdown_package_verified"
+          }
+        },
+        "required": ["report_reopen_status"]
+      },
+      "then": {
+        "properties": {
+          "package_path": {"type": "string", "minLength": 1},
+          "package_ref": {"type": "string"},
+          "package_sha256": {"type": "string"},
+          "report_json_ref": {"type": "string"},
+          "report_json_sha256": {"type": "string"},
+          "report_markdown_ref": {"type": "string"},
+          "report_markdown_sha256": {"type": "string"}
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}

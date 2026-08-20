@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/candidate-golden-semantic-evidence-v1.json",
+  "title": "Candidate-bound daily Golden semantic evidence v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "candidate_release_id", "authority_key_sha256",
+    "controlled_replay_specs", "math_live_business_manifest", "tasks",
+    "formal_write_count"
+  ],
+  "properties": {
+    "schema_version": {"const": "candidate-golden-semantic-evidence-v1"},
+    "candidate_release_id": {"$ref": "#/$defs/sha256"},
+    "authority_key_sha256": {"$ref": "#/$defs/sha256"},
+    "controlled_replay_specs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["math", "cs408", "english"],
+      "properties": {
+        "math": {"$ref": "#/$defs/artifact"},
+        "cs408": {"$ref": "#/$defs/artifact"},
+        "english": {"$ref": "#/$defs/artifact"}
+      }
+    },
+    "math_live_business_manifest": {"$ref": "#/$defs/artifact"},
+    "tasks": {
+      "type": "array",
+      "minItems": 11,
+      "maxItems": 11,
+      "items": {"$ref": "#/$defs/task"}
+    },
+    "formal_write_count": {"const": 0}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role", "subject", "capture_id", "package", "proposal",
+        "quality_receipt", "analysis_output", "critical_review_output",
+        "transcripts", "report", "formal_write_count"
+      ],
+      "properties": {
+        "role": {
+          "enum": [
+            "GS-111", "GS-240", "complete-new-intake", "LUNA-MATH-001",
+            "LUNA-MATH-002", "LUNA-MATH-003", "DS_2023_002",
+            "FILE_PROTECTION", "OS_2009_003", "FREE_SPACE",
+            "english-daily-microbatch"
+          ]
+        },
+        "subject": {"enum": ["math", "cs408", "english"]},
+        "capture_id": {"type": "string", "minLength": 1},
+        "source_capture_ids": {
+          "type": "array", "minItems": 3, "maxItems": 3,
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "package": {"$ref": "#/$defs/artifact"},
+        "proposal": {"$ref": "#/$defs/artifact"},
+        "quality_receipt": {"$ref": "#/$defs/artifact"},
+        "analysis_output": {"$ref": "#/$defs/artifact"},
+        "critical_review_output": {"$ref": "#/$defs/artifact"},
+        "transcripts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["analysis", "critical_review"],
+          "properties": {
+            "analysis": {"$ref": "#/$defs/artifact"},
+            "critical_review": {"$ref": "#/$defs/artifact"}
+          }
+        },
+        "report": {"$ref": "#/$defs/artifact"},
+        "formal_write_count": {"const": 0}
+      }
+    }
+  }
+}

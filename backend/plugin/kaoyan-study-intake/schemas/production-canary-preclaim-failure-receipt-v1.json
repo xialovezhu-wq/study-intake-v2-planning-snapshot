@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/production-canary-preclaim-failure-receipt-v1.json",
+  "title": "Production canary durable preclaim failure receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "failure_id",
+    "activation_id",
+    "subject",
+    "release_id",
+    "producer_authority_fingerprint",
+    "producer_high_watermark_sha256",
+    "activation_receipt_sha256",
+    "activation_gate_authority_sha256",
+    "failure_stage",
+    "error_code",
+    "failure_evidence",
+    "queue_entry_preserved",
+    "queue_status_after",
+    "model_submission_started",
+    "failed_at",
+    "state_after",
+    "producer_capture_enabled",
+    "luna_consumer_enabled",
+    "sol_formal_curation_enabled",
+    "post_activation_only",
+    "per_subject_limit",
+    "keep_backlog_drained",
+    "production_accepted",
+    "fast_mode_requested",
+    "fast_mode_effective",
+    "model_call_count",
+    "provider_request_count",
+    "formal_write_count",
+    "sol_enabled",
+    "authority"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "study-intake-production-canary-preclaim-failure-receipt-v1"
+    },
+    "failure_id": {"$ref": "#/$defs/sha256"},
+    "activation_id": {"$ref": "#/$defs/sha256"},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "release_id": {"$ref": "#/$defs/sha256"},
+    "producer_authority_fingerprint": {"$ref": "#/$defs/sha256"},
+    "producer_high_watermark_sha256": {"$ref": "#/$defs/sha256"},
+    "activation_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "activation_gate_authority_sha256": {"$ref": "#/$defs/sha256"},
+    "failure_stage": {
+      "enum": [
+        "producer_contract",
+        "materialize",
+        "consumer_admission",
+        "pre_claim",
+        "submit_generation_fence"
+      ]
+    },
+    "error_code": {"type": "string", "minLength": 1},
+    "failure_evidence": {"$ref": "#/$defs/failureEvidence"},
+    "queue_entry_preserved": {"type": "boolean"},
+    "queue_status_after": {"enum": ["pending", null]},
+    "model_submission_started": {"const": false},
+    "failed_at": {"type": "string", "format": "date-time"},
+    "state_after": {"const": "failed_drained"},
+    "producer_capture_enabled": {"const": true},
+    "luna_consumer_enabled": {"const": false},
+    "sol_formal_curation_enabled": {"const": false},
+    "post_activation_only": {"const": true},
+    "per_subject_limit": {"const": 1},
+    "keep_backlog_drained": {"const": true},
+    "production_accepted": {"const": false},
+    "fast_mode_requested": {"const": true},
+    "fast_mode_effective": {
+      "enum": ["requested_unverified", "confirmed"]
+    },
+    "model_call_count": {"const": 0},
+    "provider_request_count": {"const": 0},
+    "formal_write_count": {"const": 0},
+    "sol_enabled": {"const": false},
+    "authority": {"$ref": "#/$defs/authority"}
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "nullableSha256": {
+      "anyOf": [
+        {"$ref": "#/$defs/sha256"},
+        {"type": "null"}
+      ]
+    },
+    "nullableString": {
+      "type": ["string", "null"]
+    },
+    "failureEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "unit_sha256",
+        "frozen_payload_sha256",
+        "task_subject",
+        "capture_id",
+        "producer_unit_id",
+        "producer_recorded_at",
+        "producer_input_contract_sha256",
+        "source_event_set_sha256",
+        "queue_entry_sha256",
+        "queue_status_before",
+        "canary_gate_sha256",
+        "lease_fence",
+        "evidence_sha256"
+      ],
+      "properties": {
+        "unit_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "frozen_payload_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "task_subject": {"$ref": "#/$defs/nullableString"},
+        "capture_id": {"$ref": "#/$defs/nullableString"},
+        "producer_unit_id": {"$ref": "#/$defs/nullableString"},
+        "producer_recorded_at": {
+          "anyOf": [
+            {"type": "string", "format": "date-time"},
+            {"type": "null"}
+          ]
+        },
+        "producer_input_contract_sha256": {
+          "$ref": "#/$defs/nullableSha256"
+        },
+        "source_event_set_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "queue_entry_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "queue_status_before": {
+          "enum": ["pending", "claimed", "succeeded", "failed", null]
+        },
+        "canary_gate_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "lease_fence": {
+          "type": ["integer", "null"],
+          "minimum": 1
+        },
+        "evidence_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "algorithm",
+        "key_id",
+        "purpose",
+        "hmac_sha256"
+      ],
+      "properties": {
+        "schema_version": {"const": "study-intake-dispatch-authority-v1"},
+        "algorithm": {"const": "HMAC-SHA256"},
+        "key_id": {"$ref": "#/$defs/sha256"},
+        "purpose": {
+          "const": "dispatch-production-canary-preclaim-failure"
+        },
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/english-legacy-batch-authorization-intent-v1.json",
+  "title": "English Legacy Batch Authorization Intent v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "issue_id", "subject", "intent_id",
+    "authorization_type", "inventory_scope", "disposition",
+    "authorized_operations", "exact_inventory_only", "one_shot",
+    "user_message_sha256", "source_thread_id", "source_turn_id",
+    "authorized_at", "model_call_count", "formal_write_count",
+    "authority_key_id", "seal"
+  ],
+  "properties": {
+    "schema_version": {"const": "english_legacy_batch_authorization_intent_v1"},
+    "issue_id": {"const": "EN-P0-006"},
+    "subject": {"const": "english"},
+    "intent_id": {"type": "string", "minLength": 1},
+    "authorization_type": {"const": "explicit_user_batch_authorization"},
+    "inventory_scope": {"const": "first_independently_verified_complete_inventory"},
+    "disposition": {"const": "deterministic_recuration"},
+    "authorized_operations": {"const": ["luna_recuration", "sol_review", "sol_apply"]},
+    "exact_inventory_only": {"const": true},
+    "one_shot": {"const": true},
+    "user_message_sha256": {"$ref": "#/$defs/sha256"},
+    "source_thread_id": {"type": "string", "minLength": 1},
+    "source_turn_id": {"type": "string", "minLength": 1},
+    "authorized_at": {"type": "string", "format": "date-time"},
+    "model_call_count": {"const": 0},
+    "formal_write_count": {"const": 0},
+    "authority_key_id": {"$ref": "#/$defs/sha256"},
+    "seal": {"$ref": "#/$defs/seal"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "seal": {
+      "type": "object", "additionalProperties": false,
+      "required": ["algorithm", "purpose", "hmac_sha256"],
+      "properties": {
+        "algorithm": {"const": "HMAC-SHA256"},
+        "purpose": {"const": "english-legacy-batch-authorization-intent-v1"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

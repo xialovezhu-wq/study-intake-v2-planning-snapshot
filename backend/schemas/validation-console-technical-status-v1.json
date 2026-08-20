@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://xiazhibin.local/schemas/validation-console-technical-status-v1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "central_release_id", "execution_mode", "live_gate_locked", "manual_authorization_present", "production_accepted", "formal_write_count", "skills", "mcp_preflight", "engineering", "reports", "audit_package", "updated_at"],
+  "properties": {
+    "schema_version": {"const": "study-intake-validation-console-technical-status-v1"},
+    "central_release_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "execution_mode": {"const": "offline"},
+    "live_gate_locked": {"const": true},
+    "manual_authorization_present": {"const": false},
+    "production_accepted": {"const": false},
+    "formal_write_count": {"const": 0},
+    "skills": {"type": "object"},
+    "mcp_preflight": {"type": "object"},
+    "engineering": {"type": "object"},
+    "reports": {"type": "object"},
+    "audit_package": {"type": "object"},
+    "updated_at": {"type": "string", "format": "date-time"}
+  }
+}

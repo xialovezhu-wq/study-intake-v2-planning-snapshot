@@ -1,0 +1,960 @@
+{
+  "duration_ms": 569601,
+  "execution_binding": {
+    "lease_fence": "1",
+    "lease_owner_id": "dispatcher-87919-45ebd76d6e3f4c5aaa0f481469d33d09",
+    "unit_sha256": "1aa6b649cd73aca505ffa7c71f93b84838120fdc1f0c475de3d4bfc38cb74ed2"
+  },
+  "formal_write_count": 0,
+  "output_sha256": "c1fe6830902a9426d2998177fdfe08084246d0dddfaf089bfa664e2c725aecf7",
+  "payload": {
+    "answer_safety_findings": [
+      {
+        "affected_json_paths": [
+          "$.evidence_assessment.contradictions",
+          "$.knowledge_network_context.knowledge_alignment",
+          "$.risk_flags[0]",
+          "$.sol_verification_plan.must_verify[0]",
+          "$.unresolved[0]"
+        ],
+        "analysis_refs": [
+          "analysis.evidence_assessment.contradictions[0]",
+          "analysis.knowledge_network_context.knowledge_alignment[0]",
+          "analysis.unresolved[0]"
+        ],
+        "evidence_refs": [
+          "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d",
+          "mcp-item:cs408:16869d1789b23d8cd232202e936a3b7761eb0d3596b18f121ed82ce0ab3781a5",
+          "mcp-item:cs408:74905cf388ee0a999e4da0c5e5fdfcf2e58f6e25fc23f0faca995bb7ba6129ea"
+        ],
+        "finding_id": "CR-IDENTITY-002",
+        "severity": "blocking",
+        "text": "独立重读确认：capture 的 MQ-04/source_id 为 DS_2023_002 且结果为 independent_correct；同一 session 与 item 的 projection event 身份为 RU_DS01_SEQ_ORDERED_OPS 且结果为 fragile。该身份与结果冲突无法由 Luna 自行修复，必须保持 fail closed，因此本阶段 reject。"
+      }
+    ],
+    "correction_resolutions": [
+      {
+        "affected_json_paths": [
+          "$.atomic_signals",
+          "$.concept_method_analysis",
+          "$.correct_reasoning_reconstruction",
+          "$.evidence_assessment",
+          "$.formalization_candidates",
+          "$.knowledge_network_context",
+          "$.question_structure",
+          "$.reasoning_diagnosis",
+          "$.risk_flags",
+          "$.sol_verification_plan",
+          "$.unresolved"
+        ],
+        "after": {
+          "canonical_json": "{\"binding\":\"critical-review-stage MCP transcript\",\"representative_evidence_refs\":[\"mcp-item:cs408:c92baacfc395fe7528ddd5d66386e3494493a5a2d7ab73c47fdefbcfdd1197b1\",\"mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d\",\"mcp-item:cs408:4dcc4e867588b444dfd0b4df98b0f8ea5f8142426670cd1bf4a0d0a529e57c4a\",\"mcp-item:cs408:16869d1789b23d8cd232202e936a3b7761eb0d3596b18f121ed82ce0ab3781a5\",\"mcp-item:cs408:74905cf388ee0a999e4da0c5e5fdfcf2e58f6e25fc23f0faca995bb7ba6129ea\"]}",
+          "encoding": "canonical_json"
+        },
+        "before": {
+          "canonical_json": "{\"binding\":\"analysis-stage MCP transcript\",\"scope\":\"evidence_refs in affected analysis subtrees\"}",
+          "encoding": "canonical_json"
+        },
+        "finding_id": "CR-REF-GROUND-001",
+        "reason": "原 draft 中的 evidence_refs 来自 Analysis 阶段；本阶段已重新读取任务 artifact、正式节点、知识节点、晨间 session 与完整 review_events 分页，并将 revised_analysis 的引用改为本 Critical Review 实际消费的 MCP item evidence_ref。",
+        "resolution": "applied"
+      }
+    ],
+    "evidence_misreads": [],
+    "missing_analysis": [],
+    "required_corrections": [
+      {
+        "affected_json_paths": [
+          "$.atomic_signals",
+          "$.concept_method_analysis",
+          "$.correct_reasoning_reconstruction",
+          "$.evidence_assessment",
+          "$.formalization_candidates",
+          "$.knowledge_network_context",
+          "$.question_structure",
+          "$.reasoning_diagnosis",
+          "$.risk_flags",
+          "$.sol_verification_plan",
+          "$.unresolved"
+        ],
+        "analysis_refs": [
+          "analysis.evidence_assessment.evidence_inventory",
+          "analysis.sol_verification_plan.source_checks",
+          "analysis.executive_summary"
+        ],
+        "evidence_refs": [
+          "mcp-item:cs408:c92baacfc395fe7528ddd5d66386e3494493a5a2d7ab73c47fdefbcfdd1197b1",
+          "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d",
+          "mcp-item:cs408:4dcc4e867588b444dfd0b4df98b0f8ea5f8142426670cd1bf4a0d0a529e57c4a",
+          "mcp-item:cs408:16869d1789b23d8cd232202e936a3b7761eb0d3596b18f121ed82ce0ab3781a5",
+          "mcp-item:cs408:74905cf388ee0a999e4da0c5e5fdfcf2e58f6e25fc23f0faca995bb7ba6129ea"
+        ],
+        "finding_id": "CR-REF-GROUND-001",
+        "severity": "error",
+        "text": "draft 的库证据结论基本得到独立复核，但其 evidence_refs 不是本 Critical Review 阶段实际消费的引用。已在 revised_analysis 中完成阶段本地引用重绑定；该 finding 保留以记录已应用的语义修正。"
+      }
+    ],
+    "revised_analysis": {
+      "atomic_signals": [
+        {
+          "applicability_boundary": "历史正式节点中的错误标签，不得直接归因于本次作答。",
+          "canonical_term": "E01 概念边界混淆；E02 条件遗漏",
+          "confidence": "high",
+          "error_role": "historical_error",
+          "evidence_refs": [
+            "mcp-item:cs408:4dcc4e867588b444dfd0b4df98b0f8ea5f8142426670cd1bf4a0d0a529e57c4a"
+          ],
+          "importance": "secondary",
+          "provenance": "正式题目节点的历史错因字段",
+          "signal_id": "sig-historical-errors",
+          "signal_type": "error",
+          "specificity": "正式节点记录了历史错误标签，但本次没有观察到对应断点。",
+          "surface_form": "E01 概念边界混淆；E02 条件遗漏",
+          "truth_library_match_status": "exact"
+        },
+        {
+          "applicability_boundary": "仅表示当前 capture 与 projection event 的身份和结果存在冲突，不等同于学习者错误。",
+          "canonical_term": "当前题目身份绑定冲突",
+          "confidence": "high",
+          "error_role": "none",
+          "evidence_refs": [
+            "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d",
+            "mcp-item:cs408:16869d1789b23d8cd232202e936a3b7761eb0d3596b18f121ed82ce0ab3781a5",
+            "mcp-item:cs408:74905cf388ee0a999e4da0c5e5fdfcf2e58f6e25fc23f0faca995bb7ba6129ea"
+          ],
+          "importance": "primary",
+          "provenance": "冻结 capture、晨间 session projection 与精确 review event",
+          "signal_id": "sig-identity-conflict",
+          "signal_type": "trap",
+          "specificity": "同一 session_id 与 item_id 下，capture 指向 DS_2023_002，event 指向 RU_DS01_SEQ_ORDERED_OPS。",
+          "surface_form": "MQ-04 身份不一致",
+          "truth_library_match_status": "unmatched"
+        },
+        {
+          "applicability_boundary": "用于区分定位插入位置与实际搬移元素；不能把定位成本直接当作整个操作成本。",
+          "canonical_term": "查找阶段与顺序表插入成本分离",
+          "confidence": "high",
+          "error_role": "none",
+          "evidence_refs": [
+            "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d",
+            "mcp-item:cs408:4dcc4e867588b444dfd0b4df98b0f8ea5f8142426670cd1bf4a0d0a529e57c4a",
+            "mcp-item:cs408:2a4c6a50b895e48541af8f16252a4d899ffd37408d7052c2e3304a162f26c889"
+          ],
+          "importance": "primary",
+          "provenance": "题干、正式题目核心考点与正式知识节点",
+          "signal_id": "sig-phase-boundary",
+          "signal_type": "method",
+          "specificity": "本题的关键机制边界。",
+          "surface_form": "确定插入位置，再保持有序插入",
+          "truth_library_match_status": "exact"
+        },
+        {
+          "applicability_boundary": "仅表示题型，不代表作答过程或掌握度。",
+          "canonical_term": "选择题",
+          "confidence": "high",
+          "error_role": "none",
+          "evidence_refs": [
+            "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d",
+            "mcp-item:cs408:4dcc4e867588b444dfd0b4df98b0f8ea5f8142426670cd1bf4a0d0a529e57c4a"
+          ],
+          "importance": "primary",
+          "provenance": "冻结题目 artifact 与正式题目节点",
+          "signal_id": "sig-question-type",
+          "signal_type": "question_type",
+          "specificity": "数据结构选择题，要求比较两个阶段及整体最坏复杂度。",
+          "surface_form": "选择题",
+          "truth_library_match_status": "exact"
+        },
+        {
+          "applicability_boundary": "仅适用于有序顺序表及其按下标随机访问、保持有序插入的语境。",
+          "canonical_term": "顺序表",
+          "confidence": "high",
+          "error_role": "none",
+          "evidence_refs": [
+            "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d",
+            "mcp-item:cs408:6aefda73cee4d36db232c707600288dff498e6955af0d9d9bea38e5aead54232"
+          ],
+          "importance": "primary",
+          "provenance": "题干与正式知识节点",
+          "signal_id": "sig-sequential-list",
+          "signal_type": "knowledge",
+          "specificity": "核心结构为 DS02-02 顺序表。",
+          "surface_form": "有序顺序表",
+          "truth_library_match_status": "exact"
+        }
+      ],
+      "concept_method_analysis": {
+        "applicability_conditions": [
+          {
+            "claim_type": "standard_408_candidate",
+            "confidence": "high",
+            "counterevidence_or_boundary": "题干已明确给出有序顺序表和二分查找；未观察到用户自行说明这些条件。",
+            "evidence_refs": [
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d",
+              "mcp-item:cs408:4dcc4e867588b444dfd0b4df98b0f8ea5f8142426670cd1bf4a0d0a529e57c4a"
+            ],
+            "sol_verification_action": "Sol 复核题目身份后再采用该条件链。",
+            "text": "分析依赖有序顺序表、按下标随机访问、二分查找定位位置，以及保持有序插入。"
+          }
+        ],
+        "boundary_conditions": [
+          {
+            "claim_type": "standard_408_candidate",
+            "confidence": "high",
+            "counterevidence_or_boundary": "当前题目只要求最坏复杂度；没有用户推理来证明其主动检查了搬移边界。",
+            "evidence_refs": [
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d",
+              "mcp-item:cs408:2a4c6a50b895e48541af8f16252a4d899ffd37408d7052c2e3304a162f26c889"
+            ],
+            "sol_verification_action": "不得把标准机制直接升级为已验证的个人迁移能力。",
+            "text": "定位插入位置与真正插入是两个成本来源；后者可能需要搬移线性数量的元素。"
+          }
+        ],
+        "common_confusions": [
+          {
+            "claim_type": "observed_fact",
+            "confidence": "high",
+            "counterevidence_or_boundary": "这是正式节点记录的历史模糊概念，不是本次学习者错误的直接证据。",
+            "evidence_refs": [
+              "mcp-item:cs408:4dcc4e867588b444dfd0b4df98b0f8ea5f8142426670cd1bf4a0d0a529e57c4a",
+              "mcp-item:cs408:6aefda73cee4d36db232c707600288dff498e6955af0d9d9bea38e5aead54232",
+              "mcp-item:cs408:2a4c6a50b895e48541af8f16252a4d899ffd37408d7052c2e3304a162f26c889"
+            ],
+            "sol_verification_action": "Sol 仅将其作为历史语义背景，不标记为本次错误。",
+            "text": "正式节点列出的混淆包括按序号随机访问与按值查找、定位位置与插入后搬移、有序性与顺序存储操作成本。"
+          }
+        ],
+        "mechanism": [
+          {
+            "claim_type": "standard_408_candidate",
+            "confidence": "high",
+            "counterevidence_or_boundary": "这是标准机制重构，不是学习者实际推理的观察记录。",
+            "evidence_refs": [
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d",
+              "mcp-item:cs408:4dcc4e867588b444dfd0b4df98b0f8ea5f8142426670cd1bf4a0d0a529e57c4a",
+              "mcp-item:cs408:2a4c6a50b895e48541af8f16252a4d899ffd37408d7052c2e3304a162f26c889"
+            ],
+            "sol_verification_action": "身份冲突解除后，Sol 可用该机制审核候选知识命中。",
+            "text": "应先单独计算定位阶段，再计算保持有序的实际插入阶段，整体最坏复杂度由两阶段的最坏成本合成。"
+          }
+        ],
+        "method_trigger": [
+          {
+            "claim_type": "standard_408_candidate",
+            "confidence": "high",
+            "counterevidence_or_boundary": "未观察到用户在答题时显式执行该分解。",
+            "evidence_refs": [
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d"
+            ],
+            "sol_verification_action": "后续复核可检查用户能否主动说出定位与搬移的两个阶段。",
+            "text": "看到“先定位、再执行结构修改”的复合操作时，触发分阶段计时和最坏边界检查。"
+          }
+        ],
+        "transfer_risks": [
+          {
+            "claim_type": "evidence_bound_inference",
+            "confidence": "high",
+            "counterevidence_or_boundary": "本次 interaction trace 只有一个选项答案，第一动作和显式推理均未观察到。",
+            "evidence_refs": [
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d"
+            ],
+            "sol_verification_action": "不得仅凭正确选项断言已掌握可迁移的复杂度分解方法。",
+            "text": "正确且高置信度的选择支持结果层面的独立正确，但不足以验证其能迁移到其他顺序表查找、插入或删除题。"
+          }
+        ]
+      },
+      "correct_reasoning_reconstruction": [
+        {
+          "claim_type": "observed_fact",
+          "confidence": "high",
+          "counterevidence_or_boundary": "未观察到具体推理链。",
+          "evidence_refs": [
+            "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d"
+          ],
+          "sol_verification_action": "仅保留为结果观察，不扩写为用户实际思路。",
+          "text": "冻结证据显示学习者在无提示、高置信度条件下提交了被判定为正确的选择；没有第一动作或显式推理。"
+        },
+        {
+          "claim_type": "standard_408_candidate",
+          "confidence": "high",
+          "counterevidence_or_boundary": "这是标准答案机制，不是学习者已表达的理由。",
+          "evidence_refs": [
+            "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d",
+            "mcp-item:cs408:4dcc4e867588b444dfd0b4df98b0f8ea5f8142426670cd1bf4a0d0a529e57c4a",
+            "mcp-item:cs408:2a4c6a50b895e48541af8f16252a4d899ffd37408d7052c2e3304a162f26c889"
+          ],
+          "sol_verification_action": "身份绑定确认后，Sol 可据此审核 DS02-02、DS02-03 与 DS01-11 的候选语义。",
+          "text": "标准推理应把定位阶段与实际插入阶段分开：定位成本为 \\(O(\\log n)\\)，而顺序表保持有序插入时可能发生线性搬移，整体最坏成本由后者主导。"
+        },
+        {
+          "claim_type": "unresolved",
+          "confidence": "high",
+          "counterevidence_or_boundary": "capture 结果称为 independent_correct，但 trace 没有推理内容。",
+          "evidence_refs": [
+            "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d"
+          ],
+          "sol_verification_action": "不得从结果观察反推用户已经掌握机制或边界。",
+          "text": "无法确认学习者是否实际使用了上述分解，或只是正确识别了选项。"
+        }
+      ],
+      "evidence_assessment": {
+        "completeness": "limited_by_evidence",
+        "contradictions": [
+          {
+            "claim_type": "observed_fact",
+            "confidence": "high",
+            "counterevidence_or_boundary": "两者均来自同一冻结 read session，但来源角色不同；不能由模型自行修复。",
+            "evidence_refs": [
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d",
+              "mcp-item:cs408:16869d1789b23d8cd232202e936a3b7761eb0d3596b18f121ed82ce0ab3781a5",
+              "mcp-item:cs408:74905cf388ee0a999e4da0c5e5fdfcf2e58f6e25fc23f0faca995bb7ba6129ea"
+            ],
+            "sol_verification_action": "Sol 必须重新核验 capture 与 session event 的稳定身份绑定；冲突未解除前拒绝任何正式动作。",
+            "text": "capture 将 session MR-2026-08-06-25b7d711 的 MQ-04 绑定到 DS_2023_002，而精确 projection event 将同一 MQ-04 绑定到 RU_DS01_SEQ_ORDERED_OPS。"
+          },
+          {
+            "claim_type": "observed_fact",
+            "confidence": "high",
+            "counterevidence_or_boundary": "fragile 是 projection event 的结果标签，不足以推翻 capture，也不足以证明学习者本次脆弱。",
+            "evidence_refs": [
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d",
+              "mcp-item:cs408:74905cf388ee0a999e4da0c5e5fdfcf2e58f6e25fc23f0faca995bb7ba6129ea"
+            ],
+            "sol_verification_action": "将其作为阻塞性身份与结果冲突处理，不解释为当前学习者错误。",
+            "text": "capture 记录 independent_correct/high confidence，而同一 projection event 记录 fragile。"
+          }
+        ],
+        "evidence_inventory": [
+          {
+            "claim_type": "observed_fact",
+            "confidence": "high",
+            "counterevidence_or_boundary": "task_context 与 capture-facts artifact 均返回 complete=true，artifact content_complete=true。",
+            "evidence_refs": [
+              "mcp-item:cs408:c92baacfc395fe7528ddd5d66386e3494493a5a2d7ab73c47fdefbcfdd1197b1",
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d"
+            ],
+            "sol_verification_action": "Sol 使用同一冻结 capture evidence 复核。",
+            "text": "已重新读取完整 task context 与唯一 capture-facts artifact。"
+          },
+          {
+            "claim_type": "observed_fact",
+            "confidence": "high",
+            "counterevidence_or_boundary": "正式库内容不等于本次个人推理记录。",
+            "evidence_refs": [
+              "mcp-item:cs408:4dcc4e867588b444dfd0b4df98b0f8ea5f8142426670cd1bf4a0d0a529e57c4a",
+              "mcp-item:cs408:6aefda73cee4d36db232c707600288dff498e6955af0d9d9bea38e5aead54232",
+              "mcp-item:cs408:2a4c6a50b895e48541af8f16252a4d899ffd37408d7052c2e3304a162f26c889",
+              "mcp-item:cs408:ea24f3d7ef27203ac418f2bf593bffe5bf01521a3097dc6ea663d2709c3cf824"
+            ],
+            "sol_verification_action": "身份确认后再决定是否采用这些正式节点作为命中候选。",
+            "text": "正式库存在 DS_2023_002 题目节点，以及 DS02-02、DS02-03、DS02-04、DS02-05、DS01-11 知识节点。"
+          },
+          {
+            "claim_type": "observed_fact",
+            "confidence": "high",
+            "counterevidence_or_boundary": "关系查询返回的是正式既有边，不表示本次 capture 已建立新关系。",
+            "evidence_refs": [
+              "mcp-item:cs408:eac057b80ea1cf0d4534ed3a70c4dfae951ba5f49a260bace72b4936de386e1a",
+              "mcp-item:cs408:f2afd824facd4657c149da79006173db69d9171a621e6d8b7d345c8750f9db24",
+              "mcp-item:cs408:6d65a7e4237896ec1ebda96de383f3b6a58592d5856796cdfa71a0f6dc054069",
+              "mcp-item:cs408:68c3150d6e1e4d43815b992f60c8d8485992a8cc326512e2d91f847f2f2e9aa9"
+            ],
+            "sol_verification_action": "不新增或改写关系；只在身份无冲突时复核既有边。",
+            "text": "正式关系已声明 DS_2023_002 与顺序表、顺序表插入、顺序表查找及时间复杂度分析之间的关系。"
+          }
+        ],
+        "gaps": [
+          {
+            "claim_type": "observed_fact",
+            "confidence": "high",
+            "counterevidence_or_boundary": "interaction trace 的 omitted_event_count 为 0，但原始 trace 本身只有一个 answer event。",
+            "evidence_refs": [
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d"
+            ],
+            "sol_verification_action": "不补造第一动作、理由、纠错或提示过程。",
+            "text": "缺少第一动作、显式推理和迁移表现。"
+          },
+          {
+            "claim_type": "unresolved",
+            "confidence": "high",
+            "counterevidence_or_boundary": "projection event 与 capture 的身份字段冲突。",
+            "evidence_refs": [
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d",
+              "mcp-item:cs408:74905cf388ee0a999e4da0c5e5fdfcf2e58f6e25fc23f0faca995bb7ba6129ea"
+            ],
+            "sol_verification_action": "在冲突解除前保持 proposal-only 且不产出 Sol 可消费的正式变更。",
+            "text": "当前 observation 能否安全绑定到 DS_2023_002 尚未确定。"
+          }
+        ],
+        "inferences": [
+          {
+            "claim_type": "evidence_bound_inference",
+            "confidence": "medium",
+            "counterevidence_or_boundary": "题面语义与 DS_2023_002 高度吻合，但身份冲突阻止正式绑定。",
+            "evidence_refs": [
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d",
+              "mcp-item:cs408:4dcc4e867588b444dfd0b4df98b0f8ea5f8142426670cd1bf4a0d0a529e57c4a",
+              "mcp-item:cs408:74905cf388ee0a999e4da0c5e5fdfcf2e58f6e25fc23f0faca995bb7ba6129ea"
+            ],
+            "sol_verification_action": "仅保留为条件性语义候选，不发出正式节点或关系动作。",
+            "text": "若忽略身份冲突，当前题面与 DS_2023_002 及其顺序表复杂度知识网络相符；但现有证据不足以安全采用该绑定。"
+          }
+        ],
+        "observed_facts": [
+          {
+            "claim_type": "observed_fact",
+            "confidence": "high",
+            "counterevidence_or_boundary": "无；这是冻结 capture 的直接字段。",
+            "evidence_refs": [
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d"
+            ],
+            "sol_verification_action": "保留原始事实，不修改。",
+            "text": "capture 记录本题为 dialogue_only，用户无提示、高置信度提交了正确结果，formal_write_count 为 0。"
+          }
+        ]
+      },
+      "executive_summary": "冻结证据显示本题结果层面为无提示、高置信度正确，但没有第一动作或显式推理。正式库存在 DS_2023_002 及其顺序表复杂度知识网络；然而同一 session 与 item MQ-04 的 projection event 将题目身份标为 RU_DS01_SEQ_ORDERED_OPS，并标记为 fragile，与 capture 的 DS_2023_002 和 independent_correct 冲突。因此本阶段 fail closed，不产生正式节点、状态或关系变更，建议 insufficient_evidence。",
+      "formalization_candidates": {
+        "error_tags": [
+          {
+            "claim_type": "observed_fact",
+            "confidence": "high",
+            "counterevidence_or_boundary": "这些是正式节点历史字段，不是当前 observation 的错误诊断。",
+            "evidence_refs": [
+              "mcp-item:cs408:4dcc4e867588b444dfd0b4df98b0f8ea5f8142426670cd1bf4a0d0a529e57c4a"
+            ],
+            "sol_verification_action": "不得将历史 E01、E02、E05、E06 直接写成当前错误。",
+            "text": "历史正式节点记录 E01 概念边界混淆、E02 条件遗漏、E05 单位换算错误、E06 算法过程跳步；本次不确认任何一个当前错误标签。"
+          }
+        ],
+        "fuzzy_concepts": [
+          {
+            "claim_type": "observed_fact",
+            "confidence": "high",
+            "counterevidence_or_boundary": "正式节点的模糊概念不能替代当前推理证据。",
+            "evidence_refs": [
+              "mcp-item:cs408:4dcc4e867588b444dfd0b4df98b0f8ea5f8142426670cd1bf4a0d0a529e57c4a"
+            ],
+            "sol_verification_action": "仅作为后续迁移检查的语义候选。",
+            "text": "按序号随机访问与按值查找、定位插入位置与元素搬移、有序性与顺序存储成本。"
+          }
+        ],
+        "hit_knowledge": [
+          {
+            "claim_type": "unresolved",
+            "confidence": "medium",
+            "counterevidence_or_boundary": "题面与正式知识关系相符，但当前 capture 身份未通过 projection 对账。",
+            "evidence_refs": [
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d",
+              "mcp-item:cs408:4dcc4e867588b444dfd0b4df98b0f8ea5f8142426670cd1bf4a0d0a529e57c4a",
+              "mcp-item:cs408:eac057b80ea1cf0d4534ed3a70c4dfae951ba5f49a260bace72b4936de386e1a",
+              "mcp-item:cs408:f2afd824facd4657c149da79006173db69d9171a621e6d8b7d345c8750f9db24",
+              "mcp-item:cs408:6d65a7e4237896ec1ebda96de383f3b6a58592d5856796cdfa71a0f6dc054069",
+              "mcp-item:cs408:74905cf388ee0a999e4da0c5e5fdfcf2e58f6e25fc23f0faca995bb7ba6129ea"
+            ],
+            "sol_verification_action": "身份确认后才可考虑 mark_existing_knowledge；当前不发出该动作。",
+            "text": "条件性命中候选为 DS02-02 顺序表、DS02-03 顺序表插入与 DS02-05 顺序表查找。"
+          }
+        ],
+        "key_parameters": [
+          {
+            "claim_type": "standard_408_candidate",
+            "confidence": "high",
+            "counterevidence_or_boundary": "这是题目机制参数，不是用户已表达的计算过程。",
+            "evidence_refs": [
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d"
+            ],
+            "sol_verification_action": "身份核验后作为 Sol 的独立事实复核输入。",
+            "text": "\\(n\\)：有序顺序表的元素个数；查找阶段与实际插入阶段是两个成本阶段；最坏情况需考虑线性搬移。"
+          }
+        ],
+        "main_knowledge": [
+          {
+            "claim_type": "unresolved",
+            "confidence": "medium",
+            "counterevidence_or_boundary": "正式题目节点将 DS02-02 设为主知识点，但 current item identity 尚未通过 projection 对账。",
+            "evidence_refs": [
+              "mcp-item:cs408:4dcc4e867588b444dfd0b4df98b0f8ea5f8142426670cd1bf4a0d0a529e57c4a",
+              "mcp-item:cs408:6aefda73cee4d36db232c707600288dff498e6955af0d9d9bea38e5aead54232",
+              "mcp-item:cs408:74905cf388ee0a999e4da0c5e5fdfcf2e58f6e25fc23f0faca995bb7ba6129ea"
+            ],
+            "sol_verification_action": "Sol 先解决身份冲突，再决定是否采用 DS02-02 主知识点候选。",
+            "text": "条件性主知识点候选为 DS02-02 顺序表；不宣称已正式命中或掌握。"
+          }
+        ],
+        "question_type": [
+          {
+            "claim_type": "observed_fact",
+            "confidence": "high",
+            "counterevidence_or_boundary": "题型识别不受身份冲突完全影响，但正式归档仍需身份核验。",
+            "evidence_refs": [
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d"
+            ],
+            "sol_verification_action": "身份确认后保留为选择题候选。",
+            "text": "题型候选为选择题。"
+          }
+        ],
+        "redo_first_action": [
+          {
+            "claim_type": "unresolved",
+            "confidence": "high",
+            "counterevidence_or_boundary": "当前 capture 结果为 independent_correct，且身份仍冲突。",
+            "evidence_refs": [
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d",
+              "mcp-item:cs408:74905cf388ee0a999e4da0c5e5fdfcf2e58f6e25fc23f0faca995bb7ba6129ea"
+            ],
+            "sol_verification_action": "第一动作不是立即 redo，而是核对 capture、session item 与 projection event 的身份。",
+            "text": "暂不安排重做；先解决题目身份和结果标签冲突。"
+          }
+        ],
+        "relationship_search_intents": [
+          {
+            "claim_type": "observed_fact",
+            "confidence": "high",
+            "counterevidence_or_boundary": "既有关系不是本次 capture 新建的关系。",
+            "evidence_refs": [
+              "mcp-item:cs408:eac057b80ea1cf0d4534ed3a70c4dfae951ba5f49a260bace72b4936de386e1a",
+              "mcp-item:cs408:f2afd824facd4657c149da79006173db69d9171a621e6d8b7d345c8750f9db24",
+              "mcp-item:cs408:6d65a7e4237896ec1ebda96de383f3b6a58592d5856796cdfa71a0f6dc054069",
+              "mcp-item:cs408:68c3150d6e1e4d43815b992f60c8d8485992a8cc326512e2d91f847f2f2e9aa9"
+            ],
+            "sol_verification_action": "仅复核 DS_2023_002 的既有边，不提出新关系。",
+            "text": "关系核验意图为确认 DS_2023_002 与 DS02-02、DS02-03、DS02-05、DS01-11 的既有关系是否仍对应当前 capture。"
+          }
+        ],
+        "safe_summary": [
+          {
+            "claim_type": "evidence_bound_inference",
+            "confidence": "high",
+            "counterevidence_or_boundary": "不包含当前选项标签或正式掌握结论。",
+            "evidence_refs": [
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d",
+              "mcp-item:cs408:4dcc4e867588b444dfd0b4df98b0f8ea5f8142426670cd1bf4a0d0a529e57c4a"
+            ],
+            "sol_verification_action": "身份冲突解除前仅保留此答案安全语义摘要。",
+            "text": "本题涉及顺序表中分阶段复杂度分析，以及定位成本与实际元素搬移成本的边界。"
+          }
+        ],
+        "secondary_knowledge": [
+          {
+            "claim_type": "unresolved",
+            "confidence": "medium",
+            "counterevidence_or_boundary": "正式题目节点列为副知识点，但当前 capture 身份仍待核验。",
+            "evidence_refs": [
+              "mcp-item:cs408:4dcc4e867588b444dfd0b4df98b0f8ea5f8142426670cd1bf4a0d0a529e57c4a",
+              "mcp-item:cs408:02e7354db628cac47fd3a24cb40f77554ed3a001b9a105e8e23418b0203c794f"
+            ],
+            "sol_verification_action": "身份确认后再考虑 DS01-11 时间复杂度分析作为副知识点候选。",
+            "text": "条件性副知识点候选为 DS01-11 时间复杂度分析。"
+          }
+        ],
+        "topic_intents": [
+          {
+            "claim_type": "evidence_bound_inference",
+            "confidence": "high",
+            "counterevidence_or_boundary": "主题候选不等于正式写入。",
+            "evidence_refs": [
+              "mcp-item:cs408:4dcc4e867588b444dfd0b4df98b0f8ea5f8142426670cd1bf4a0d0a529e57c4a",
+              "mcp-item:cs408:6aefda73cee4d36db232c707600288dff498e6955af0d9d9bea38e5aead54232",
+              "mcp-item:cs408:02e7354db628cac47fd3a24cb40f77554ed3a001b9a105e8e23418b0203c794f"
+            ],
+            "sol_verification_action": "身份核验后可归入 DS02 线性表与 DS01 时间复杂度分析。",
+            "text": "主题候选为数据结构、线性表、顺序表、顺序表插入与时间复杂度分析。"
+          }
+        ]
+      },
+      "knowledge_network_context": {
+        "chapter_history_summary": [
+          {
+            "claim_type": "observed_fact",
+            "confidence": "high",
+            "counterevidence_or_boundary": "正式节点历史字段不代表本次重复犯错。",
+            "evidence_refs": [
+              "mcp-item:cs408:4dcc4e867588b444dfd0b4df98b0f8ea5f8142426670cd1bf4a0d0a529e57c4a",
+              "mcp-item:cs408:6aefda73cee4d36db232c707600288dff498e6955af0d9d9bea38e5aead54232",
+              "mcp-item:cs408:02e7354db628cac47fd3a24cb40f77554ed3a001b9a105e8e23418b0203c794f"
+            ],
+            "sol_verification_action": "Sol 仅把历史标签作为背景，不更新当前错误状态。",
+            "text": "正式节点位于 DS02 线性表，主知识点为顺序表，副知识点为时间复杂度分析，并保留历史错因字段。"
+          }
+        ],
+        "exposed_problem_summary": [
+          {
+            "claim_type": "evidence_bound_inference",
+            "confidence": "high",
+            "counterevidence_or_boundary": "用户推理未观察到。",
+            "evidence_refs": [
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d",
+              "mcp-item:cs408:4dcc4e867588b444dfd0b4df98b0f8ea5f8142426670cd1bf4a0d0a529e57c4a"
+            ],
+            "sol_verification_action": "身份确认后作为语义摘要使用。",
+            "text": "暴露的问题结构是：将定位插入位置与顺序表实际插入的成本分开，再判断整体最坏复杂度。"
+          }
+        ],
+        "knowledge_alignment": [
+          {
+            "claim_type": "unresolved",
+            "confidence": "medium",
+            "counterevidence_or_boundary": "capture 语义与正式节点高度对齐，但 projection event 给出不同身份。",
+            "evidence_refs": [
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d",
+              "mcp-item:cs408:4dcc4e867588b444dfd0b4df98b0f8ea5f8142426670cd1bf4a0d0a529e57c4a",
+              "mcp-item:cs408:74905cf388ee0a999e4da0c5e5fdfcf2e58f6e25fc23f0faca995bb7ba6129ea"
+            ],
+            "sol_verification_action": "身份冲突解除后再确认知识对齐。",
+            "text": "候选对齐指向 DS_2023_002 的顺序表与复杂度网络，但当前不能作为已确认对齐。"
+          }
+        ],
+        "limitations": [
+          {
+            "claim_type": "observed_fact",
+            "confidence": "high",
+            "counterevidence_or_boundary": "这是 capture 明确记录的缺口。",
+            "evidence_refs": [
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d"
+            ],
+            "sol_verification_action": "保持证据边界，不补造推理。",
+            "text": "缺少第一动作、显式推理和任何可验证的迁移表现。"
+          },
+          {
+            "claim_type": "unresolved",
+            "confidence": "high",
+            "counterevidence_or_boundary": "projection event 与 capture 的稳定身份不一致。",
+            "evidence_refs": [
+              "mcp-item:cs408:16869d1789b23d8cd232202e936a3b7761eb0d3596b18f121ed82ce0ab3781a5",
+              "mcp-item:cs408:74905cf388ee0a999e4da0c5e5fdfcf2e58f6e25fc23f0faca995bb7ba6129ea"
+            ],
+            "sol_verification_action": "按 fail-closed 处理，禁止模型自行修复 projection。",
+            "text": "当前正式身份、历史结果标签与 capture 之间存在阻塞性对账问题。"
+          }
+        ],
+        "prior_mistake_comparison": [
+          {
+            "claim_type": "observed_fact",
+            "confidence": "high",
+            "counterevidence_or_boundary": "正式历史标签不是当前错误证据；本次 first_break 为未观察到。",
+            "evidence_refs": [
+              "mcp-item:cs408:4dcc4e867588b444dfd0b4df98b0f8ea5f8142426670cd1bf4a0d0a529e57c4a",
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d"
+            ],
+            "sol_verification_action": "不得将历史 E01/E02 与本次 observation 合并成复发判断。",
+            "text": "正式节点有 E01、E02 等历史标签，但当前证据没有观察到相同错误复发。"
+          }
+        ],
+        "relationship_candidates": [
+          {
+            "claim_type": "observed_fact",
+            "confidence": "high",
+            "counterevidence_or_boundary": "关系查询返回的是正式既有边，当前 capture 相关关系仍需身份核验。",
+            "evidence_refs": [
+              "mcp-item:cs408:eac057b80ea1cf0d4534ed3a70c4dfae951ba5f49a260bace72b4936de386e1a",
+              "mcp-item:cs408:f2afd824facd4657c149da79006173db69d9171a621e6d8b7d345c8750f9db24",
+              "mcp-item:cs408:6d65a7e4237896ec1ebda96de383f3b6a58592d5856796cdfa71a0f6dc054069",
+              "mcp-item:cs408:68c3150d6e1e4d43815b992f60c8d8485992a8cc326512e2d91f847f2f2e9aa9"
+            ],
+            "sol_verification_action": "不提出新的 propose_relation。",
+            "text": "可复核既有 DS_2023_002 知识边，但本阶段不新增关系候选。"
+          }
+        ],
+        "subject_chapter_classification": [
+          {
+            "claim_type": "observed_fact",
+            "confidence": "high",
+            "counterevidence_or_boundary": "正式题目节点的 subject 为数据结构。",
+            "evidence_refs": [
+              "mcp-item:cs408:4dcc4e867588b444dfd0b4df98b0f8ea5f8142426670cd1bf4a0d0a529e57c4a",
+              "mcp-item:cs408:6aefda73cee4d36db232c707600288dff498e6955af0d9d9bea38e5aead54232",
+              "mcp-item:cs408:02e7354db628cac47fd3a24cb40f77554ed3a001b9a105e8e23418b0203c794f"
+            ],
+            "sol_verification_action": "身份确认后保留 DS02 线性表与 DS01 时间复杂度分类。",
+            "text": "学科分类候选为数据结构；章节为 DS02 线性表，关联 DS01 时间复杂度分析。"
+          }
+        ]
+      },
+      "question_structure": {
+        "asked_task": [
+          {
+            "claim_type": "observed_fact",
+            "confidence": "high",
+            "counterevidence_or_boundary": "无。",
+            "evidence_refs": [
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d"
+            ],
+            "sol_verification_action": "保留题干任务原貌。",
+            "text": "分别判断查找阶段与整个保持有序插入操作的最坏时间复杂度。"
+          }
+        ],
+        "conditions": [
+          {
+            "claim_type": "observed_fact",
+            "confidence": "high",
+            "counterevidence_or_boundary": "无。",
+            "evidence_refs": [
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d"
+            ],
+            "sol_verification_action": "保留题干条件。",
+            "text": "对象是长度为 \\(n\\) 的有序顺序表，先用二分查找确定位置，再保持有序插入一个元素。"
+          }
+        ],
+        "mechanism_structure": [
+          {
+            "claim_type": "standard_408_candidate",
+            "confidence": "high",
+            "counterevidence_or_boundary": "标准机制不能代替用户推理证据。",
+            "evidence_refs": [
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d",
+              "mcp-item:cs408:4dcc4e867588b444dfd0b4df98b0f8ea5f8142426670cd1bf4a0d0a529e57c4a",
+              "mcp-item:cs408:2a4c6a50b895e48541af8f16252a4d899ffd37408d7052c2e3304a162f26c889"
+            ],
+            "sol_verification_action": "身份确认后用于 Sol 的独立语义审核。",
+            "text": "流程包含定位阶段、元素搬移阶段和整体最坏复杂度合成，不能只看定位阶段。"
+          }
+        ],
+        "objects": [
+          {
+            "claim_type": "observed_fact",
+            "confidence": "high",
+            "counterevidence_or_boundary": "对象角色来自题干，不代表用户已解释其关系。",
+            "evidence_refs": [
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d"
+            ],
+            "sol_verification_action": "保持对象边界。",
+            "text": "有序顺序表是存储结构；二分查找是定位方法；插入位置是中间目标；元素搬移是实际操作成本来源。"
+          }
+        ]
+      },
+      "reasoning_diagnosis": {
+        "alternative_explanations": [
+          {
+            "claim_type": "unresolved",
+            "confidence": "medium",
+            "counterevidence_or_boundary": "没有额外证据可以在这些解释之间作出选择。",
+            "evidence_refs": [
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d",
+              "mcp-item:cs408:74905cf388ee0a999e4da0c5e5fdfcf2e58f6e25fc23f0faca995bb7ba6129ea"
+            ],
+            "sol_verification_action": "保持身份未决，不把冲突归因于学习者或任一单一系统。",
+            "text": "可能是 capture 对应了替换后的题目，也可能是 session projection 保留了另一题的队列身份；现有证据不足以选择其一。"
+          }
+        ],
+        "first_break": null,
+        "hint_dependencies": [
+          {
+            "claim_type": "observed_fact",
+            "confidence": "high",
+            "counterevidence_or_boundary": "interaction trace 仅有 learner answer 事件。",
+            "evidence_refs": [
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d"
+            ],
+            "sol_verification_action": "不补造提示链。",
+            "text": "未观察到提示、追问或纠正依赖。"
+          }
+        ],
+        "independent_correct_steps": [
+          {
+            "claim_type": "observed_fact",
+            "confidence": "high",
+            "counterevidence_or_boundary": "只观察到结果，没有观察到中间步骤。",
+            "evidence_refs": [
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d"
+            ],
+            "sol_verification_action": "仅记录结果层独立正确，不推断方法掌握。",
+            "text": "可确认的独立步骤只有无提示提交正确结果；具体分解步骤未观察到。"
+          }
+        ],
+        "later_breaks": [],
+        "root_cause_hypotheses": [
+          {
+            "claim_type": "evidence_bound_inference",
+            "confidence": "high",
+            "counterevidence_or_boundary": "这是数据身份问题的假设，不是学习者错因。",
+            "evidence_refs": [
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d",
+              "mcp-item:cs408:16869d1789b23d8cd232202e936a3b7761eb0d3596b18f121ed82ce0ab3781a5",
+              "mcp-item:cs408:74905cf388ee0a999e4da0c5e5fdfcf2e58f6e25fc23f0faca995bb7ba6129ea"
+            ],
+            "sol_verification_action": "按 projection/event mismatch fail closed；不得写入 learner error。",
+            "text": "当前最强根因假设是 capture identity 与晨间 projection event 的绑定不一致，而不是学习者在本题中的知识错误。"
+          }
+        ],
+        "self_corrections": [
+          {
+            "claim_type": "observed_fact",
+            "confidence": "high",
+            "counterevidence_or_boundary": "原始 interaction trace 只有一个 answer event。",
+            "evidence_refs": [
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d"
+            ],
+            "sol_verification_action": "不生成纠错路径。",
+            "text": "未观察到自我纠正、重答或助手提示后的修正。"
+          }
+        ]
+      },
+      "report_profile": "cs408_deep",
+      "risk_flags": [
+        {
+          "claim_type": "observed_fact",
+          "confidence": "high",
+          "counterevidence_or_boundary": "冲突字段均来自同一冻结 read session 的不同证据项。",
+          "evidence_refs": [
+            "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d",
+            "mcp-item:cs408:74905cf388ee0a999e4da0c5e5fdfcf2e58f6e25fc23f0faca995bb7ba6129ea"
+          ],
+          "sol_verification_action": "身份冲突未解除前禁止正式化。",
+          "text": "高风险：当前 capture 与 projection event 的题目身份不一致。"
+        },
+        {
+          "claim_type": "evidence_bound_inference",
+          "confidence": "high",
+          "counterevidence_or_boundary": "capture 明确报告 independent_correct，但推理字段为空。",
+          "evidence_refs": [
+            "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d"
+          ],
+          "sol_verification_action": "不把正确结果升级为完整方法掌握。",
+          "text": "中高风险：缺少显式推理，不能确认可迁移掌握。"
+        },
+        {
+          "claim_type": "observed_fact",
+          "confidence": "high",
+          "counterevidence_or_boundary": "正式节点历史字段仅是背景。",
+          "evidence_refs": [
+            "mcp-item:cs408:4dcc4e867588b444dfd0b4df98b0f8ea5f8142426670cd1bf4a0d0a529e57c4a"
+          ],
+          "sol_verification_action": "阻止历史错因自动复发归因。",
+          "text": "高风险：不得把正式节点的历史 E01/E02 等标签写成当前错误。"
+        }
+      ],
+      "schema_version": "study-intake-luna-analysis-v2",
+      "sol_verification_plan": {
+        "conflict_handling_suggestions": [
+          {
+            "claim_type": "standard_408_candidate",
+            "confidence": "high",
+            "counterevidence_or_boundary": "共享契约要求 projection/event mismatch fail closed。",
+            "evidence_refs": [
+              "mcp-item:cs408:16869d1789b23d8cd232202e936a3b7761eb0d3596b18f121ed82ce0ab3781a5",
+              "mcp-item:cs408:74905cf388ee0a999e4da0c5e5fdfcf2e58f6e25fc23f0faca995bb7ba6129ea"
+            ],
+            "sol_verification_action": "保留各来源原值，禁止模型选择性解释或修复。",
+            "text": "将 capture identity、projection identity 和结果标签作为未解决冲突并行保留。"
+          }
+        ],
+        "must_verify": [
+          {
+            "claim_type": "standard_408_candidate",
+            "confidence": "high",
+            "counterevidence_or_boundary": "当前身份冲突直接影响正式节点、知识节点和关系候选的适用性。",
+            "evidence_refs": [
+              "mcp-item:cs408:c92baacfc395fe7528ddd5d66386e3494493a5a2d7ab73c47fdefbcfdd1197b1",
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d",
+              "mcp-item:cs408:16869d1789b23d8cd232202e936a3b7761eb0d3596b18f121ed82ce0ab3781a5",
+              "mcp-item:cs408:74905cf388ee0a999e4da0c5e5fdfcf2e58f6e25fc23f0faca995bb7ba6129ea"
+            ],
+            "sol_verification_action": "Sol 重新打开 canonical identity，核对 OBS、session、MQ-04、source_id 与 event identity。",
+            "text": "首先核验当前 capture 是否确实对应 DS_2023_002，而不是 projection event 中的 RU_DS01_SEQ_ORDERED_OPS。"
+          },
+          {
+            "claim_type": "standard_408_candidate",
+            "confidence": "high",
+            "counterevidence_or_boundary": "正式节点与关系已存在，但只能在身份确认后使用。",
+            "evidence_refs": [
+              "mcp-item:cs408:4dcc4e867588b444dfd0b4df98b0f8ea5f8142426670cd1bf4a0d0a529e57c4a",
+              "mcp-item:cs408:6aefda73cee4d36db232c707600288dff498e6955af0d9d9bea38e5aead54232",
+              "mcp-item:cs408:eac057b80ea1cf0d4534ed3a70c4dfae951ba5f49a260bace72b4936de386e1a"
+            ],
+            "sol_verification_action": "若身份确认，再独立复核 DS02-02 的主知识点和既有关系；否则拒绝这些候选。",
+            "text": "身份确认后才可审核 DS02-02 及其既有知识关系。"
+          }
+        ],
+        "recommended_disposition": "insufficient_evidence",
+        "reject_if": [
+          {
+            "claim_type": "unresolved",
+            "confidence": "high",
+            "counterevidence_or_boundary": "当前冲突尚未解决。",
+            "evidence_refs": [
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d",
+              "mcp-item:cs408:74905cf388ee0a999e4da0c5e5fdfcf2e58f6e25fc23f0faca995bb7ba6129ea"
+            ],
+            "sol_verification_action": "若冲突仍在，拒绝任何 mark、update、status change 或 relation proposal。",
+            "text": "身份冲突未解除时，拒绝正式节点、知识节点、状态和关系变更。"
+          },
+          {
+            "claim_type": "unresolved",
+            "confidence": "high",
+            "counterevidence_or_boundary": "没有当前显式推理。",
+            "evidence_refs": [
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d"
+            ],
+            "sol_verification_action": "拒绝把当前 observation 写成已验证的完整方法掌握或当前错误。",
+            "text": "拒绝由单个正确选项推导出超出证据范围的掌握度或错因。"
+          }
+        ],
+        "source_checks": [
+          {
+            "claim_type": "observed_fact",
+            "confidence": "high",
+            "counterevidence_or_boundary": "本阶段 MCP 返回均绑定同一 generation、authority fingerprint 与 read_session_id；任务 artifact、正式库和 review_events 均已重新读取。",
+            "evidence_refs": [
+              "mcp-item:cs408:c92baacfc395fe7528ddd5d66386e3494493a5a2d7ab73c47fdefbcfdd1197b1",
+              "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d",
+              "mcp-item:cs408:4dcc4e867588b444dfd0b4df98b0f8ea5f8142426670cd1bf4a0d0a529e57c4a",
+              "mcp-item:cs408:16869d1789b23d8cd232202e936a3b7761eb0d3596b18f121ed82ce0ab3781a5",
+              "mcp-item:cs408:74905cf388ee0a999e4da0c5e5fdfcf2e58f6e25fc23f0faca995bb7ba6129ea"
+            ],
+            "sol_verification_action": "Sol 复核同一 read session 的完整证据链。",
+            "text": "任务 artifact 覆盖完整，正式节点、知识节点、关系、session projection 与 review event 均已读取。"
+          }
+        ]
+      },
+      "unresolved": [
+        {
+          "claim_type": "unresolved",
+          "confidence": "high",
+          "counterevidence_or_boundary": "capture 与 projection event 对同一 MQ-04 给出不同 identity。",
+          "evidence_refs": [
+            "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d",
+            "mcp-item:cs408:74905cf388ee0a999e4da0c5e5fdfcf2e58f6e25fc23f0faca995bb7ba6129ea"
+          ],
+          "sol_verification_action": "Sol 重新核验 canonical identity；未解决前保持 fail closed。",
+          "text": "当前 observation 是否属于正式题目 DS_2023_002 尚未确定。"
+        },
+        {
+          "claim_type": "unresolved",
+          "confidence": "high",
+          "counterevidence_or_boundary": "interaction trace 没有第一动作或显式推理。",
+          "evidence_refs": [
+            "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d"
+          ],
+          "sol_verification_action": "不得从正确结果推断完整方法掌握。",
+          "text": "学习者是否真正使用了“定位成本与搬移成本分离”的方法无法验证。"
+        },
+        {
+          "claim_type": "unresolved",
+          "confidence": "high",
+          "counterevidence_or_boundary": "formal_write_count 为 0，且本阶段为 proposal-only。",
+          "evidence_refs": [
+            "mcp-item:cs408:17d42e23ca2e30ac29feaefe456ce2d42d05b6252bfba40313e9ed614a3cf95d"
+          ],
+          "sol_verification_action": "不声称任何正式节点、关系或状态已被创建、更新或提交。",
+          "text": "本阶段没有可安全交给 Sol 执行的正式变更包。"
+        }
+      ]
+    },
+    "schema_version": "study-intake-luna-critical-review-v2",
+    "sol_priority_checks": [],
+    "summary": "独立复核已重新调用 get_task_context，完整读取唯一 task artifact，并完成正式节点、知识节点、关系、晨间 session 与 review_events 的只读 MCP 查询及分页闭合。draft 的主要语义得到支持，但其原 evidence_refs 属于 Analysis 阶段，已重绑定为本 Critical Review 实际消费的 MCP item refs。当前 capture 与同一 session/item 的 projection event 仍存在 DS_2023_002 对 RU_DS01_SEQ_ORDERED_OPS、independent_correct 对 fragile 的阻塞冲突；Luna 不得自行修复，因此本阶段 reject，所有正式动作保持 proposal-only。",
+    "unsupported_claims": [],
+    "verdict": "reject"
+  },
+  "payload_sha256": "c1fe6830902a9426d2998177fdfe08084246d0dddfaf089bfa664e2c725aecf7",
+  "requested_model": "gpt-5.6-luna",
+  "requested_reasoning_effort": "max",
+  "runtime_identity_status": "requested_unverified",
+  "runtime_metadata_provenance": "unavailable",
+  "runtime_model": null,
+  "runtime_reasoning_effort": null,
+  "schema_sha256": "4bdad47155fc0e1e0596baed147a9b86c03c134c705cd544cc05455271a28b94",
+  "schema_version": "study-intake-model-stage-output-v1",
+  "stage_name": "cs408_critical_review"
+}

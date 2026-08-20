@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Immutable MCP authority snapshot v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "subject", "source_generation", "source_authority_fingerprint", "mcp_server_release", "files", "file_set_sha256", "file_count", "total_bytes", "created_at", "formal_write_count"],
+  "properties": {
+    "schema_version": {"const": "study-read-mcp-authority-snapshot.v1"},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "source_generation": {"type": "string", "minLength": 1, "maxLength": 160},
+    "source_authority_fingerprint": {"$ref": "#/$defs/sha256"},
+    "mcp_server_release": {"type": "string", "pattern": "^0\\.3\\.0\\+sha256\\.[0-9a-f]{64}$"},
+    "files": {"type": "array", "maxItems": 200000, "items": {"$ref": "#/$defs/file"}},
+    "file_set_sha256": {"$ref": "#/$defs/sha256"},
+    "file_count": {"type": "integer", "minimum": 0, "maximum": 200000},
+    "total_bytes": {"type": "integer", "minimum": 0, "maximum": 1073741824},
+    "created_at": {"type": "string", "format": "date-time"},
+    "formal_write_count": {"const": 0}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["relative_path", "sha256", "size"],
+      "properties": {
+        "relative_path": {"type": "string", "minLength": 1, "maxLength": 2048, "not": {"pattern": "(^/|(^|/)\\.\\.(/|$))"}},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "size": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}

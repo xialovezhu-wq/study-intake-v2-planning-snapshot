@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/sol-commit-receipt-v1.json",
+  "title": "Sol Commit Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "batch_id", "subject", "fencing_token", "writer",
+    "writer_adapter", "execution_result_sha256", "sol_review_receipt_sha256", "pre_state_sha256",
+    "post_state_sha256", "operations", "writer_process", "transaction_end",
+    "recovery_position_sha256", "rollback_receipt_sha256",
+    "status", "dispatcher_effect",
+    "formal_write_count", "completed_at", "seal"
+  ],
+  "properties": {
+    "schema_version": {"const": "sol_commit_receipt_v1"},
+    "batch_id": {"type": "string", "minLength": 1},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "fencing_token": {"type": "integer", "minimum": 1},
+    "writer": {"const": "sol"},
+    "writer_adapter": {
+      "enum": [
+        "math_nightly_writer_v1", "cs408_daily_intake_writer_v1",
+        "english_daily_intake_writer_v1"
+      ]
+    },
+    "execution_result_sha256": {"$ref": "#/$defs/sha256"},
+    "sol_review_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "pre_state_sha256": {"$ref": "#/$defs/sha256"},
+    "post_state_sha256": {"$ref": "#/$defs/sha256"},
+    "operations": {"type": "array", "items": {"type": "object"}},
+    "writer_process": {"$ref": "#/$defs/writer_process"},
+    "transaction_end": {"$ref": "#/$defs/transaction_end"},
+    "recovery_position_sha256": {"$ref": "#/$defs/nullable_sha256"},
+    "rollback_receipt_sha256": {"$ref": "#/$defs/nullable_sha256"},
+    "status": {"enum": ["committed", "already_current", "failed", "rolled_back"]},
+    "dispatcher_effect": {"$ref": "#/$defs/dispatcher_effect"},
+    "formal_write_count": {"type": "integer", "minimum": 0},
+    "completed_at": {"type": "string", "minLength": 1},
+    "seal": {"$ref": "#/$defs/seal"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"const": "failed"}}},
+      "then": {"properties": {"recovery_position_sha256": {"$ref": "#/$defs/sha256"}}}
+    },
+    {
+      "if": {"properties": {"status": {"const": "rolled_back"}}},
+      "then": {"properties": {"rollback_receipt_sha256": {"$ref": "#/$defs/sha256"}}}
+    }
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nullable_sha256": {"anyOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+    "writer_process": {
+      "type": "object", "additionalProperties": false,
+      "required": ["adapter_run_id", "pid", "terminal_state", "exit_code", "stopped_at", "evidence_sha256"],
+      "properties": {
+        "adapter_run_id": {"type": "string", "minLength": 1},
+        "pid": {"type": "integer", "minimum": 1},
+        "terminal_state": {"const": "stopped"},
+        "exit_code": {"type": "integer", "minimum": 0},
+        "stopped_at": {"type": "string", "minLength": 1},
+        "evidence_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "transaction_end": {
+      "type": "object", "additionalProperties": false,
+      "required": ["transaction_id", "state", "ended_at", "evidence_sha256"],
+      "properties": {
+        "transaction_id": {"type": "string", "minLength": 1},
+        "state": {"enum": ["committed", "already_current", "failed", "rolled_back"]},
+        "ended_at": {"type": "string", "minLength": 1},
+        "evidence_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "dispatcher_effect": {
+      "type": "object", "additionalProperties": false,
+      "required": ["scope", "subject", "paused_subjects", "drained_subjects", "other_subjects_unchanged"],
+      "properties": {
+        "scope": {"const": "subject"},
+        "subject": {"enum": ["math", "cs408", "english"]},
+        "paused_subjects": {"const": []},
+        "drained_subjects": {"const": []},
+        "other_subjects_unchanged": {"const": true}
+      }
+    },
+    "seal": {
+      "type": "object", "additionalProperties": false,
+      "required": ["algorithm", "purpose", "hmac_sha256"],
+      "properties": {
+        "algorithm": {"const": "HMAC-SHA256"},
+        "purpose": {"const": "deterministic-writer-apply-receipt"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

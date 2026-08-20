@@ -1,0 +1,700 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/three-subject-concurrency-campaign-v2.json",
+  "title": "Three subject asynchronous production Canary campaign v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "evidence_scope",
+    "generated_at",
+    "campaign_id",
+    "release_id",
+    "current_release_usable",
+    "status",
+    "result_label",
+    "production_accepted",
+    "model_request_contract",
+    "safety",
+    "canary",
+    "concurrency",
+    "subjects"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "study-intake-three-subject-concurrency-campaign-v2"
+    },
+    "evidence_scope": {
+      "enum": ["real_production_hmac_v2", "zero_model_fixture_v2"]
+    },
+    "generated_at": {"$ref": "#/$defs/timestamp"},
+    "campaign_id": {"$ref": "#/$defs/sha256"},
+    "release_id": {"$ref": "#/$defs/sha256"},
+    "current_release_usable": {"type": "boolean"},
+    "status": {
+      "enum": [
+        "production_canary_active",
+        "production_canary_active_with_subject_failure",
+        "production_verified",
+        "test_evidence_only"
+      ]
+    },
+    "result_label": {
+      "enum": [
+        "production_canary_pending",
+        "production_canary_partially_verified",
+        "production_canary_subject_failure",
+        "production_runtime_verified",
+        "zero_model_fixture_evidence_only"
+      ]
+    },
+    "production_accepted": {"const": false},
+    "model_request_contract": {"$ref": "#/$defs/modelRequestContract"},
+    "safety": {"$ref": "#/$defs/safety"},
+    "canary": {"$ref": "#/$defs/canary"},
+    "concurrency": {"$ref": "#/$defs/concurrency"},
+    "subjects": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["math", "cs408", "english"],
+      "properties": {
+        "math": {
+          "allOf": [
+            {"$ref": "#/$defs/subject"},
+            {
+              "properties": {
+                "subject": {"const": "math"},
+                "stage_timeout_seconds": {"const": 3600},
+                "mcp_namespace": {"const": "kaoyan_math_read"}
+              }
+            }
+          ]
+        },
+        "cs408": {
+          "allOf": [
+            {"$ref": "#/$defs/subject"},
+            {
+              "properties": {
+                "subject": {"const": "cs408"},
+                "stage_timeout_seconds": {"const": 1800},
+                "mcp_namespace": {"const": "kaoyan_cs408_read"}
+              }
+            }
+          ]
+        },
+        "english": {
+          "allOf": [
+            {"$ref": "#/$defs/subject"},
+            {
+              "properties": {
+                "subject": {"const": "english"},
+                "stage_timeout_seconds": {"const": 1800},
+                "mcp_namespace": {"const": "kaoyan_english_read"}
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "evidence_scope": {"const": "zero_model_fixture_v2"}
+        }
+      },
+      "then": {
+        "properties": {
+          "current_release_usable": {"const": false},
+          "status": {"const": "test_evidence_only"},
+          "result_label": {"const": "zero_model_fixture_evidence_only"},
+          "subjects": {
+            "properties": {
+              "math": {"$ref": "#/$defs/fixtureProviderSubject"},
+              "cs408": {"$ref": "#/$defs/fixtureProviderSubject"},
+              "english": {"$ref": "#/$defs/fixtureProviderSubject"}
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "current_release_usable": {"const": true},
+          "subjects": {
+            "properties": {
+              "math": {"$ref": "#/$defs/realProviderSubject"},
+              "cs408": {"$ref": "#/$defs/realProviderSubject"},
+              "english": {"$ref": "#/$defs/realProviderSubject"}
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "nullableSha256": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "safeId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:@+-]{0,199}$"
+    },
+    "nullableSafeId": {
+      "type": ["string", "null"],
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:@+-]{0,199}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "nullableTimestamp": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "modelRequestContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "model",
+        "reasoning_effort",
+        "service_tier_policy",
+        "requested_service_tier",
+        "fast_mode_requested",
+        "fast_mode_effective"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "study-intake-model-request-contract-v2"
+        },
+        "model": {"const": "gpt-5.6-luna"},
+        "reasoning_effort": {"const": "max"},
+        "service_tier_policy": {"const": "absent"},
+        "requested_service_tier": {"type": "null"},
+        "fast_mode_requested": {"const": false},
+        "fast_mode_effective": {"const": "not_requested"}
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "production_evidence",
+        "provider_execution",
+        "model_call_count",
+        "provider_request_count",
+        "mcp_tool_call_count",
+        "runtime_observed_model_call_count",
+        "runtime_observed_provider_request_count",
+        "runtime_observed_mcp_tool_call_count",
+        "formal_write_count",
+        "sol_enabled"
+      ],
+      "properties": {
+        "production_evidence": {"type": "boolean"},
+        "provider_execution": {"type": "boolean"},
+        "model_call_count": {"$ref": "#/$defs/count"},
+        "provider_request_count": {"$ref": "#/$defs/count"},
+        "mcp_tool_call_count": {"$ref": "#/$defs/count"},
+        "runtime_observed_model_call_count": {"$ref": "#/$defs/count"},
+        "runtime_observed_provider_request_count": {"$ref": "#/$defs/count"},
+        "runtime_observed_mcp_tool_call_count": {"$ref": "#/$defs/count"},
+        "formal_write_count": {"const": 0},
+        "sol_enabled": {"const": false}
+      }
+    },
+    "canary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "global_activation_id",
+        "activated_at",
+        "post_activation_only",
+        "historical_backlog_drained",
+        "initial_canary_inflight_limit",
+        "continuous_concurrency_limit",
+        "asynchronous_subject_canary",
+        "slots"
+      ],
+      "properties": {
+        "global_activation_id": {"$ref": "#/$defs/sha256"},
+        "activated_at": {"$ref": "#/$defs/timestamp"},
+        "post_activation_only": {"const": true},
+        "historical_backlog_drained": {"const": true},
+        "initial_canary_inflight_limit": {"const": 1},
+        "continuous_concurrency_limit": {"const": 20},
+        "asynchronous_subject_canary": {"const": true},
+        "slots": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["math", "cs408", "english"],
+          "properties": {
+            "math": {
+              "allOf": [
+                {"$ref": "#/$defs/slot"},
+                {"properties": {"subject": {"const": "math"}}}
+              ]
+            },
+            "cs408": {
+              "allOf": [
+                {"$ref": "#/$defs/slot"},
+                {"properties": {"subject": {"const": "cs408"}}}
+              ]
+            },
+            "english": {
+              "allOf": [
+                {"$ref": "#/$defs/slot"},
+                {"properties": {"subject": {"const": "english"}}}
+              ]
+            }
+          }
+        }
+      }
+    },
+    "slot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "subject",
+        "activation_id",
+        "producer_high_watermark_sha256",
+        "runtime_state",
+        "verification_status",
+        "capture_id",
+        "terminal_receipt_sha256"
+      ],
+      "properties": {
+        "subject": {"enum": ["math", "cs408", "english"]},
+        "activation_id": {"$ref": "#/$defs/sha256"},
+        "producer_high_watermark_sha256": {"$ref": "#/$defs/sha256"},
+        "runtime_state": {
+          "enum": [
+            "armed",
+            "canary_in_flight",
+            "continuous_concurrent_unlocked",
+            "failed_drained",
+            "paused_drained",
+            "inactive_rolled_back"
+          ]
+        },
+        "verification_status": {
+          "enum": [
+            "awaiting_first_capture",
+            "running",
+            "verified",
+            "failed_paused",
+            "paused",
+            "inactive"
+          ]
+        },
+        "capture_id": {"$ref": "#/$defs/nullableSafeId"},
+        "terminal_receipt_sha256": {"$ref": "#/$defs/nullableSha256"}
+      }
+    },
+    "concurrency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "calculation_source",
+        "interval_policy",
+        "terminal_task_count",
+        "active_task_count",
+        "lifecycle_task_count",
+        "runner_evidenced_task_count",
+        "runner_interval_missing_count",
+        "global_peak_active",
+        "subject_peak_active",
+        "overlap_observed",
+        "overlap_subjects",
+        "terminal_index_sha256_by_subject",
+        "failure_bindings_by_subject",
+        "telemetry_cross_check"
+      ],
+      "properties": {
+        "calculation_source": {
+          "const": "hmac_terminal_index_task_supervisor_lifecycle"
+        },
+        "interval_policy": {
+          "const": "half_open_end_before_start_zero_duration_nonoverlap"
+        },
+        "terminal_task_count": {"$ref": "#/$defs/count"},
+        "active_task_count": {"$ref": "#/$defs/count"},
+        "lifecycle_task_count": {"$ref": "#/$defs/count"},
+        "runner_evidenced_task_count": {"$ref": "#/$defs/count"},
+        "runner_interval_missing_count": {"$ref": "#/$defs/count"},
+        "global_peak_active": {"$ref": "#/$defs/count"},
+        "subject_peak_active": {"$ref": "#/$defs/subjectCounts"},
+        "overlap_observed": {"type": "boolean"},
+        "overlap_subjects": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"enum": ["math", "cs408", "english"]}
+        },
+        "terminal_index_sha256_by_subject": {"$ref": "#/$defs/subjectHashes"},
+        "failure_bindings_by_subject": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["math", "cs408", "english"],
+          "properties": {
+            "math": {"$ref": "#/$defs/failureBindings"},
+            "cs408": {"$ref": "#/$defs/failureBindings"},
+            "english": {"$ref": "#/$defs/failureBindings"}
+          }
+        },
+        "telemetry_cross_check": {
+          "enum": ["matched_non_authoritative", "not_available"]
+        }
+      }
+    },
+    "failureBindings": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/failureBinding"}
+    },
+    "failureBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "unit_sha256",
+        "outcome",
+        "error_code",
+        "terminal_kind",
+        "terminal_receipt_sha256",
+        "late_result_fenced"
+      ],
+      "properties": {
+        "unit_sha256": {"$ref": "#/$defs/sha256"},
+        "outcome": {
+          "enum": ["failed", "cancelled", "timed_out", "needs_rework"]
+        },
+        "error_code": {"$ref": "#/$defs/nullableSafeId"},
+        "terminal_kind": {"$ref": "#/$defs/safeId"},
+        "terminal_receipt_sha256": {"$ref": "#/$defs/sha256"},
+        "late_result_fenced": {"type": "boolean"}
+      }
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "subject",
+        "status",
+        "runtime_state",
+        "capture_id",
+        "unit_sha256",
+        "terminal_outcome",
+        "terminal_kind",
+        "error_code",
+        "stage",
+        "stage_timeout_seconds",
+        "mcp_namespace",
+        "mcp_canonical_call_count",
+        "analysis_status",
+        "critical_review_status",
+        "report_status",
+        "report_json_ref",
+        "report_json_sha256",
+        "report_markdown_ref",
+        "report_markdown_sha256",
+        "report_reopen_status",
+        "package_status",
+        "package_ref",
+        "package_sha256",
+        "completion_sha256",
+        "processing_receipt_sha256",
+        "model_call_count",
+        "provider_request_count",
+        "provider_execution_contract_status",
+        "provider_stage_identity_sha256s",
+        "provider_stage_exit_sha256s",
+        "provider_executable_sha256",
+        "task_runner_executable_sha256",
+        "runtime_observed_model_call_count",
+        "runtime_observed_provider_request_count",
+        "runtime_observed_mcp_tool_call_count",
+        "terminal_receipt_sha256",
+        "terminal_index_sha256",
+        "runner_process_identity_sha256",
+        "runner_process_exit_sha256",
+        "runner_started_at",
+        "runner_finished_at",
+        "read_session_id",
+        "evidence_generation",
+        "evidence_authority_fingerprint",
+        "evidence_refs",
+        "late_result_fenced",
+        "started_at",
+        "completed_at"
+      ],
+      "properties": {
+        "subject": {"enum": ["math", "cs408", "english"]},
+        "status": {
+          "enum": [
+            "awaiting_first_capture",
+            "running",
+            "verified",
+            "failed_paused",
+            "paused",
+            "inactive"
+          ]
+        },
+        "runtime_state": {
+          "enum": [
+            "armed",
+            "canary_in_flight",
+            "continuous_concurrent_unlocked",
+            "failed_drained",
+            "paused_drained",
+            "inactive_rolled_back"
+          ]
+        },
+        "capture_id": {"$ref": "#/$defs/nullableSafeId"},
+        "unit_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "terminal_outcome": {"$ref": "#/$defs/nullableSafeId"},
+        "terminal_kind": {"$ref": "#/$defs/nullableSafeId"},
+        "error_code": {"$ref": "#/$defs/nullableSafeId"},
+        "stage": {"$ref": "#/$defs/safeId"},
+        "stage_timeout_seconds": {"type": "integer", "minimum": 1},
+        "mcp_namespace": {"$ref": "#/$defs/safeId"},
+        "mcp_canonical_call_count": {"$ref": "#/$defs/count"},
+        "analysis_status": {
+          "enum": ["not_started", "running", "completed", "failed"]
+        },
+        "critical_review_status": {
+          "enum": ["not_started", "running", "completed", "failed"]
+        },
+        "report_status": {
+          "enum": ["not_started", "reopen_verified", "failed"]
+        },
+        "report_json_ref": {
+          "type": ["string", "null"],
+          "pattern": "^study-intake-report://sha256/[0-9a-f]{64}$"
+        },
+        "report_json_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "report_markdown_ref": {
+          "type": ["string", "null"],
+          "pattern": "^study-intake-report-markdown://sha256/[0-9a-f]{64}$"
+        },
+        "report_markdown_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "report_reopen_status": {
+          "enum": ["not_available", "json_markdown_package_verified"]
+        },
+        "package_status": {
+          "enum": ["not_started", "reopen_verified", "failed"]
+        },
+        "package_ref": {
+          "type": ["string", "null"],
+          "pattern": "^study-intake-dispatch-package://sha256/[0-9a-f]{64}$"
+        },
+        "package_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "completion_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "processing_receipt_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "model_call_count": {"$ref": "#/$defs/count"},
+        "provider_request_count": {"$ref": "#/$defs/count"},
+        "provider_execution_contract_status": {
+          "enum": [
+            "verified_no_fast_mode_argv_environment",
+            "zero_model_fixture_not_applicable",
+            "not_verified"
+          ]
+        },
+        "provider_stage_identity_sha256s": {
+          "$ref": "#/$defs/providerStageHashes"
+        },
+        "provider_stage_exit_sha256s": {
+          "$ref": "#/$defs/providerStageHashes"
+        },
+        "provider_executable_sha256": {
+          "$ref": "#/$defs/nullableSha256"
+        },
+        "task_runner_executable_sha256": {
+          "$ref": "#/$defs/nullableSha256"
+        },
+        "runtime_observed_model_call_count": {"$ref": "#/$defs/count"},
+        "runtime_observed_provider_request_count": {"$ref": "#/$defs/count"},
+        "runtime_observed_mcp_tool_call_count": {"$ref": "#/$defs/count"},
+        "terminal_receipt_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "terminal_index_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "runner_process_identity_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "runner_process_exit_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "runner_started_at": {"$ref": "#/$defs/nullableTimestamp"},
+        "runner_finished_at": {"$ref": "#/$defs/nullableTimestamp"},
+        "read_session_id": {"$ref": "#/$defs/nullableSafeId"},
+        "evidence_generation": {"$ref": "#/$defs/nullableSafeId"},
+        "evidence_authority_fingerprint": {"$ref": "#/$defs/nullableSha256"},
+        "evidence_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/safeId"}
+        },
+        "late_result_fenced": {"type": "boolean"},
+        "started_at": {"$ref": "#/$defs/nullableTimestamp"},
+        "completed_at": {"$ref": "#/$defs/nullableTimestamp"}
+      }
+    },
+    "providerStageHashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["analysis", "critical_review"],
+      "properties": {
+        "analysis": {"$ref": "#/$defs/nullableSha256"},
+        "critical_review": {"$ref": "#/$defs/nullableSha256"}
+      }
+    },
+    "providerStageHashesClosed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["analysis", "critical_review"],
+      "properties": {
+        "analysis": {"$ref": "#/$defs/sha256"},
+        "critical_review": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "providerStageHashesEmpty": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["analysis", "critical_review"],
+      "properties": {
+        "analysis": {"const": null},
+        "critical_review": {"const": null}
+      }
+    },
+    "fixtureProviderSubject": {
+      "type": "object",
+      "properties": {
+        "provider_execution_contract_status": {
+          "const": "zero_model_fixture_not_applicable"
+        },
+        "provider_stage_identity_sha256s": {
+          "$ref": "#/$defs/providerStageHashesEmpty"
+        },
+        "provider_stage_exit_sha256s": {
+          "$ref": "#/$defs/providerStageHashesEmpty"
+        },
+        "provider_executable_sha256": {"const": null},
+        "task_runner_executable_sha256": {"const": null}
+      }
+    },
+    "realProviderSubject": {
+      "type": "object",
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "verified"
+              }
+            },
+            "required": ["status"]
+          },
+          "then": {
+            "properties": {
+              "provider_execution_contract_status": {
+                "const": "verified_no_fast_mode_argv_environment"
+              },
+              "provider_stage_identity_sha256s": {
+                "$ref": "#/$defs/providerStageHashesClosed"
+              },
+              "provider_stage_exit_sha256s": {
+                "$ref": "#/$defs/providerStageHashesClosed"
+              },
+              "provider_executable_sha256": {"$ref": "#/$defs/sha256"},
+              "task_runner_executable_sha256": {"$ref": "#/$defs/sha256"},
+              "analysis_status": {"const": "completed"},
+              "critical_review_status": {"const": "completed"},
+              "package_status": {"const": "reopen_verified"},
+              "package_ref": {
+                "type": "string",
+                "pattern": "^study-intake-dispatch-package://sha256/[0-9a-f]{64}$"
+              },
+              "package_sha256": {"$ref": "#/$defs/sha256"}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"status": {"const": "verified"}},
+            "required": ["status"]
+          },
+          "then": {
+            "properties": {
+              "report_status": {"const": "reopen_verified"},
+              "report_json_ref": {
+                "type": "string",
+                "pattern": "^study-intake-report://sha256/[0-9a-f]{64}$"
+              },
+              "report_json_sha256": {"$ref": "#/$defs/sha256"},
+              "report_markdown_ref": {
+                "type": "string",
+                "pattern": "^study-intake-report-markdown://sha256/[0-9a-f]{64}$"
+              },
+              "report_markdown_sha256": {"$ref": "#/$defs/sha256"},
+              "report_reopen_status": {
+                "const": "json_markdown_package_verified"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "awaiting_first_capture",
+                  "running",
+                  "failed_paused",
+                  "paused",
+                  "inactive"
+                ]
+              }
+            },
+            "required": ["status"]
+          },
+          "then": {
+            "properties": {
+              "provider_execution_contract_status": {
+                "const": "not_verified"
+              },
+              "provider_stage_identity_sha256s": {
+                "$ref": "#/$defs/providerStageHashesEmpty"
+              },
+              "provider_stage_exit_sha256s": {
+                "$ref": "#/$defs/providerStageHashesEmpty"
+              },
+              "provider_executable_sha256": {"const": null}
+            }
+          }
+        }
+      ]
+    },
+    "subjectCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["math", "cs408", "english"],
+      "properties": {
+        "math": {"$ref": "#/$defs/count"},
+        "cs408": {"$ref": "#/$defs/count"},
+        "english": {"$ref": "#/$defs/count"}
+      }
+    },
+    "subjectHashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["math", "cs408", "english"],
+      "properties": {
+        "math": {"$ref": "#/$defs/sha256"},
+        "cs408": {"$ref": "#/$defs/sha256"},
+        "english": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

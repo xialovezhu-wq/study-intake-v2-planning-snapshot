@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/subject-generation-authority-ack-v2.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "subject", "batch_id", "subject_luna_batch_id", "source_generation", "next_generation", "next_authority_fingerprint", "authority_observation_sha256", "commit_receipt_sha256", "acknowledged_at", "formal_write_count", "seal"],
+  "properties": {
+    "schema_version": {"const": "subject_generation_authority_ack_v2"},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "batch_id": {"type": "string", "minLength": 1},
+    "subject_luna_batch_id": {"type": "string", "minLength": 1},
+    "source_generation": {"type": "string", "minLength": 1},
+    "next_generation": {"type": "string", "minLength": 1},
+    "next_authority_fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "authority_observation_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "commit_receipt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "acknowledged_at": {"type": "string", "format": "date-time"},
+    "formal_write_count": {"const": 0},
+    "seal": {"type": "object"}
+  }
+}

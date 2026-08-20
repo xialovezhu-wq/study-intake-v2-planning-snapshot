@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Pinned deterministic 408 knowledge snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "snapshot_scope", "query_binding_sha256", "sources",
+    "taxonomy_candidates", "historical_wrong_candidates",
+    "chapter_history_summary", "historical_review_timeline",
+    "relationship_candidates", "gaps", "formal_write_count",
+    "snapshot_payload_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "study-intake-408-knowledge-snapshot-v1"},
+    "snapshot_scope": {"const": "deterministic_bounded_read_only"},
+    "query_binding_sha256": {"$ref": "#/$defs/sha256"},
+    "sources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["taxonomy", "nodes", "relations", "review_records"],
+      "properties": {
+        "taxonomy": {"$ref": "#/$defs/source"},
+        "nodes": {"$ref": "#/$defs/source"},
+        "relations": {"$ref": "#/$defs/source"},
+        "review_records": {"$ref": "#/$defs/source"}
+      }
+    },
+    "taxonomy_candidates": {"type": "array", "maxItems": 32, "items": {"type": "object"}},
+    "historical_wrong_candidates": {"type": "array", "maxItems": 32, "items": {"type": "object"}},
+    "chapter_history_summary": {"type": "array", "maxItems": 16, "items": {"type": "object"}},
+    "historical_review_timeline": {"type": "array", "maxItems": 128, "items": {"type": "object"}},
+    "relationship_candidates": {"type": "array", "maxItems": 64, "items": {"type": "object"}},
+    "gaps": {"type": "array", "items": {"type": "string"}},
+    "formal_write_count": {"const": 0},
+    "snapshot_payload_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "source": {
+      "type": "object",
+      "required": ["source_kind", "sha256", "byte_length", "line_count"],
+      "properties": {
+        "source_kind": {"type": "string"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "byte_length": {"type": "integer", "minimum": 0},
+        "line_count": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}

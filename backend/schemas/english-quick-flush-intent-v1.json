@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "english_quick_flush_intent_v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "intent_id",
+    "event_id",
+    "event_sha256",
+    "event_path",
+    "capture_receipt_id",
+    "capture_receipt_sha256",
+    "capture_receipt_path",
+    "idempotency_key",
+    "request_sha256",
+    "source_id",
+    "study_date",
+    "created_at",
+    "formal_write_count",
+    "formal_writeback",
+    "authority"
+  ],
+  "properties": {
+    "schema_version": {"const": "english_quick_flush_intent_v1"},
+    "intent_id": {"$ref": "#/$defs/sha256"},
+    "event_id": {
+      "type": "string",
+      "pattern": "^EVT-[0-9]{8}-[A-F0-9]{16}$"
+    },
+    "event_sha256": {"$ref": "#/$defs/sha256"},
+    "event_path": {"$ref": "#/$defs/absolute_path"},
+    "capture_receipt_id": {"type": "string", "minLength": 1, "maxLength": 160},
+    "capture_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "capture_receipt_path": {"$ref": "#/$defs/absolute_path"},
+    "idempotency_key": {"type": "string", "minLength": 1, "maxLength": 240},
+    "request_sha256": {"$ref": "#/$defs/sha256"},
+    "source_id": {"type": "string", "minLength": 1, "maxLength": 512},
+    "study_date": {"type": "string", "format": "date"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "formal_write_count": {"const": 0},
+    "formal_writeback": {"const": "none"},
+    "authority": {"$ref": "#/$defs/authority"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "absolute_path": {"type": "string", "pattern": "^/", "minLength": 2},
+    "authority": {
+      "type": "object",
+      "required": [
+        "schema_version", "algorithm", "key_id", "purpose", "hmac_sha256"
+      ],
+      "properties": {
+        "schema_version": {"const": "english_quick_flush_authority_v1"},
+        "algorithm": {"const": "HMAC-SHA256"},
+        "key_id": {"$ref": "#/$defs/sha256"},
+        "purpose": {"const": "english-quick-flush-intent"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

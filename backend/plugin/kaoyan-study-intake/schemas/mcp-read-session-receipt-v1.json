@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Kaoyan MCP read session receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "phase", "subject", "processing_binding_sha256", "read_session_id", "read_session_manifest_sha256", "generation", "authority_fingerprint", "host_semantic_prefetch", "host_prefetched_evidence_item_count", "host_authority_binding_tool_call_count", "host_preflight_tool_call_count", "model_mcp_tool_call_count", "provider_request_count", "provider_request_count_status", "stage_call_receipts", "pagination_coverage_complete", "failure_reason", "opened_receipt_sha256", "created_at", "hmac_key_id", "hmac_sha256", "formal_write_count"],
+  "properties": {
+    "schema_version": {"type": "string", "const": "mcp_read_session_receipt_v1"},
+    "phase": {"type": "string", "enum": ["opened", "complete", "failed"]},
+    "subject": {"type": "string", "enum": ["math", "cs408", "english"]},
+    "processing_binding_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "read_session_id": {"type": "string", "minLength": 8},
+    "read_session_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "generation": {"type": "string", "minLength": 1},
+    "authority_fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "host_semantic_prefetch": {"type": "boolean", "const": false},
+    "host_prefetched_evidence_item_count": {"type": "integer", "const": 0},
+    "host_authority_binding_tool_call_count": {"type": "integer", "const": 1},
+    "host_preflight_tool_call_count": {"type": "integer", "minimum": 0, "maximum": 1},
+    "model_mcp_tool_call_count": {"type": "integer", "minimum": 0},
+    "provider_request_count": {"type": "integer", "minimum": 0},
+    "provider_request_count_status": {"type": "string", "enum": ["not_started", "derived_from_codex_tool_loop"]},
+    "stage_call_receipts": {
+      "type": "array",
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["stage", "mcp_call_receipt_sha256", "mcp_transcript_sha256", "mcp_tool_call_count", "provider_request_count"],
+        "properties": {
+          "stage": {"type": "string", "enum": ["analysis", "critical_review"]},
+          "mcp_call_receipt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "mcp_transcript_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "mcp_tool_call_count": {"type": "integer", "minimum": 1},
+          "provider_request_count": {"type": "integer", "minimum": 2}
+        }
+      }
+    },
+    "pagination_coverage_complete": {"type": "boolean"},
+    "failure_reason": {"type": ["string", "null"], "maxLength": 160},
+    "opened_receipt_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "hmac_key_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "hmac_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "formal_write_count": {"type": "integer", "const": 0}
+  }
+}

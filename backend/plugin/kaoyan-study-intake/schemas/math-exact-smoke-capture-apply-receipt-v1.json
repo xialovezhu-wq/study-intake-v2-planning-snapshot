@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "study-intake-math-exact-smoke-capture-apply-receipt-v1",
+  "type": "object",
+  "required": [
+    "schema_version", "scope_id", "sequence", "formal_id",
+    "execution_authorization_sha256", "execution_authorization_path",
+    "prior_capture_apply_receipt_sha256", "sample_sha256", "formal_card_sha256",
+    "question_sha256", "attachment_sha256", "stage_required", "stage_manifest_path",
+    "stage_manifest_sha256", "capture_event_id", "capture_event_sha256",
+    "capture_idempotency_key", "capture_count_before", "capture_count_after",
+    "ledger_pre_sha256", "ledger_post_sha256", "prior_sample_terminal",
+    "prior_sample_terminal_sha256", "authority_snapshots",
+    "authority_snapshot_sha256s", "authority_snapshot_count",
+    "authority_snapshot_mcp_tool_call_count", "applied_at",
+    "source_stage_write_count", "capture_write_count", "queue_write_count",
+    "model_call_count", "provider_request_count", "model_mcp_tool_call_count",
+    "sol_enabled", "formal_write_count",
+    "authority"
+  ],
+  "properties": {
+    "schema_version": {"const": "study-intake-math-exact-smoke-capture-apply-receipt-v1"},
+    "scope_id": {"const": "math-smoke-2026-08-13-five-sample-v1"},
+    "sequence": {"type": "integer", "minimum": 1, "maximum": 5},
+    "formal_id": {"enum": ["GS-269", "GS-566", "GS-225", "LA-050", "LA-016"]},
+    "execution_authorization_sha256": {"$ref": "#/$defs/sha256"},
+    "execution_authorization_path": {"$ref": "#/$defs/path"},
+    "prior_capture_apply_receipt_sha256": {"$ref": "#/$defs/nullable_sha256"},
+    "sample_sha256": {"$ref": "#/$defs/sha256"},
+    "formal_card_sha256": {"$ref": "#/$defs/sha256"},
+    "question_sha256": {"$ref": "#/$defs/sha256"},
+    "attachment_sha256": {"$ref": "#/$defs/nullable_sha256"},
+    "stage_required": {"type": "boolean"},
+    "stage_manifest_path": {"oneOf": [{"type": "string", "minLength": 1}, {"type": "null"}]},
+    "stage_manifest_sha256": {"$ref": "#/$defs/nullable_sha256"},
+    "capture_event_id": {"pattern": "^MFI-CAP-[0-9a-f]{24}$"},
+    "capture_event_sha256": {"$ref": "#/$defs/sha256"},
+    "capture_idempotency_key": {"$ref": "#/$defs/sha256"},
+    "capture_count_before": {"const": 0},
+    "capture_count_after": {"const": 1},
+    "ledger_pre_sha256": {"$ref": "#/$defs/sha256"},
+    "ledger_post_sha256": {"$ref": "#/$defs/sha256"},
+    "prior_sample_terminal": {"oneOf": [{"type": "object"}, {"type": "null"}]},
+    "prior_sample_terminal_sha256": {"$ref": "#/$defs/nullable_sha256"},
+    "authority_snapshots": {
+      "type": "array", "minItems": 2, "maxItems": 2,
+      "items": {"type": "object"}
+    },
+    "authority_snapshot_sha256s": {
+      "type": "array", "minItems": 2, "maxItems": 2,
+      "items": {"$ref": "#/$defs/sha256"}
+    },
+    "authority_snapshot_count": {"const": 2},
+    "authority_snapshot_mcp_tool_call_count": {"const": 2},
+    "applied_at": {"type": "string", "format": "date-time", "minLength": 1},
+    "source_stage_write_count": {"enum": [0, 1]},
+    "capture_write_count": {"const": 1},
+    "queue_write_count": {"const": 0},
+    "model_call_count": {"const": 0},
+    "provider_request_count": {"const": 0},
+    "model_mcp_tool_call_count": {"const": 0},
+    "sol_enabled": {"const": false},
+    "formal_write_count": {"const": 0},
+    "authority": {"$ref": "#/$defs/authority"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nullable_sha256": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+    "path": {"type": "string", "pattern": "^/", "minLength": 2},
+    "authority": {
+      "type": "object",
+      "required": ["schema_version", "algorithm", "key_id", "purpose", "hmac_sha256"],
+      "properties": {
+        "schema_version": {"const": "study-intake-dispatch-authority-v1"},
+        "algorithm": {"const": "HMAC-SHA256"},
+        "key_id": {"$ref": "#/$defs/sha256"},
+        "purpose": {"const": "dispatch-math-exact-smoke-capture-apply"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

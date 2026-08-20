@@ -1,0 +1,386 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Critical review of deep 408 Luna analysis",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "verdict",
+    "summary",
+    "revised_analysis",
+    "unsupported_claims",
+    "evidence_misreads",
+    "answer_safety_findings",
+    "missing_analysis",
+    "required_corrections",
+    "sol_priority_checks",
+    "correction_resolutions"
+  ],
+  "properties": {
+    "schema_version": {"type": "string", "const": "study-intake-luna-critical-review-v2"},
+    "verdict": {"type": "string", "enum": ["pass", "pass_with_warnings", "reject"]},
+    "summary": {"type": "string", "minLength": 1, "maxLength": 3000},
+    "revised_analysis": {"$ref": "#/$defs/analysis"},
+    "unsupported_claims": {"$ref": "#/$defs/findings"},
+    "evidence_misreads": {"$ref": "#/$defs/findings"},
+    "answer_safety_findings": {"$ref": "#/$defs/findings"},
+    "missing_analysis": {"$ref": "#/$defs/findings"},
+    "required_corrections": {"$ref": "#/$defs/findings"},
+    "sol_priority_checks": {"$ref": "#/$defs/sol_priority_findings"},
+    "correction_resolutions": {
+      "type": "array",
+      "description": "Not a standalone patch log. Every row must retain exactly one owning finding in unsupported_claims, evidence_misreads, answer_safety_findings, missing_analysis, or required_corrections with the same finding_id and identical complete ordered affected_json_paths. If no owning finding is emitted, this array must be empty and revised_analysis must not be silently changed.",
+      "maxItems": 8,
+      "items": {"$ref": "#/$defs/correction_resolution"}
+    }
+  },
+  "$defs": {
+    "analysis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "report_profile",
+        "executive_summary",
+        "question_structure",
+        "correct_reasoning_reconstruction",
+        "evidence_assessment",
+        "reasoning_diagnosis",
+        "concept_method_analysis",
+        "knowledge_network_context",
+        "formalization_candidates",
+        "sol_verification_plan",
+        "risk_flags",
+        "unresolved",
+        "atomic_signals"
+      ],
+      "properties": {
+        "schema_version": {"type": "string", "const": "study-intake-luna-analysis-v2"},
+        "report_profile": {"type": "string", "const": "cs408_deep"},
+        "executive_summary": {"type": "string", "minLength": 1, "maxLength": 4000},
+        "question_structure": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["objects", "conditions", "asked_task", "mechanism_structure"],
+          "properties": {
+            "objects": {"$ref": "#/$defs/claims"},
+            "conditions": {"$ref": "#/$defs/claims"},
+            "asked_task": {"$ref": "#/$defs/claims"},
+            "mechanism_structure": {"$ref": "#/$defs/claims"}
+          }
+        },
+        "correct_reasoning_reconstruction": {"$ref": "#/$defs/claims"},
+        "evidence_assessment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["completeness", "evidence_inventory", "observed_facts", "inferences", "contradictions", "gaps"],
+          "properties": {
+            "completeness": {"type": "string", "enum": ["complete", "limited_by_evidence"]},
+            "evidence_inventory": {"$ref": "#/$defs/claims"},
+            "observed_facts": {"$ref": "#/$defs/claims"},
+            "inferences": {"$ref": "#/$defs/claims"},
+            "contradictions": {"$ref": "#/$defs/claims"},
+            "gaps": {"$ref": "#/$defs/claims"}
+          }
+        },
+        "reasoning_diagnosis": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["independent_correct_steps", "first_break", "later_breaks", "hint_dependencies", "self_corrections", "root_cause_hypotheses", "alternative_explanations"],
+          "properties": {
+            "independent_correct_steps": {"$ref": "#/$defs/claims"},
+            "first_break": {
+              "type": ["object", "null"],
+              "additionalProperties": false,
+              "required": ["claim_type", "text", "evidence_refs", "confidence", "counterevidence_or_boundary", "sol_verification_action"],
+              "properties": {
+                "claim_type": {"type": "string", "enum": ["observed_fact", "evidence_bound_inference", "standard_408_candidate", "unresolved"]},
+                "text": {"type": "string", "minLength": 1, "maxLength": 4000},
+                "evidence_refs": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 24,
+                  "items": {"$ref": "#/$defs/evidence_ref"}
+                },
+                "confidence": {"type": "string", "enum": ["low", "medium", "high"]},
+                "counterevidence_or_boundary": {"type": "string", "maxLength": 3000},
+                "sol_verification_action": {"type": "string", "minLength": 1, "maxLength": 3000}
+              }
+            },
+            "later_breaks": {"$ref": "#/$defs/claims"},
+            "hint_dependencies": {"$ref": "#/$defs/claims"},
+            "self_corrections": {"$ref": "#/$defs/claims"},
+            "root_cause_hypotheses": {"$ref": "#/$defs/claims"},
+            "alternative_explanations": {"$ref": "#/$defs/claims"}
+          }
+        },
+        "concept_method_analysis": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mechanism", "method_trigger", "applicability_conditions", "boundary_conditions", "common_confusions", "transfer_risks"],
+          "properties": {
+            "mechanism": {"$ref": "#/$defs/claims"},
+            "method_trigger": {"$ref": "#/$defs/claims"},
+            "applicability_conditions": {"$ref": "#/$defs/claims"},
+            "boundary_conditions": {"$ref": "#/$defs/claims"},
+            "common_confusions": {"$ref": "#/$defs/claims"},
+            "transfer_risks": {"$ref": "#/$defs/claims"}
+          }
+        },
+        "knowledge_network_context": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["knowledge_alignment", "exposed_problem_summary", "prior_mistake_comparison", "subject_chapter_classification", "chapter_history_summary", "relationship_candidates", "limitations"],
+          "properties": {
+            "knowledge_alignment": {"$ref": "#/$defs/claims"},
+            "exposed_problem_summary": {"$ref": "#/$defs/claims"},
+            "prior_mistake_comparison": {"$ref": "#/$defs/claims"},
+            "subject_chapter_classification": {"$ref": "#/$defs/claims"},
+            "chapter_history_summary": {"$ref": "#/$defs/claims"},
+            "relationship_candidates": {"$ref": "#/$defs/claims"},
+            "limitations": {"$ref": "#/$defs/claims"}
+          }
+        },
+        "formalization_candidates": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["safe_summary", "key_parameters", "question_type", "main_knowledge", "secondary_knowledge", "hit_knowledge", "fuzzy_concepts", "error_tags", "redo_first_action", "topic_intents", "relationship_search_intents"],
+          "properties": {
+            "safe_summary": {"$ref": "#/$defs/claims"},
+            "key_parameters": {"$ref": "#/$defs/claims"},
+            "question_type": {"$ref": "#/$defs/claims"},
+            "main_knowledge": {"$ref": "#/$defs/claims"},
+            "secondary_knowledge": {"$ref": "#/$defs/claims"},
+            "hit_knowledge": {"$ref": "#/$defs/claims"},
+            "fuzzy_concepts": {"$ref": "#/$defs/claims"},
+            "error_tags": {"$ref": "#/$defs/claims"},
+            "redo_first_action": {"$ref": "#/$defs/claims"},
+            "topic_intents": {"$ref": "#/$defs/claims"},
+            "relationship_search_intents": {"$ref": "#/$defs/claims"}
+          }
+        },
+        "sol_verification_plan": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["must_verify", "reject_if", "source_checks", "conflict_handling_suggestions", "recommended_disposition"],
+          "properties": {
+            "must_verify": {"$ref": "#/$defs/claims"},
+            "reject_if": {"$ref": "#/$defs/claims"},
+            "source_checks": {"$ref": "#/$defs/claims"},
+            "conflict_handling_suggestions": {"$ref": "#/$defs/claims"},
+            "recommended_disposition": {"type": "string", "enum": ["new_candidate", "update_existing_candidate", "needs_user", "insufficient_evidence"]}
+          }
+        },
+        "risk_flags": {"$ref": "#/$defs/claims"},
+        "unresolved": {"$ref": "#/$defs/claims"},
+        "atomic_signals": {"type": "array", "minItems": 1, "maxItems": 64, "items": {"$ref": "#/$defs/atomic_signal"}}
+      }
+    },
+    "atomic_signal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["signal_id", "signal_type", "canonical_term", "surface_form", "importance", "provenance", "evidence_refs", "confidence", "error_role", "specificity", "applicability_boundary", "truth_library_match_status"],
+      "properties": {
+        "signal_id": {"type": "string", "minLength": 2, "maxLength": 128},
+        "signal_type": {"type": "string", "enum": ["knowledge", "method", "error", "trap", "question_type"]},
+        "canonical_term": {"type": "string", "minLength": 1, "maxLength": 500},
+        "surface_form": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "importance": {"type": "string", "enum": ["primary", "secondary"]},
+        "provenance": {"type": "string", "minLength": 1, "maxLength": 500},
+        "evidence_refs": {"type": "array", "minItems": 1, "maxItems": 24, "items": {"$ref": "#/$defs/evidence_ref"}},
+        "confidence": {"type": "string", "enum": ["low", "medium", "high"]},
+        "error_role": {"type": "string", "enum": ["none", "first_error", "later_error", "historical_error", "current_error"]},
+        "specificity": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "applicability_boundary": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "truth_library_match_status": {"type": "string", "enum": ["exact", "alias", "related", "unmatched"]}
+      }
+    },
+    "historical_error": {
+      "type": "object", "additionalProperties": false,
+      "required": ["formal_id", "error_summary", "evidence_refs"],
+      "properties": {
+        "formal_id": {"type": "string"}, "error_summary": {"type": "string"},
+        "evidence_refs": {"type": "array", "items": {"$ref": "#/$defs/evidence_ref"}}
+      }
+    },
+    "truth_match": {
+      "type": "object", "additionalProperties": false,
+      "required": ["signal_id", "match_status", "matched_node_id", "matched_node_name", "match_method", "supporting_evidence_refs", "counterevidence"],
+      "properties": {
+        "signal_id": {"type": "string"}, "match_status": {"type": "string", "enum": ["exact", "alias", "related"]},
+        "matched_node_id": {"type": "string"}, "matched_node_name": {"type": "string"}, "match_method": {"type": "string"},
+        "supporting_evidence_refs": {"type": "array", "items": {"$ref": "#/$defs/evidence_ref"}},
+        "counterevidence": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "novelty": {
+      "type": "object", "additionalProperties": false,
+      "required": ["candidate_id", "signal_id", "canonical_name", "definition", "current_question_id", "evidence_refs", "nearest_existing_nodes", "difference_from_existing", "sol_recommended_action", "status"],
+      "properties": {
+        "candidate_id": {"type": "string"}, "signal_id": {"type": "string"}, "canonical_name": {"type": "string"},
+        "definition": {"type": "string"}, "current_question_id": {"type": "string"},
+        "evidence_refs": {"type": "array", "items": {"$ref": "#/$defs/evidence_ref"}},
+        "nearest_existing_nodes": {"type": "array", "items": {"type": "string"}},
+        "difference_from_existing": {"type": "string"}, "sol_recommended_action": {"type": "string"},
+        "status": {"type": "string", "const": "proposal_only"}
+      }
+    },
+    "unmatched_signal": {
+      "type": "object", "additionalProperties": false,
+      "required": ["signal_id", "reason", "status", "evidence_refs"],
+      "properties": {
+        "signal_id": {"type": "string"}, "reason": {"type": "string"},
+        "status": {"type": "string", "const": "needs_user_decision"},
+        "evidence_refs": {"type": "array", "items": {"$ref": "#/$defs/evidence_ref"}}
+      }
+    },
+    "formal_edge": {
+      "type": "object", "additionalProperties": false,
+      "required": ["start_id", "end_id", "relationship_type", "strength", "reason", "source_edge_status", "current_capture_action_status"],
+      "properties": {
+        "start_id": {"type": "string"}, "end_id": {"type": "string"}, "relationship_type": {"type": "string"},
+        "strength": {"type": "string"}, "reason": {"type": "string"},
+        "source_edge_status": {"type": "string", "const": "existing_formal_edge"},
+        "current_capture_action_status": {"type": "string", "const": "proposal_only"}
+      }
+    },
+    "relation_proposal": {
+      "type": "object", "additionalProperties": false,
+      "required": ["start_id", "end_id", "relationship_type", "reason", "status"],
+      "properties": {
+        "start_id": {"type": "string"}, "end_id": {"type": "string"}, "relationship_type": {"type": "string"},
+        "reason": {"type": "string"}, "status": {"type": "string", "const": "proposal_only"}
+      }
+    },
+    "coverage_source": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source", "sha256", "bytes", "total_entries", "scanned_entries", "matched_entries", "complete", "truncation_reason"],
+      "properties": {
+        "source": {"type": "string"}, "sha256": {"type": "string"}, "bytes": {"type": "integer"},
+        "total_entries": {"type": "integer"}, "scanned_entries": {"type": "integer"}, "matched_entries": {"type": "integer"},
+        "complete": {"type": "boolean"}, "truncation_reason": {"type": ["string", "null"]}
+      }
+    },
+    "coverage_manifest": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "scope", "sources", "complete", "coverage_manifest_sha256"],
+      "properties": {
+        "schema_version": {"type": "string", "const": "study-intake-coverage-manifest-v1"},
+        "scope": {"type": "string"}, "sources": {"type": "array", "items": {"$ref": "#/$defs/coverage_source"}},
+        "complete": {"type": "boolean"}, "coverage_manifest_sha256": {"type": "string"}
+      }
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claim_type", "text", "evidence_refs", "confidence", "counterevidence_or_boundary", "sol_verification_action"],
+      "properties": {
+        "claim_type": {"type": "string", "enum": ["observed_fact", "evidence_bound_inference", "standard_408_candidate", "unresolved"]},
+        "text": {"type": "string", "minLength": 1, "maxLength": 4000},
+        "evidence_refs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 24,
+          "items": {"$ref": "#/$defs/evidence_ref"}
+        },
+        "confidence": {"type": "string", "enum": ["low", "medium", "high"]},
+        "counterevidence_or_boundary": {"type": "string", "maxLength": 3000},
+        "sol_verification_action": {"type": "string", "minLength": 1, "maxLength": 3000}
+      }
+    },
+    "claims": {
+      "type": "array",
+      "maxItems": 32,
+      "items": {"$ref": "#/$defs/claim"}
+    },
+    "evidence_ref": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 320
+    },
+    "analysis_ref": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 320
+    },
+    "writable_correction_path": {
+      "type": "string",
+      "pattern": "^\\$\\.(?:schema_version|report_profile|executive_summary|question_structure|correct_reasoning_reconstruction|evidence_assessment|reasoning_diagnosis|concept_method_analysis|knowledge_network_context|formalization_candidates|sol_verification_plan|risk_flags|unresolved|atomic_signals)(?:(?:\\.[A-Za-z_][A-Za-z0-9_]*)|(?:\\[[0-9]+\\]))*$"
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["finding_id", "severity", "text", "analysis_refs", "evidence_refs", "affected_json_paths"],
+      "properties": {
+        "finding_id": {"type": "string", "minLength": 2, "maxLength": 128, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:@+-]{1,127}$"},
+        "severity": {"type": "string", "enum": ["info", "warning", "error", "blocking"]},
+        "text": {"type": "string", "minLength": 1, "maxLength": 4000},
+        "analysis_refs": {
+          "type": "array",
+          "maxItems": 24,
+          "items": {"$ref": "#/$defs/analysis_ref"}
+        },
+        "evidence_refs": {
+          "type": "array",
+          "maxItems": 24,
+          "items": {"$ref": "#/$defs/evidence_ref"}
+        },
+        "affected_json_paths": {"type": "array", "maxItems": 24, "items": {"$ref": "#/$defs/writable_correction_path"}}
+      }
+    },
+    "sol_priority_finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["finding_id", "severity", "text", "analysis_refs", "evidence_refs", "affected_json_paths"],
+      "properties": {
+        "finding_id": {"type": "string", "minLength": 2, "maxLength": 128, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:@+-]{1,127}$"},
+        "severity": {"type": "string", "enum": ["info", "warning"]},
+        "text": {"type": "string", "minLength": 1, "maxLength": 4000},
+        "analysis_refs": {
+          "type": "array",
+          "maxItems": 24,
+          "items": {"$ref": "#/$defs/analysis_ref"}
+        },
+        "evidence_refs": {
+          "type": "array",
+          "maxItems": 24,
+          "items": {"$ref": "#/$defs/evidence_ref"}
+        },
+        "affected_json_paths": {"type": "array", "maxItems": 0, "items": {"$ref": "#/$defs/writable_correction_path"}}
+      }
+    },
+    "correction_resolution": {
+      "type": "object",
+      "description": "One already-applied semantic correction owned by a retained finding row with the exact same finding_id and complete ordered affected_json_paths; never emit an orphan resolution.",
+      "additionalProperties": false,
+      "required": ["finding_id", "resolution", "affected_json_paths", "before", "after", "reason"],
+      "properties": {
+        "finding_id": {"type": "string", "minLength": 2, "maxLength": 128},
+        "resolution": {"type": "string", "const": "applied"},
+        "affected_json_paths": {"type": "array", "minItems": 1, "maxItems": 24, "items": {"$ref": "#/$defs/writable_correction_path"}},
+        "before": {"$ref": "#/$defs/correction_delta_value"},
+        "after": {"$ref": "#/$defs/correction_delta_value"},
+        "reason": {"type": "string", "minLength": 1, "maxLength": 2000}
+      }
+    },
+    "correction_delta_value": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["encoding", "canonical_json"],
+      "properties": {
+        "encoding": {"type": "string", "const": "canonical_json"},
+        "canonical_json": {"type": "string", "minLength": 1}
+      }
+    },
+    "findings": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {"$ref": "#/$defs/finding"}
+    },
+    "sol_priority_findings": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {"$ref": "#/$defs/sol_priority_finding"}
+    }
+  }
+}

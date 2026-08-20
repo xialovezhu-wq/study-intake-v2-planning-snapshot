@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Kaoyan model MCP stage call receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "phase", "subject", "stage_name", "read_session_id", "read_session_manifest_sha256", "generation", "authority_fingerprint", "calls", "transcript_sha256", "pagination_coverage_complete", "duplicate_read_count", "semantic_stage_count", "provider_request_count", "provider_request_count_status", "mcp_tool_call_count", "model_call_count", "host_semantic_prefetch", "consumed_terminal_duplicate_read_count", "failure_reason", "created_at", "formal_write_count", "hmac_key_id", "hmac_sha256"],
+  "properties": {
+    "schema_version": {"type": "string", "const": "mcp_stage_call_receipt_v1"},
+    "phase": {"type": "string", "enum": ["model_stage_calls", "model_stage_failed"]},
+    "subject": {"type": "string", "enum": ["math", "cs408", "english"]},
+    "stage_name": {"type": "string", "minLength": 1},
+    "read_session_id": {"type": "string", "minLength": 8},
+    "read_session_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "generation": {"type": "string", "minLength": 1},
+    "authority_fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "calls": {
+      "type": "array",
+      "minItems": 0,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sequence", "tool", "arguments", "arguments_sha256", "result_sha256", "generation", "authority_fingerprint", "total_count", "returned_count", "offset", "next_cursor", "truncated", "complete"],
+        "properties": {
+          "sequence": {"type": "integer", "minimum": 1},
+          "tool": {"enum": ["get_task_context", "read_task_artifact", "list_records", "get_records", "search_records", "query_relations"]},
+          "arguments": {"type": "object"},
+          "arguments_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "result_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "generation": {"type": "string", "minLength": 1},
+          "authority_fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "total_count": {"type": "integer", "minimum": 0},
+          "returned_count": {"type": "integer", "minimum": 0},
+          "offset": {"type": "integer", "minimum": 0},
+          "next_cursor": {"type": ["string", "null"]},
+          "truncated": {"type": "boolean"},
+          "complete": {"type": "boolean"}
+        }
+      }
+    },
+    "transcript_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "pagination_coverage_complete": {"type": "boolean"},
+    "duplicate_read_count": {"type": "integer", "const": 0},
+    "semantic_stage_count": {"type": "integer", "const": 1},
+    "provider_request_count": {"type": "integer", "minimum": 1},
+    "provider_request_count_status": {"type": "string", "const": "derived_from_codex_tool_loop"},
+    "mcp_tool_call_count": {"type": "integer", "minimum": 0},
+    "model_call_count": {"type": "integer", "const": 1},
+    "host_semantic_prefetch": {"type": "boolean", "const": false},
+    "consumed_terminal_duplicate_read_count": {"type": "integer", "const": 0},
+    "failure_reason": {"type": ["string", "null"], "maxLength": 160},
+    "created_at": {"type": "string", "format": "date-time"},
+    "formal_write_count": {"type": "integer", "const": 0},
+    "hmac_key_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "hmac_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

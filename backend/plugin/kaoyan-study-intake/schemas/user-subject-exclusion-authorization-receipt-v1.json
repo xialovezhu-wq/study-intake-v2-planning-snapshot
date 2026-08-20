@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/user-subject-exclusion-authorization-receipt-v1.json",
+  "title": "Independent User Subject Exclusion Authorization Receipt v1",
+  "$ref": "subject-exclusion-receipt-v1.json#/$defs/user_authorization"
+}

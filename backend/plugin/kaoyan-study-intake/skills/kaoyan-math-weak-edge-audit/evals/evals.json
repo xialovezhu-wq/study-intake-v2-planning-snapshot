@@ -1,0 +1,53 @@
+{
+  "skill_name": "kaoyan-math-weak-edge-audit",
+  "evals": [
+    {
+      "id": 1,
+      "name": "继续弱边清单",
+      "prompt": "继续处理弱边审计清单里的下一批 20 条。",
+      "expected_output": "从 generated weak-edge checklist 冻结最多 20 条，逐对读卡并输出 SHADOW proposals；不写 formal related，不 rebuild。",
+      "files": [],
+      "expectations": ["范围来自弱边清单", "上限 20", "逐对独立证据", "formal writes 为 0", "不 rebuild"]
+    },
+    {
+      "id": 2,
+      "name": "用户要求一个个看",
+      "prompt": "这些共同专题链我一个个看，先给我待裁决目录。",
+      "expected_output": "输出完整编号目录并立即停止；不改 related、不 rebuild，等待用户选一个编号。",
+      "files": [],
+      "expectations": ["输出稳定编号目录", "不自动编辑", "不 rebuild", "等待单个用户选择"]
+    },
+    {
+      "id": 3,
+      "name": "单 canonical 记录",
+      "prompt": "审计 GS-469 与 GS-573。现有关系只写在 GS-469 一侧，而且独立证据足够。",
+      "expected_output": "输出保留提案并指出现有声明在 GS-469；不补 reciprocal、不移动或正式确认 owner。",
+      "files": [],
+      "expectations": ["输出保留提案", "不机械双向写入", "不发明或迁移 owner", "不写 formal related"]
+    },
+    {
+      "id": 4,
+      "name": "粗同章关系删除",
+      "prompt": "GS-645 和 GS-670 只有同章节、同泛方法，没有共同第一动作或具体陷阱，清理这条边。",
+      "expected_output": "输出删除提案；不得用现有 related 或相似分自证，也不得在 SHADOW 中实际删除。",
+      "files": [],
+      "expectations": ["判定证据不足", "不使用现有 related 自证", "只输出 proposal", "不实际删除"]
+    },
+    {
+      "id": 5,
+      "name": "缺卡是结构阻塞",
+      "prompt": "清单里有一条 GS-111 到 GS-999，但 GS-999 正式卡不存在。",
+      "expected_output": "报告 structural blocker；不把它误写成需用户判断数学关系，不写边。",
+      "files": [],
+      "expectations": ["识别 missing-card blocker", "不写 formal relation", "不归因于用户语义裁决"]
+    },
+    {
+      "id": 6,
+      "name": "今日关系加密让路 nightly",
+      "prompt": "审核今天入库的全部错题，让它们和错题库联系更紧密。",
+      "expected_output": "路由 kaoyan-math-nightly-qa；不从弱边积压取范围。",
+      "files": [],
+      "expectations": ["路由 nightly-qa", "不触发弱边清单批次"]
+    }
+  ]
+}

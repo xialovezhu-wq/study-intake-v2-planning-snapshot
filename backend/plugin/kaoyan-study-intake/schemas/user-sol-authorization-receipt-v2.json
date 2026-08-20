@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/user-sol-authorization-receipt-v2.json",
+  "title": "Explicit user Sol authorization receipt v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "sol_batch_id", "subject", "study_date",
+    "subject_luna_batch_id", "subject_luna_batch_sha256",
+    "sol_candidate_task_ids", "sol_handoff_envelope_sha256s",
+    "diagnostic_task_ids", "writer_adapter", "idempotency_key", "event",
+    "formal_write_count", "seal"
+  ],
+  "properties": {
+    "schema_version": {"const": "user_sol_authorization_receipt_v2"},
+    "sol_batch_id": {"$ref": "#/$defs/nonempty"},
+    "subject": {"$ref": "#/$defs/subject"},
+    "study_date": {"$ref": "#/$defs/nonempty"},
+    "subject_luna_batch_id": {"$ref": "#/$defs/nonempty"},
+    "subject_luna_batch_sha256": {"$ref": "#/$defs/sha256"},
+    "sol_candidate_task_ids": {"$ref": "#/$defs/uniqueIds"},
+    "sol_handoff_envelope_sha256s": {"$ref": "#/$defs/uniqueHashes"},
+    "diagnostic_task_ids": {"$ref": "#/$defs/uniqueIds"},
+    "writer_adapter": {
+      "enum": [
+        "math_nightly_writer_v1", "cs408_daily_intake_writer_v1",
+        "english_daily_intake_writer_v1"
+      ]
+    },
+    "idempotency_key": {"$ref": "#/$defs/nonempty"},
+    "event": {"$ref": "#/$defs/event"},
+    "formal_write_count": {"const": 0},
+    "seal": {"$ref": "#/$defs/seal"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nonempty": {"type": "string", "minLength": 1},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "uniqueIds": {
+      "type": "array", "uniqueItems": true,
+      "items": {"$ref": "#/$defs/nonempty"}
+    },
+    "uniqueHashes": {
+      "type": "array", "minItems": 1, "uniqueItems": true,
+      "items": {"$ref": "#/$defs/sha256"}
+    },
+    "event": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "event_id", "event_type", "subject", "study_date",
+        "subject_luna_batch_id", "authorized_at"
+      ],
+      "properties": {
+        "event_id": {"$ref": "#/$defs/nonempty"},
+        "event_type": {"const": "explicit_user_sol_authorization"},
+        "subject": {"$ref": "#/$defs/subject"},
+        "study_date": {"$ref": "#/$defs/nonempty"},
+        "subject_luna_batch_id": {"$ref": "#/$defs/nonempty"},
+        "authorized_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "seal": {
+      "type": "object", "additionalProperties": false,
+      "required": ["algorithm", "purpose", "hmac_sha256"],
+      "properties": {
+        "algorithm": {"const": "HMAC-SHA256"},
+        "purpose": {"const": "user-sol-authorization-receipt-v2"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

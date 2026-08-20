@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/english-legacy-batch-authorization-v1.json",
+  "title": "English Legacy Batch Authorization v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "issue_id", "subject", "batch_authorization_id",
+    "intent_sha256", "inventory_sha256", "target_set_sha256", "target_count",
+    "authority_generation", "authority_fingerprint", "disposition",
+    "authorized_operations", "exact_inventory_only", "user_message_sha256",
+    "authorized_at", "materialized_at", "model_call_count",
+    "formal_write_count", "authority_key_id", "seal"
+  ],
+  "properties": {
+    "schema_version": {"const": "english_legacy_batch_authorization_v1"},
+    "issue_id": {"const": "EN-P0-006"},
+    "subject": {"const": "english"},
+    "batch_authorization_id": {"type": "string", "minLength": 1},
+    "intent_sha256": {"$ref": "#/$defs/sha256"},
+    "inventory_sha256": {"$ref": "#/$defs/sha256"},
+    "target_set_sha256": {"$ref": "#/$defs/sha256"},
+    "target_count": {"type": "integer", "minimum": 1},
+    "authority_generation": {"type": "string", "minLength": 1},
+    "authority_fingerprint": {"$ref": "#/$defs/sha256"},
+    "disposition": {"const": "deterministic_recuration"},
+    "authorized_operations": {"const": ["luna_recuration", "sol_review", "sol_apply"]},
+    "exact_inventory_only": {"const": true},
+    "user_message_sha256": {"$ref": "#/$defs/sha256"},
+    "authorized_at": {"type": "string", "format": "date-time"},
+    "materialized_at": {"type": "string", "format": "date-time"},
+    "model_call_count": {"const": 0},
+    "formal_write_count": {"const": 0},
+    "authority_key_id": {"$ref": "#/$defs/sha256"},
+    "seal": {"$ref": "#/$defs/seal"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "seal": {
+      "type": "object", "additionalProperties": false,
+      "required": ["algorithm", "purpose", "hmac_sha256"],
+      "properties": {
+        "algorithm": {"const": "HMAC-SHA256"},
+        "purpose": {"const": "english-legacy-batch-authorization-v1"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Study intake Luna analysis",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "summary",
+    "independent_correct_steps",
+    "first_break",
+    "later_breaks",
+    "hint_dependencies",
+    "contradictions",
+    "unresolved",
+    "candidate_updates",
+    "nightly_checks",
+    "risk_flags"
+  ],
+  "properties": {
+    "schema_version": {"type": "string", "const": "study-intake-luna-analysis-v1"},
+    "summary": {"type": "string", "minLength": 1, "maxLength": 1200},
+    "independent_correct_steps": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {"$ref": "#/$defs/claim"}
+    },
+    "first_break": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["kind", "text", "evidence_refs", "confidence"],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "knowledge",
+            "concept",
+            "condition",
+            "method_trigger",
+            "method",
+            "calculation",
+            "expression",
+            "identity",
+            "unknown"
+          ]
+        },
+        "text": {"type": "string", "minLength": 1, "maxLength": 1800},
+        "evidence_refs": {"$ref": "#/$defs/evidenceRefs"},
+        "confidence": {"$ref": "#/$defs/confidence"}
+      }
+    },
+    "later_breaks": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {"$ref": "#/$defs/break"}
+    },
+    "hint_dependencies": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {"$ref": "#/$defs/claim"}
+    },
+    "contradictions": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {"$ref": "#/$defs/claim"}
+    },
+    "unresolved": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {"$ref": "#/$defs/claim"}
+    },
+    "candidate_updates": {
+      "type": "array",
+      "maxItems": 24,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["field", "proposal", "evidence_refs", "confidence"],
+        "properties": {
+          "field": {"type": "string", "minLength": 1, "maxLength": 120},
+          "proposal": {"type": "string", "minLength": 1, "maxLength": 1800},
+          "evidence_refs": {"$ref": "#/$defs/evidenceRefs"},
+          "confidence": {"$ref": "#/$defs/confidence"}
+        }
+      }
+    },
+    "nightly_checks": {
+      "type": "array",
+      "maxItems": 24,
+      "items": {"$ref": "#/$defs/claim"}
+    },
+    "risk_flags": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 240
+      }
+    }
+  },
+  "$defs": {
+    "confidence": {
+      "type": "string",
+      "enum": ["low", "medium", "high"]
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 12,
+      "items": {"type": "string", "minLength": 1, "maxLength": 240}
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text", "evidence_refs", "confidence"],
+      "properties": {
+        "text": {"type": "string", "minLength": 1, "maxLength": 1800},
+        "evidence_refs": {"$ref": "#/$defs/evidenceRefs"},
+        "confidence": {"$ref": "#/$defs/confidence"}
+      }
+    },
+    "break": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "text", "evidence_refs", "confidence"],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "knowledge",
+            "concept",
+            "condition",
+            "method_trigger",
+            "method",
+            "calculation",
+            "expression",
+            "identity",
+            "unknown"
+          ]
+        },
+        "text": {"type": "string", "minLength": 1, "maxLength": 1800},
+        "evidence_refs": {"$ref": "#/$defs/evidenceRefs"},
+        "confidence": {"$ref": "#/$defs/confidence"}
+      }
+    }
+  }
+}

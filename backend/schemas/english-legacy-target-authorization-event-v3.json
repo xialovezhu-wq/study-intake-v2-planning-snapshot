@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/english-legacy-target-authorization-event-v3.json",
+  "title": "English Legacy Target Authorization Event v3",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "event_id", "event_type", "issue_id", "subject",
+    "parent_batch_authorization_sha256", "inventory_sha256", "target_set_sha256",
+    "ordinal", "target_id", "target_kind", "record_id", "historical_operation",
+    "current_object_sha256", "origin_postimage_sha256", "disposition",
+    "authorized_operations", "authorization_scope", "idempotency_key",
+    "user_message_sha256", "authorized_at", "materialized_at",
+    "authority_key_id", "seal"
+  ],
+  "properties": {
+    "schema_version": {"const": "english_legacy_target_authorization_event_v3"},
+    "event_id": {"type": "string", "minLength": 1},
+    "event_type": {"const": "materialized_user_english_legacy_disposition"},
+    "issue_id": {"const": "EN-P0-006"},
+    "subject": {"const": "english"},
+    "parent_batch_authorization_sha256": {"$ref": "#/$defs/sha256"},
+    "inventory_sha256": {"$ref": "#/$defs/sha256"},
+    "target_set_sha256": {"$ref": "#/$defs/sha256"},
+    "ordinal": {"type": "integer", "minimum": 1},
+    "target_id": {"type": "string", "minLength": 1},
+    "target_kind": {"enum": ["article_learning_page", "master_bank_row", "sentence_pattern_card"]},
+    "record_id": {"type": "string", "minLength": 1},
+    "historical_operation": {"enum": ["created", "updated", "representation_reorder_only"]},
+    "current_object_sha256": {"$ref": "#/$defs/sha256"},
+    "origin_postimage_sha256": {"$ref": "#/$defs/sha256"},
+    "disposition": {"const": "deterministic_recuration"},
+    "authorized_operations": {"const": ["luna_recuration", "sol_review", "sol_apply"]},
+    "authorization_scope": {"const": "exact_target_from_batch"},
+    "idempotency_key": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "user_message_sha256": {"$ref": "#/$defs/sha256"},
+    "authorized_at": {"type": "string", "format": "date-time"},
+    "materialized_at": {"type": "string", "format": "date-time"},
+    "authority_key_id": {"$ref": "#/$defs/sha256"},
+    "seal": {"$ref": "#/$defs/seal"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "seal": {
+      "type": "object", "additionalProperties": false,
+      "required": ["algorithm", "purpose", "hmac_sha256"],
+      "properties": {
+        "algorithm": {"const": "HMAC-SHA256"},
+        "purpose": {"const": "english-legacy-target-authorization-event-v3"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

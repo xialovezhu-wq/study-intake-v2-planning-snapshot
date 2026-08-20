@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/global-sol-writer-lease-v1.json",
+  "title": "Global Sol Writer Lease v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "revision", "next_fencing_token", "queue",
+    "active_writer", "active_writer_count", "formal_write_count", "updated_at"
+  ],
+  "properties": {
+    "schema_version": {"const": "global_sol_writer_lease_v1"},
+    "revision": {"type": "integer", "minimum": 0},
+    "next_fencing_token": {"type": "integer", "minimum": 1},
+    "queue": {"type": "array", "items": {"$ref": "#/$defs/queue_entry"}},
+    "active_writer": {
+      "anyOf": [{"$ref": "#/$defs/active_writer"}, {"type": "null"}]
+    },
+    "active_writer_count": {"type": "integer", "minimum": 0, "maximum": 1},
+    "formal_write_count": {"type": "integer", "minimum": 0},
+    "updated_at": {"type": ["string", "null"]}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "queue_entry": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "batch_id", "subject", "authorized_at", "authorization_receipt_sha256",
+        "daily_sol_batch_sha256", "status"
+      ],
+      "properties": {
+        "batch_id": {"type": "string", "minLength": 1},
+        "subject": {"enum": ["math", "cs408", "english"]},
+        "authorized_at": {"type": "string", "minLength": 1},
+        "authorization_receipt_sha256": {"$ref": "#/$defs/sha256"},
+        "daily_sol_batch_sha256": {"$ref": "#/$defs/sha256"},
+        "status": {
+          "enum": ["queued", "active", "reviewed", "committed", "failed", "safe_paused"]
+        }
+      }
+    },
+    "active_writer": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "batch_id", "subject", "fencing_token", "owner_id", "claimed_at",
+        "authorization_receipt_sha256", "daily_sol_batch_sha256",
+        "review_receipt_sha256", "status", "current_item", "committed_count",
+        "remaining_count"
+      ],
+      "properties": {
+        "batch_id": {"type": "string", "minLength": 1},
+        "subject": {"enum": ["math", "cs408", "english"]},
+        "fencing_token": {"type": "integer", "minimum": 1},
+        "owner_id": {"type": "string", "minLength": 1},
+        "claimed_at": {"type": "string", "minLength": 1},
+        "authorization_receipt_sha256": {"$ref": "#/$defs/sha256"},
+        "daily_sol_batch_sha256": {"$ref": "#/$defs/sha256"},
+        "review_receipt_sha256": {
+          "anyOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]
+        },
+        "status": {"enum": ["reviewing", "applying", "recovering", "safe_paused", "failed"]},
+        "current_item": {"type": ["string", "null"]},
+        "committed_count": {"type": "integer", "minimum": 0},
+        "remaining_count": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}

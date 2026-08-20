@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/subject-authority-observation-v1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "subject", "generation", "authority_fingerprint", "observed_at", "model_call_count", "formal_write_count", "seal"],
+  "properties": {
+    "schema_version": {"const": "subject_authority_observation_v1"},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "generation": {"type": "string", "minLength": 1},
+    "authority_fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "observed_at": {"type": "string", "format": "date-time"},
+    "model_call_count": {"const": 0},
+    "formal_write_count": {"const": 0},
+    "seal": {"type": "object"}
+  }
+}

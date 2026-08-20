@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Zero-model validation result for a mathematics Luna business fixture",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["schema_version", "status", "authority_schema_version", "batch_id", "batch_manifest_path", "batch_manifest_sha256", "authority_manifest_path", "authority_manifest_sha256", "task_count", "distinct_capture_count", "existing_formal_id_count", "new_source_without_formal_id_count", "solution_evidence_policy", "tasks", "fixture_tree_sha256", "fixture_tree_scope", "fixture_tree_before_after", "out_of_scope_item_directory_count", "out_of_scope_item_directory_ids", "out_of_scope_item_contents_read_count", "fixture_write_count", "mcp_tool_call_count", "model_call_count", "formal_write_count"],
+  "properties": {
+    "schema_version": {"const": "study-intake-math-live-business-fixture-validation-v1"},
+    "status": {"const": "passed_real_luna_business_preflight"},
+    "authority_schema_version": {"const": "math-luna-real-business-samples-v1"},
+    "batch_id": {"type": "string", "minLength": 1},
+    "batch_manifest_path": {"type": "string", "pattern": "^/"},
+    "batch_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "authority_manifest_path": {"type": "string", "pattern": "^/"},
+    "authority_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "task_count": {"type": "integer", "minimum": 1},
+    "distinct_capture_count": {"type": "integer", "minimum": 1},
+    "existing_formal_id_count": {"type": "integer", "minimum": 0},
+    "new_source_without_formal_id_count": {"type": "integer", "minimum": 0},
+    "solution_evidence_policy": {"type": "object"},
+    "tasks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["capture_id", "business_task_id", "formal_id", "formal_id_must_remain_null", "source_route", "source_locator", "task_kind", "content_fingerprint", "manifest_sha256", "solution_evidence", "luna_eligible", "proposal_only", "reasoning_boundary", "model_request", "authorization"],
+        "properties": {
+          "capture_id": {"type": "string", "minLength": 1},
+          "business_task_id": {"type": "string", "minLength": 1},
+          "formal_id": {"oneOf": [{"type": "string", "pattern": "^GS-[0-9]+$"}, {"type": "null"}]},
+          "formal_id_must_remain_null": {"type": "boolean"},
+          "source_route": {"enum": ["existing_formal_card_review", "new_source_learning_episode"]},
+          "source_locator": {"type": "string", "minLength": 1},
+          "task_kind": {"enum": ["independent_correct_no_false_wrong_card", "wrong_then_corrected_weakness_proposal", "wrong_then_corrected_multistage_method_proposal"]},
+          "content_fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "solution_evidence": {"type": "object"},
+          "luna_eligible": {"const": true},
+          "proposal_only": {"const": true},
+          "reasoning_boundary": {"type": "string", "minLength": 1},
+          "model_request": {"type": "object"},
+          "authorization": {"type": "object"}
+        }
+      }
+    },
+    "fixture_tree_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "fixture_tree_scope": {"const": "authority_contract_boundary_superseded_bindings_and_all_three_task_directories"},
+    "fixture_tree_before_after": {"const": "unchanged"},
+    "out_of_scope_item_directory_count": {"const": 0},
+    "out_of_scope_item_directory_ids": {"type": "array", "maxItems": 0},
+    "out_of_scope_item_contents_read_count": {"const": 0},
+    "fixture_write_count": {"const": 0},
+    "mcp_tool_call_count": {"const": 0},
+    "model_call_count": {"const": 0},
+    "formal_write_count": {"const": 0}
+  }
+}

@@ -1,0 +1,275 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Luna English independent critical review v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "verdict",
+    "draft_analysis_sha256",
+    "findings",
+    "correction_resolutions",
+    "revised_items"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "study-intake-english-critical-review-v1"
+    },
+    "verdict": {
+      "enum": ["confirmed", "revised", "reject"]
+    },
+    "draft_analysis_sha256": {
+      "type": "string"
+    },
+    "findings": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/finding"}
+    },
+    "correction_resolutions": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/correctionResolution"}
+    },
+    "revised_items": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/item"}
+    }
+  },
+  "$defs": {
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["correction_id", "code", "severity", "item_id", "message", "affected_json_paths"],
+      "properties": {
+        "correction_id": {"type": "string", "minLength": 1},
+        "code": {"type": "string"},
+        "severity": {"enum": ["info", "warning", "blocking"]},
+        "item_id": {"type": ["string", "null"]},
+        "message": {"type": "string"},
+        "affected_json_paths": {
+          "type": "array",
+          "maxItems": 48,
+          "items": {"$ref": "#/$defs/writableCorrectionPath"}
+        }
+      }
+    },
+    "correctionResolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["finding_id", "resolution", "affected_json_paths", "before", "after"],
+      "properties": {
+        "finding_id": {"type": "string"},
+        "resolution": {"enum": ["applied", "not_applicable", "unresolved"]},
+        "affected_json_paths": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 48,
+          "items": {"$ref": "#/$defs/writableCorrectionPath"}
+        },
+        "before": {"$ref": "#/$defs/correctionDeltaValue"},
+        "after": {"$ref": "#/$defs/correctionDeltaValue"}
+      }
+    },
+    "correctionDeltaValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["encoding", "canonical_json"],
+      "properties": {
+        "encoding": {"type": "string", "const": "canonical_json"},
+        "canonical_json": {"type": "string", "minLength": 1}
+      }
+    },
+    "writableCorrectionPath": {
+      "type": "string",
+      "pattern": "^\\$\\.items(?:\\[[0-9]+\\])?(?:(?:\\.[A-Za-z_][A-Za-z0-9_]*)|(?:\\[[0-9]+\\]))*$"
+    },
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "item_id",
+        "sequence",
+        "item",
+        "candidate_type",
+        "candidate_status",
+        "tier",
+        "source_event_id",
+        "bank_status",
+        "bank_match_ids",
+        "mastered_status",
+        "mastery_proposal",
+        "grounding",
+        "card"
+      ],
+      "properties": {
+        "item_id": {"type": "string", "minLength": 1},
+        "sequence": {"type": "integer", "minimum": 1},
+        "item": {"type": "string", "minLength": 1},
+        "candidate_type": {
+          "enum": ["单词", "词组", "熟词僻义", "句型", "长难句", "写作表达"]
+        },
+        "candidate_status": {
+          "enum": ["familiarity_candidate", "mastery_candidate"]
+        },
+        "tier": {"enum": ["A", "B", "C", "article_only"]},
+        "source_event_id": {"type": "string", "minLength": 1},
+        "bank_status": {
+          "enum": ["new_candidate", "existing_bank", "duplicate_like", "needs_check"]
+        },
+        "bank_match_ids": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "mastered_status": {
+          "enum": ["clear", "mastered_excluded", "mastery_proposed"]
+        },
+        "mastery_proposal": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "required": ["evidence_kind", "evidence_sentence", "evidence_context", "proof_note"],
+          "properties": {
+            "evidence_kind": {
+              "type": "string",
+              "const": "independent_correct_use"
+            },
+            "evidence_sentence": {"type": "string"},
+            "evidence_context": {"type": "string"},
+            "proof_note": {"type": "string"}
+          }
+        },
+        "grounding": {"$ref": "#/$defs/grounding"},
+        "card": {"$ref": "#/$defs/card"}
+      }
+    },
+    "grounding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "user_evidence_ref",
+        "writing_pattern",
+        "writing_vocabulary",
+        "syllabus_occurrence",
+        "sentence_pattern",
+        "old_word_sources",
+        "naturalness_check",
+        "mcp_evidence_refs"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "passed",
+            "needs_context",
+            "needs_user_evidence",
+            "needs_reference_graph",
+            "reference_gap",
+            "not_requested"
+          ]
+        },
+        "user_evidence_ref": {"type": "string"},
+        "writing_pattern": {"$ref": "#/$defs/writingGroundingEvidence"},
+        "writing_vocabulary": {"$ref": "#/$defs/writingGroundingEvidence"},
+        "syllabus_occurrence": {"$ref": "#/$defs/syllabusGroundingEvidence"},
+        "sentence_pattern": {"$ref": "#/$defs/sentencePatternGroundingEvidence"},
+        "old_word_sources": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/oldWordSource"}
+        },
+        "naturalness_check": {"type": "string"},
+        "mcp_evidence_refs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 48,
+          "items": {
+            "type": "string",
+            "pattern": "^mcp-item:english:[0-9a-f]{64}$"
+          }
+        }
+      }
+    },
+    "writingGroundingEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "reference_ids", "note"],
+      "properties": {
+        "status": {
+          "enum": ["approved", "corrected", "not_requested", "missing", "pending", "rejected"]
+        },
+        "reference_ids": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "note": {"type": "string"}
+      }
+    },
+    "syllabusGroundingEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "reference_ids", "note"],
+      "properties": {
+        "status": {
+          "enum": ["verified", "not_requested", "missing", "pending", "rejected"]
+        },
+        "reference_ids": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "note": {"type": "string"}
+      }
+    },
+    "sentencePatternGroundingEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "reference_ids", "note"],
+      "properties": {
+        "status": {
+          "enum": ["approved", "corrected", "not_requested", "missing", "pending", "rejected"]
+        },
+        "reference_ids": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "note": {"type": "string"}
+      }
+    },
+    "oldWordSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["item", "source_type", "source_id"],
+      "properties": {
+        "item": {"type": "string"},
+        "source_type": {"type": "string"},
+        "source_id": {"type": "string"}
+      }
+    },
+    "card": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "meaning",
+        "source_translation",
+        "usage",
+        "review_note",
+        "adopted_pattern",
+        "old_word_example",
+        "example_translation",
+        "structure_breakdown",
+        "review_old_words"
+      ],
+      "properties": {
+        "meaning": {"type": "string"},
+        "source_translation": {"type": "string"},
+        "usage": {"type": "string"},
+        "review_note": {"type": "string"},
+        "adopted_pattern": {"type": "string"},
+        "old_word_example": {"type": "string"},
+        "example_translation": {"type": "string"},
+        "structure_breakdown": {"type": "string"},
+        "review_old_words": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    }
+  }
+}

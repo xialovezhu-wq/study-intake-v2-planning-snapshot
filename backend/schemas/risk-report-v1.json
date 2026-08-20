@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "https://local.invalid/study-intake/risk-report-v1.json",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "subject", "capture_id", "read_bundle_sha256", "outcome", "issue_codes", "technical_integrity_errors", "required_failure_branch_ids", "conflicts", "recommended_follow_up_reads", "automatic_retry", "formal_write_count", "risk_report_sha256"],
+  "properties": {
+    "schema_version": {"const": "risk_report_v1"}, "subject": {"enum": ["math", "cs408", "english"]}, "capture_id": {"type": "string", "minLength": 1}, "read_bundle_sha256": {"$ref": "#/$defs/sha"},
+    "outcome": {"enum": ["accepted", "corrected", "issues_found", "technical_quarantine"]}, "issue_codes": {"$ref": "#/$defs/ids"}, "technical_integrity_errors": {"$ref": "#/$defs/ids"}, "required_failure_branch_ids": {"$ref": "#/$defs/ids"}, "conflicts": {"type": "array"}, "recommended_follow_up_reads": {"$ref": "#/$defs/ids"},
+    "automatic_retry": {"const": false}, "formal_write_count": {"const": 0}, "risk_report_sha256": {"$ref": "#/$defs/sha"}
+  },
+  "$defs": {"sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"}, "ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}}
+}

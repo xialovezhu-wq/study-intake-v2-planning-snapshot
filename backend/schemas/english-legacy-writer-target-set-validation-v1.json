@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/english-legacy-writer-target-set-validation-v1.json",
+  "title": "English Legacy Writer Target Set Validation v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "issue_id", "subject", "authority_mode",
+    "test_only_bootstrap", "work_item_batch_sha256", "sol_batch_sha256",
+    "target_count", "already_current_count", "committed_count",
+    "failed_count", "all_writer_processes_stopped",
+    "copy_pre_authority_manifest_sha256",
+    "copy_post_authority_manifest_sha256", "copy_authority_unchanged",
+    "source_unchanged", "execution_closure_sha256",
+    "execution_closure_status", "outcomes", "model_call_count",
+    "formal_write_count", "status", "completed_at"
+  ],
+  "properties": {
+    "schema_version": {"const": "english_legacy_writer_target_set_validation_v1"},
+    "issue_id": {"const": "EN-P0-006"},
+    "subject": {"const": "english"},
+    "authority_mode": {"const": "isolated_deterministic_already_current_validation"},
+    "test_only_bootstrap": {"const": true},
+    "work_item_batch_sha256": {"$ref": "#/$defs/sha256"},
+    "sol_batch_sha256": {"$ref": "#/$defs/sha256"},
+    "target_count": {"type": "integer", "minimum": 1},
+    "already_current_count": {"type": "integer", "minimum": 0},
+    "committed_count": {"const": 0},
+    "failed_count": {"const": 0},
+    "all_writer_processes_stopped": {"type": "boolean"},
+    "copy_pre_authority_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "copy_post_authority_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "copy_authority_unchanged": {"type": "boolean"},
+    "source_unchanged": {"$ref": "#/$defs/source_check"},
+    "execution_closure_sha256": {"$ref": "#/$defs/sha256"},
+    "execution_closure_status": {"const": "verified_complete"},
+    "outcomes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/outcome"}
+    },
+    "model_call_count": {"const": 0},
+    "formal_write_count": {"const": 0},
+    "status": {"enum": ["verified_zero_write_complete", "failed"]},
+    "completed_at": {"type": "string", "minLength": 1}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "source_check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_root", "expected_manifest_sha256", "actual_manifest_sha256",
+        "expected_tree_manifest_sha256", "actual_tree_manifest_sha256",
+        "unchanged", "checked_at"
+      ],
+      "properties": {
+        "source_root": {"type": "string", "pattern": "^/"},
+        "expected_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "actual_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "expected_tree_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "actual_tree_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "unchanged": {"type": "boolean"},
+        "checked_at": {"type": "string", "minLength": 1}
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ordinal", "target_id", "review_receipt_sha256",
+        "apply_receipt_sha256", "execution_result_path", "writer_pid",
+        "writer_process_stopped", "status", "formal_write_count"
+      ],
+      "properties": {
+        "ordinal": {"type": "integer", "minimum": 1},
+        "target_id": {"type": "string", "minLength": 1},
+        "review_receipt_sha256": {"$ref": "#/$defs/sha256"},
+        "apply_receipt_sha256": {"$ref": "#/$defs/sha256"},
+        "execution_result_path": {"type": "string", "pattern": "^/"},
+        "writer_pid": {"type": "integer", "minimum": 1},
+        "writer_process_stopped": {"type": "boolean"},
+        "status": {"const": "already_current"},
+        "formal_write_count": {"const": 0}
+      }
+    }
+  }
+}

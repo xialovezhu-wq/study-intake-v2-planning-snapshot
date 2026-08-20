@@ -1,0 +1,103 @@
+{
+  "skill_name": "kaoyan-408-daily-intake-curation",
+  "evals": [
+    {
+      "id": 1,
+      "name": "explicit_date_required",
+      "prompt": "把最近快速 capture 都正式整理一下。",
+      "expected_output": "Do not run audit, status, or start-batch until the user supplies one explicit local study date.",
+      "expectations": ["No date is inferred from UTC receipts, mtimes, Git diff, or chat memory.", "No formal write occurs.", "Only the minimum date blocker is returned."]
+    },
+    {
+      "id": 2,
+      "name": "freeze_exact_ordered_set",
+      "prompt": "正式编纂 2026-08-04 的快速捕获。",
+      "expected_output": "Audit, inspect status, and start one batch that freezes the exact ordered capture IDs, attempt, batch ID, and capture-set SHA-256 for 2026-08-04.",
+      "expectations": ["Only authorized awaiting captures for that date enter the set.", "Same-day captures added later are excluded.", "The frozen order is immutable."]
+    },
+    {
+      "id": 3,
+      "name": "consumer_exactly_once",
+      "prompt": "冻结批次每题都尝试读取 Luna 报告。",
+      "expected_output": "Call ~/.codex/study-intake-preprocessor/current/bin/preprocess_consumer.py consume exactly once per frozen item with the exact date, capture, batch, and set hash.",
+      "expectations": ["Only the current immutable release consumer is used.", "No worker wake, retry, backfill, or poll occurs.", "Every consumer status has formal_write_count zero."]
+    },
+    {
+      "id": 4,
+      "name": "luna_status_matrix_fail_soft",
+      "prompt": "本批次 Luna 状态可能是 ready、single_pass_degraded、absent、stale、failed、disabled 或 timeout。",
+      "expected_output": "Use only ready plus two_pass_ready with gpt-5.6-luna and reasoning_effort max; treat degraded and every other status as no-report and continue immediately from raw capture and direct evidence without waiting.",
+      "expectations": ["Both analysis and critical_review receipts must be ready Luna Max.", "A single-stage result is only a recovery checkpoint.", "No status authorizes a formal write."]
+    },
+    {
+      "id": 5,
+      "name": "reopen_raw_capture_and_bundle",
+      "prompt": "处理冻结 CAP-1，先核对事实源。",
+      "expected_output": "Reopen the exact raw capture, recompute payload hash, and verify the current-question-evidence-bundle-v3 manifest, object hash, permissions, source/date/context binding, question mode, ordered roles, actual image magic, and trace v2 disclosure.",
+      "expectations": ["Missing image roles are evidence_pending with zero model calls.", "A ninth image, corrupt bytes, or declared/detected mismatch fails closed.", "Legacy captures are marked legacy_evidence rather than upgraded."]
+    },
+    {
+      "id": 6,
+      "name": "reject_drifted_report_continue_raw",
+      "prompt": "Luna package 的 batch、set、payload、bundle、report hash、publication 或权威回执有一个不匹配。",
+      "expected_output": "Resolve the supplied preprocessor root to current, independently verify the current release HMAC authority chain, quarantine any mismatch as rejected_report, discard all Luna claims, and continue from valid raw evidence.",
+      "expectations": ["Self-declared authority_verified is never trusted.", "The authority frozen input fingerprint and critical-review revised report must match the Luna package and report.", "The invalid report cannot block or authorize formal work."]
+    },
+    {
+      "id": 7,
+      "name": "sol_field_level_decisions",
+      "prompt": "Luna v2 给出了正式编纂候选。",
+      "expected_output": "Create content-addressed sol_curation_decision_v1 and record Luna value, Sol adopt/modify/reject, direct evidence, basis, counterevidence, confidence, and unresolved gaps for every candidate claim.",
+      "expectations": ["Sol does not copy the report wholesale.", "Only capture/bundle evidence refs are accepted.", "The approved canonical package is answer-safe."]
+    },
+    {
+      "id": 8,
+      "name": "immutable_conflict_needs_user",
+      "prompt": "Luna 与原始题证对学习日期、真实作答或提示依赖有冲突。",
+      "expected_output": "Keep the direct immutable fact unresolved, return needs_user, and perform zero formal preflight or apply.",
+      "expectations": ["Luna cannot vote over user facts.", "The exact answer-safe conflict is retained.", "Later independent items may continue when safe."]
+    },
+    {
+      "id": 9,
+      "name": "strict_serial_formal_writes",
+      "prompt": "冻结批次有 CAP-1 和 CAP-2。",
+      "expected_output": "Complete CAP-1 identity, preflight, one apply, full postcommit, mark-result, and terminal binding before starting CAP-2 formal preflight/apply.",
+      "expectations": ["Formal batch size is 1.", "The second apply timestamp is after the first terminal.", "Failures stay visible and are not omitted from totals."]
+    },
+    {
+      "id": 10,
+      "name": "new_and_redo_identity",
+      "prompt": "CAP-1 是新题，CAP-2 是 redo。",
+      "expected_output": "Keep the new package formal_id null with auto_id true until RepoLock allocation, and require one verified existing formal ID for redo.",
+      "expectations": ["Neither Luna nor Sol reserves a new ID.", "Identity ambiguity yields needs_user.", "No duplicate formal node is created."]
+    },
+    {
+      "id": 11,
+      "name": "receipt_bound_closeout_only",
+      "prompt": "一题已有 normal receipt，但 postcommit 没完成。",
+      "expected_output": "Resume closeout with the original receipt and never replay the successful formal apply.",
+      "expectations": ["The receipt and WAL bind the same approved package.", "mark-result waits for full closeout.", "A fake receipt is rejected."]
+    },
+    {
+      "id": 12,
+      "name": "already_current_no_fake_receipt",
+      "prompt": "一题经核验正式库已经完全一致。",
+      "expected_output": "Record already_current with formal ID and exact verification SHA-256, not a fabricated normal receipt.",
+      "expectations": ["Verification binds batch, set, payload, bundle, decision, and repository state.", "Apply count is zero.", "Terminal binding reopens the exact item-result line."]
+    },
+    {
+      "id": 13,
+      "name": "adoption_observability_only",
+      "prompt": "正式事务成功，但 sol_adoption_receipt_v2 写入失败。",
+      "expected_output": "Keep the formal terminal committed and report an observability failure without rollback, replay, or status confusion.",
+      "expectations": ["Adoption is recorded only after exact terminal binding.", "It binds all required hashes when successful.", "It is never formal completion truth."]
+    },
+    {
+      "id": 14,
+      "name": "minimal_next_morning_closeout",
+      "prompt": "本批次全部达到终态并通过全局验收，准备明早。",
+      "expected_output": "Close the exact batch, then prepare the next queue/pack sidecar bound only to queue, review-ledger cutoff, current sources, builder/schema, and author/verifier receipts.",
+      "expectations": ["No personalization corpus, cross activation, personalization index, recommendation, or variant demand is rebuilt.", "Preparation failure does not reopen the formal batch.", "Old pack/session/capture/Luna-v1/adoption-v1 objects remain read-only."]
+    }
+  ]
+}

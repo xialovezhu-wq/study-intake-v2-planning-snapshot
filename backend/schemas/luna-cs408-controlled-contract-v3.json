@@ -1,0 +1,66 @@
+{
+  "schema_version": "luna-cs408-controlled-contract-v3",
+  "subject": "cs408",
+  "model": "gpt-5.6-luna",
+  "reasoning_effort": "max",
+  "evidence": {
+    "bundle_schema_version": "current-question-evidence-bundle-v3",
+    "manifest_schema_version": "current-question-evidence-manifest-v1",
+    "question_modes": ["dialogue_only", "image_question"],
+    "image_question_required_roles": ["question_image", "solution_image"],
+    "attachment_roles": ["question_image", "solution_image"],
+    "attachment_max_count": 8,
+    "attachment_overflow_policy": "fail_closed",
+    "attachment_order": "ordinal_ascending_contiguous_from_1",
+    "attachment_fields": [
+      "ordinal",
+      "role",
+      "original_bytes_ref",
+      "sha256",
+      "declared_mime_type",
+      "detected_mime_type",
+      "detected_format",
+      "byte_count",
+      "label"
+    ],
+    "attachment_formats": ["png", "jpeg", "webp"],
+    "attachment_mime_types": ["image/png", "image/jpeg", "image/webp"],
+    "original_bytes_ref_prefix": "current-question-attachment://sha256/",
+    "missing_required_role_status": "evidence_pending",
+    "evidence_pending_model_enqueue_allowed": false
+  },
+  "interaction_trace": {
+    "schema_version": "current-question-interaction-trace-v2",
+    "max_included_events": 24,
+    "event_ordinals": "original_strictly_increasing",
+    "fields": [
+      "schema",
+      "events",
+      "original_event_count",
+      "included_event_count",
+      "omitted_event_count",
+      "omitted_ranges",
+      "truncation_reason",
+      "full_trace_sha256"
+    ],
+    "omitted_range_fields": ["start_ordinal", "end_ordinal"],
+    "no_omission_truncation_reason": null,
+    "full_trace_sha256_pattern": "^[a-f0-9]{64}$"
+  },
+  "model_execution": {
+    "model": "gpt-5.6-luna",
+    "reasoning_effort": "max",
+    "stages": ["analysis", "critical_review"],
+    "consumable_pipeline_status": "two_pass_ready",
+    "single_pass_consumable": false,
+    "formal_write_count": 0
+  },
+  "read_session": {
+    "model_driven_mcp": true,
+    "host_semantic_prefetch": false,
+    "full_library_pagination": true,
+    "subject": "cs408",
+    "projection_event_mismatch_policy": "fail_closed"
+  },
+  "formal_write_count": 0
+}

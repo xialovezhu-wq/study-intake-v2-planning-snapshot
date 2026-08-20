@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cs408-scene-admission-receipt-v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "subject",
+    "capture_id",
+    "scene",
+    "status",
+    "missing_fields",
+    "admission_kind",
+    "model_enqueue_allowed",
+    "item_formalization_allowed",
+    "private_artifact_bindings",
+    "formal_write_count",
+    "receipt_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "cs408-scene-admission-receipt-v1"},
+    "subject": {"const": "cs408"},
+    "capture_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "scene": {"enum": ["morning_review", "formal_problem"]},
+    "status": {"enum": ["ready", "evidence_pending"]},
+    "missing_fields": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "admission_kind": {"enum": ["observation_only", "failure_capture", null]},
+    "model_enqueue_allowed": {"type": "boolean"},
+    "item_formalization_allowed": {"type": "boolean"},
+    "private_artifact_bindings": {"type": "array", "items": {"type": "string", "pattern": "^[0-9a-f]{64}$"}, "uniqueItems": true},
+    "formal_write_count": {"const": 0},
+    "receipt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/production-canary-exclusion-v1.json",
+  "title": "Production canary pre-activation exclusion v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "activation_id", "subject", "release_id",
+    "producer_high_watermark_sha256", "producer_input_contract_sha256",
+    "producer_unit_id", "producer_recorded_at", "unit_sha256",
+    "frozen_payload_sha256", "classification", "model_enqueue_allowed",
+    "classified_at", "formal_write_count", "authority"
+  ],
+  "properties": {
+    "schema_version": {"const": "study-intake-production-canary-exclusion-v1"},
+    "activation_id": {"$ref": "#/$defs/sha256"},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "release_id": {"$ref": "#/$defs/sha256"},
+    "producer_high_watermark_sha256": {"$ref": "#/$defs/sha256"},
+    "producer_input_contract_sha256": {"$ref": "#/$defs/sha256"},
+    "producer_unit_id": {"type": "string", "minLength": 1},
+    "producer_recorded_at": {"type": "string", "format": "date-time"},
+    "unit_sha256": {"$ref": "#/$defs/sha256"},
+    "frozen_payload_sha256": {"$ref": "#/$defs/sha256"},
+    "classification": {"const": "pre_activation_frozen"},
+    "model_enqueue_allowed": {"const": false},
+    "classified_at": {"type": "string", "format": "date-time"},
+    "formal_write_count": {"const": 0},
+    "authority": {"$ref": "#/$defs/authority"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "authority": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "algorithm", "key_id", "purpose", "hmac_sha256"],
+      "properties": {
+        "schema_version": {"const": "study-intake-dispatch-authority-v1"},
+        "algorithm": {"const": "HMAC-SHA256"},
+        "key_id": {"$ref": "#/$defs/sha256"},
+        "purpose": {"const": "dispatch-production-canary-exclusion"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

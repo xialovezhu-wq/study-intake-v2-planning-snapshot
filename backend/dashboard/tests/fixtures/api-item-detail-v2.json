@@ -1,0 +1,93 @@
+{
+  "available": true,
+  "projection_identity": {
+    "status": "verified",
+    "generation": "2026-08-15T10:20:32.305215+00:00",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "release_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "item": {
+    "capture_id": "EN-COMPLETE-001",
+    "subject": "english",
+    "task_detail": {
+      "schema_version": "study-intake-dashboard-task-detail-v2",
+      "subject": "english",
+      "capture_id": "EN-COMPLETE-001",
+      "unit_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "release_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "attempt": 1,
+      "fence": 3,
+      "identity": {
+        "owner_id": "english-worker",
+        "frozen_payload_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "input_fingerprint": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      },
+      "dispatch": {
+        "local_dispatch_status": "terminal",
+        "current_stage": "terminal",
+        "last_event_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      },
+      "evidence": {
+        "evidence_access_status": "ready",
+        "authority_snapshot_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+        "exact_error_code": null
+      },
+      "analysis": {
+        "execution_status": "completed",
+        "report_status": "available_with_warnings",
+        "raw_output_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+        "execution_receipt_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+        "normalization_receipt_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+        "report_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+        "warning_codes": ["english:quality_finding"],
+        "error_code": null
+      },
+      "critical_review": {
+        "execution_status": "not_started",
+        "report_status": "not_started",
+        "raw_output_sha256": null,
+        "execution_receipt_sha256": null,
+        "normalization_receipt_sha256": null,
+        "report_sha256": null,
+        "warning_codes": [],
+        "error_code": null
+      },
+      "server_queue": {
+        "status": "unknown",
+        "confirmation": "unconfirmed",
+        "error_code": null
+      },
+      "sol_review": {
+        "status": "pending",
+        "receipt_sha256": null
+      },
+      "formal_write": {
+        "status": "not_authorized",
+        "formal_write_count": 0,
+        "receipt_sha256": null
+      },
+      "progress": {
+        "elapsed_runtime_seconds": 312,
+        "last_meaningful_progress_at": "2026-08-15T10:12:00+00:00",
+        "soft_timeout_warning": false,
+        "stall_probe_status": "healthy"
+      },
+      "terminal": {
+        "status": "workflow_complete_with_warnings",
+        "error_code": null,
+        "receipt_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+        "issued_at": "2026-08-15T10:12:00+00:00"
+      },
+      "artifacts": {
+        "package_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+        "sol_handoff_envelope_sha256": null
+      },
+      "generated_at": "2026-08-15T10:12:00+00:00"
+    }
+  },
+  "dashboard_request_counter_scope": "dashboard_read_only_request",
+  "dashboard_request_model_call_count": 0,
+  "dashboard_request_provider_request_count": 0,
+  "dashboard_request_mcp_tool_call_count": 0,
+  "dashboard_request_formal_write_count": 0
+}

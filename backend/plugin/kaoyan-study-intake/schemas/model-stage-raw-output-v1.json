@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/model-stage-raw-output-v1.json",
+  "title": "Study Intake model stage raw output v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "stage_name", "provider_stage_name", "execution_binding", "captured_at",
+    "provider_process_identity_sha256", "raw_chain_manifest_sha256",
+    "raw_chain_manifest_ref", "raw_chain_total_chunk_count",
+    "raw_chain_reconstruction_sha256",
+    "raw_output_sha256", "raw_output_size", "raw_output_encoding",
+    "raw_output_base64", "provider_stdout_sha256", "provider_stderr_sha256",
+    "provider_returncode", "provider_schema_sha256", "formal_write_count"
+  ],
+  "properties": {
+    "schema_version": {"const": "study-intake-model-stage-raw-output-v1"},
+    "stage_name": {"$ref": "#/$defs/stage"},
+    "provider_stage_name": {"$ref": "#/$defs/providerStage"},
+    "execution_binding": {"$ref": "#/$defs/executionBinding"},
+    "captured_at": {"type": "string", "format": "date-time"},
+    "provider_process_identity_sha256": {"$ref": "#/$defs/sha256"},
+    "raw_chain_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "raw_chain_manifest_ref": {"type": "string", "pattern": "^study-intake-model-stage-raw-chain-manifest://sha256/[0-9a-f]{64}$"},
+    "raw_chain_total_chunk_count": {"type": "integer", "minimum": 0},
+    "raw_chain_reconstruction_sha256": {"$ref": "#/$defs/sha256"},
+    "raw_output_sha256": {"$ref": "#/$defs/sha256"},
+    "raw_output_size": {"type": "integer", "minimum": 0, "maximum": 16777216},
+    "raw_output_encoding": {"const": "base64"},
+    "raw_output_base64": {"type": "string", "contentEncoding": "base64"},
+    "provider_stdout_sha256": {"$ref": "#/$defs/sha256"},
+    "provider_stderr_sha256": {"$ref": "#/$defs/sha256"},
+    "provider_returncode": {"type": ["integer", "null"]},
+    "provider_schema_sha256": {"$ref": "#/$defs/sha256"},
+    "formal_write_count": {"const": 0}
+  },
+  "allOf": [{"$ref": "#/$defs/topStageBinding"}],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nullableSha256": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+    "safeId": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$"},
+    "stage": {"enum": ["analysis", "critical_review"]},
+    "providerStage": {"enum": ["math_analysis", "math_critical_review", "cs408_analysis", "cs408_critical_review", "english_analysis", "english_critical_review"]},
+    "executionBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "unit_sha256", "owner_id", "lease_fence", "attempt", "subject",
+        "capture_id", "release_id", "frozen_payload_sha256", "stage_name",
+        "provider_stage_name", "provider_process_identity_sha256"
+      ],
+      "properties": {
+        "unit_sha256": {"$ref": "#/$defs/sha256"},
+        "owner_id": {"$ref": "#/$defs/safeId"},
+        "lease_fence": {"type": "integer", "minimum": 1},
+        "attempt": {"type": "integer", "minimum": 1},
+        "subject": {"enum": ["math", "cs408", "english"]},
+        "capture_id": {"$ref": "#/$defs/safeId"},
+        "release_id": {"$ref": "#/$defs/sha256"},
+        "frozen_payload_sha256": {"$ref": "#/$defs/sha256"},
+        "stage_name": {"$ref": "#/$defs/stage"},
+        "provider_stage_name": {"$ref": "#/$defs/providerStage"},
+        "provider_process_identity_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "allOf": [{"$ref": "#/$defs/stageSubjectBinding"}]
+    },
+    "stageSubjectBinding": {
+      "allOf": [
+        {"if": {"properties": {"subject": {"const": "math"}}, "required": ["subject"]}, "then": {"properties": {"provider_stage_name": {"enum": ["math_analysis", "math_critical_review"]}}}},
+        {"if": {"properties": {"subject": {"const": "cs408"}}, "required": ["subject"]}, "then": {"properties": {"provider_stage_name": {"enum": ["cs408_analysis", "cs408_critical_review"]}}}},
+        {"if": {"properties": {"subject": {"const": "english"}}, "required": ["subject"]}, "then": {"properties": {"provider_stage_name": {"enum": ["english_analysis", "english_critical_review"]}}}},
+        {"if": {"properties": {"stage_name": {"const": "analysis"}}, "required": ["stage_name"]}, "then": {"properties": {"provider_stage_name": {"enum": ["math_analysis", "cs408_analysis", "english_analysis"]}}}},
+        {"if": {"properties": {"stage_name": {"const": "critical_review"}}, "required": ["stage_name"]}, "then": {"properties": {"provider_stage_name": {"enum": ["math_critical_review", "cs408_critical_review", "english_critical_review"]}}}}
+      ]
+    },
+    "topStageBinding": {
+      "allOf": [
+        {"if": {"properties": {"provider_stage_name": {"const": "math_analysis"}}, "required": ["provider_stage_name"]}, "then": {"properties": {"stage_name": {"const": "analysis"}, "execution_binding": {"properties": {"subject": {"const": "math"}, "stage_name": {"const": "analysis"}, "provider_stage_name": {"const": "math_analysis"}}}}}},
+        {"if": {"properties": {"provider_stage_name": {"const": "math_critical_review"}}, "required": ["provider_stage_name"]}, "then": {"properties": {"stage_name": {"const": "critical_review"}, "execution_binding": {"properties": {"subject": {"const": "math"}, "stage_name": {"const": "critical_review"}, "provider_stage_name": {"const": "math_critical_review"}}}}}},
+        {"if": {"properties": {"provider_stage_name": {"const": "cs408_analysis"}}, "required": ["provider_stage_name"]}, "then": {"properties": {"stage_name": {"const": "analysis"}, "execution_binding": {"properties": {"subject": {"const": "cs408"}, "stage_name": {"const": "analysis"}, "provider_stage_name": {"const": "cs408_analysis"}}}}}},
+        {"if": {"properties": {"provider_stage_name": {"const": "cs408_critical_review"}}, "required": ["provider_stage_name"]}, "then": {"properties": {"stage_name": {"const": "critical_review"}, "execution_binding": {"properties": {"subject": {"const": "cs408"}, "stage_name": {"const": "critical_review"}, "provider_stage_name": {"const": "cs408_critical_review"}}}}}},
+        {"if": {"properties": {"provider_stage_name": {"const": "english_analysis"}}, "required": ["provider_stage_name"]}, "then": {"properties": {"stage_name": {"const": "analysis"}, "execution_binding": {"properties": {"subject": {"const": "english"}, "stage_name": {"const": "analysis"}, "provider_stage_name": {"const": "english_analysis"}}}}}},
+        {"if": {"properties": {"provider_stage_name": {"const": "english_critical_review"}}, "required": ["provider_stage_name"]}, "then": {"properties": {"stage_name": {"const": "critical_review"}, "execution_binding": {"properties": {"subject": {"const": "english"}, "stage_name": {"const": "critical_review"}, "provider_stage_name": {"const": "english_critical_review"}}}}}}
+      ]
+    }
+  }
+}

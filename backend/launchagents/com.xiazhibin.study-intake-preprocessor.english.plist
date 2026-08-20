@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.xiazhibin.study-intake-preprocessor.english</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/local/bin/python3</string>
+    <string>${CURRENT_ROOT}/bin/preprocess_dispatcher.py</string>
+    <string>--config</string>
+    <string>${CURRENT_ROOT}/config.json</string>
+    <string>--subject</string>
+    <string>english</string>
+    <string>run</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>LANG</key>
+    <string>zh_CN.UTF-8</string>
+    <key>PATH</key>
+    <string>/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    <key>PYTHONDONTWRITEBYTECODE</key>
+    <string>1</string>
+    <key>PYTHONUNBUFFERED</key>
+    <string>1</string>
+    <key>STUDY_INTAKE_EXECUTION_MODE</key>
+    <string>offline</string>
+  </dict>
+  <key>WorkingDirectory</key>
+  <string>${CURRENT_ROOT}</string>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>ProcessType</key>
+  <string>Background</string>
+  <key>LowPriorityIO</key>
+  <true/>
+  <key>Nice</key>
+  <integer>10</integer>
+  <key>ThrottleInterval</key>
+  <integer>10</integer>
+  <key>Umask</key>
+  <integer>63</integer>
+  <key>StandardOutPath</key>
+  <string>${RUNTIME_DATA_ROOT}/logs/english-dispatcher.log</string>
+  <key>StandardErrorPath</key>
+  <string>${RUNTIME_DATA_ROOT}/logs/english-dispatcher.error.log</string>
+</dict>
+</plist>

@@ -1,0 +1,4 @@
+interface:
+  display_name: "数学单题快速入库"
+  short_description: "每次先固化真实题图和独立解答文本，再保存当前题证据。"
+  default_prompt: "Use $kaoyan-math-wrong-intake to capture one source-backed current math episode as an immutable pending-nightly event. For every fresh capture, including an existing-card recurrence, first stage a real question image and exactly one UTF-8 .txt or .md solution_text artifact into source bundle v1, then record a release-neutral capture v2 whose episode solution normalizes to the artifact text. Never use a formal-card answer or solution image as fallback. Preserve real user work, the first break, and correction evidence, return the writer receipt, and stop without waiting for Luna or touching formal layers."

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Capture freeze receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "subject",
+    "capture_id",
+    "study_date",
+    "input_fingerprint",
+    "input_binding_sha256",
+    "capture_facts_sha256",
+    "frozen_scope",
+    "knowledge_library_frozen",
+    "formal_write_count",
+    "created_at",
+    "hmac_key_id",
+    "hmac_sha256"
+  ],
+  "properties": {
+    "schema_version": {"type": "string", "const": "capture_freeze_receipt_v1"},
+    "subject": {"type": "string", "enum": ["math", "cs408", "english"]},
+    "capture_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "study_date": {"type": "string", "format": "date"},
+    "input_fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "input_binding_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "capture_facts_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "frozen_scope": {"type": "string", "const": "current_capture_facts_only"},
+    "knowledge_library_frozen": {"type": "boolean", "const": false},
+    "formal_write_count": {"type": "integer", "const": 0},
+    "created_at": {"type": "string", "format": "date-time"},
+    "hmac_key_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "hmac_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

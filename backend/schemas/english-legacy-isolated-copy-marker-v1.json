@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/english-legacy-isolated-copy-marker-v1.json",
+  "title": "English Legacy Isolated Copy Marker v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "issue_id", "subject", "copy_id", "source_root",
+    "isolated_root", "source_authority_manifest_sha256",
+    "initial_copy_authority_manifest_sha256", "source_tree_manifest_sha256",
+    "initial_copy_tree_manifest_sha256", "created_at", "formal_write_count",
+    "marker_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "english_legacy_isolated_copy_marker_v1"},
+    "issue_id": {"const": "EN-P0-006"},
+    "subject": {"const": "english"},
+    "copy_id": {"type": "string", "minLength": 1},
+    "source_root": {"type": "string", "pattern": "^/"},
+    "isolated_root": {"type": "string", "pattern": "^/"},
+    "source_authority_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "initial_copy_authority_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "source_tree_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "initial_copy_tree_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "created_at": {"type": "string", "minLength": 1},
+    "formal_write_count": {"const": 0},
+    "marker_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

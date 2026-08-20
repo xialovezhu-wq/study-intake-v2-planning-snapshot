@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/english-legacy-disposition-closure-v2.json",
+  "title": "English Legacy Disposition Closure v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "issue_id", "subject", "inventory_sha256",
+    "target_set_sha256", "authority_generation", "authority_fingerprint",
+    "receipt_sha256s", "target_count", "user_authorized_target_count",
+    "unidentified_target_count", "omitted_target_count",
+    "duplicate_target_count", "unknown_target_count", "authority_key_id",
+    "model_call_count", "formal_write_count", "issued_at", "seal"
+  ],
+  "properties": {
+    "schema_version": {"const": "english_legacy_disposition_closure_v2"},
+    "issue_id": {"const": "EN-P0-006"},
+    "subject": {"const": "english"},
+    "inventory_sha256": {"$ref": "#/$defs/sha256"},
+    "target_set_sha256": {"$ref": "#/$defs/sha256"},
+    "authority_generation": {"type": "string", "minLength": 1},
+    "authority_fingerprint": {"$ref": "#/$defs/sha256"},
+    "receipt_sha256s": {
+      "type": "array", "minItems": 1, "uniqueItems": true,
+      "items": {"$ref": "#/$defs/sha256"}
+    },
+    "target_count": {"type": "integer", "minimum": 1},
+    "user_authorized_target_count": {"type": "integer", "minimum": 1},
+    "unidentified_target_count": {"const": 0},
+    "omitted_target_count": {"const": 0},
+    "duplicate_target_count": {"const": 0},
+    "unknown_target_count": {"const": 0},
+    "authority_key_id": {"$ref": "#/$defs/sha256"},
+    "model_call_count": {"const": 0},
+    "formal_write_count": {"const": 0},
+    "issued_at": {"type": "string", "format": "date-time"},
+    "seal": {"$ref": "#/$defs/seal"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "seal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "purpose", "hmac_sha256"],
+      "properties": {
+        "algorithm": {"const": "HMAC-SHA256"},
+        "purpose": {"const": "english-legacy-disposition-closure-v2"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

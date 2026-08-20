@@ -1,0 +1,309 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "study-intake-production-canary-state-v2",
+  "type": "object",
+  "required": [
+    "activated_at", "activation_gate_authority_sha256", "activation_id",
+    "activation_receipt_path", "activation_receipt_sha256", "active_selections",
+    "active_task_count", "authority", "backpressure_reason", "blocking_reason",
+    "canary_queue_count", "continuous_concurrency_limit",
+    "excluded_by_high_watermark_count", "fast_mode_effective", "fast_mode_requested",
+    "formal_write_count", "historical_eligible_count", "initial_canary_inflight_limit",
+    "keep_backlog_drained", "last_analysis_evidence_refs",
+    "last_analysis_grounding_manifest_sha256", "last_analysis_status",
+    "last_critical_review_evidence_refs", "last_critical_review_grounding_manifest_sha256",
+    "last_critical_review_status", "last_emergency_cancel_at",
+    "last_emergency_cancel_receipt_sha256", "last_evidence_authority_fingerprint",
+    "last_evidence_generation", "last_failure_at", "last_package_sha256",
+    "last_preclaim_failure_at", "last_preclaim_failure_error_code",
+    "last_preclaim_failure_evidence_sha256", "last_preclaim_failure_receipt_sha256",
+    "last_preclaim_failure_stage", "last_read_session_id", "last_report_status",
+    "last_selected", "last_success_at", "last_terminal_receipt_path",
+    "last_terminal_receipt_sha256", "late_result_fence_status", "luna_consumer_enabled",
+    "mcp_tool_call_count", "model_call_count", "next_action",
+    "observability_counter_scope", "observed_mcp_tool_call_count",
+    "observed_model_call_count", "observed_provider_request_count",
+    "oldest_pending_age_seconds", "post_activation_only",
+    "preclaim_failure_resume_ack_sha256", "producer_authority_fingerprint",
+    "producer_capture_enabled", "producer_high_watermark",
+    "producer_high_watermark_sha256", "production_accepted", "provider_request_count",
+    "queue_classification", "queue_depth", "release_id", "requested_service_tier",
+    "schema_version", "selected", "sol_enabled", "sol_formal_curation_enabled",
+    "state", "status", "subject", "terminal_by_outcome", "terminal_index_path",
+    "terminal_index_sha256", "terminal_task_count", "unlocked_once", "updated_at"
+  ],
+  "properties": {
+    "activated_at": {"$ref": "#/$defs/timestamp"},
+    "activation_gate_authority_sha256": {"$ref": "#/$defs/sha256"},
+    "activation_id": {"$ref": "#/$defs/sha256"},
+    "activation_receipt_path": {"$ref": "#/$defs/absolute_path"},
+    "activation_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "active_selections": {
+      "type": "object",
+      "propertyNames": {"pattern": "^[0-9a-f]{64}$"},
+      "additionalProperties": {"$ref": "#/$defs/state_selection"}
+    },
+    "active_task_count": {"type": "integer", "minimum": 0, "maximum": 64},
+    "authority": {"$ref": "#/$defs/authority"},
+    "backpressure_reason": {"enum": ["continuous_concurrency_limit_reached", null]},
+    "blocking_reason": {"$ref": "#/$defs/nullable_nonempty_string"},
+    "canary_queue_count": {"type": "integer", "minimum": 0},
+    "continuous_concurrency_limit": {"type": "integer", "minimum": 1, "maximum": 64},
+    "excluded_by_high_watermark_count": {"type": "integer", "minimum": 0},
+    "fast_mode_effective": {"const": "not_requested"},
+    "fast_mode_requested": {"const": false},
+    "formal_write_count": {"const": 0},
+    "historical_eligible_count": {"type": "integer", "minimum": 0},
+    "initial_canary_inflight_limit": {"const": 1},
+    "keep_backlog_drained": {"const": true},
+    "last_analysis_evidence_refs": {"$ref": "#/$defs/evidence_refs"},
+    "last_analysis_grounding_manifest_sha256": {"$ref": "#/$defs/nullable_sha256"},
+    "last_analysis_status": {"enum": ["not_started", "completed", "failed_or_incomplete"]},
+    "last_critical_review_evidence_refs": {"$ref": "#/$defs/evidence_refs"},
+    "last_critical_review_grounding_manifest_sha256": {"$ref": "#/$defs/nullable_sha256"},
+    "last_critical_review_status": {"enum": ["not_started", "completed", "failed_or_incomplete"]},
+    "last_emergency_cancel_at": {"$ref": "#/$defs/nullable_timestamp"},
+    "last_emergency_cancel_receipt_sha256": {"$ref": "#/$defs/nullable_sha256"},
+    "last_evidence_authority_fingerprint": {"$ref": "#/$defs/nullable_sha256"},
+    "last_evidence_generation": {"$ref": "#/$defs/nullable_nonempty_string"},
+    "last_failure_at": {"$ref": "#/$defs/nullable_timestamp"},
+    "last_package_sha256": {"$ref": "#/$defs/nullable_sha256"},
+    "last_preclaim_failure_at": {"$ref": "#/$defs/nullable_timestamp"},
+    "last_preclaim_failure_error_code": {"$ref": "#/$defs/nullable_nonempty_string"},
+    "last_preclaim_failure_evidence_sha256": {"$ref": "#/$defs/nullable_sha256"},
+    "last_preclaim_failure_receipt_sha256": {"$ref": "#/$defs/nullable_sha256"},
+    "last_preclaim_failure_stage": {
+      "enum": [
+        "producer_contract", "materialize", "consumer_admission", "pre_claim",
+        "submit_generation_fence", null
+      ]
+    },
+    "last_read_session_id": {"$ref": "#/$defs/nullable_nonempty_string"},
+    "last_report_status": {"enum": ["not_started", "reopen_verified", "not_verified"]},
+    "last_selected": {"oneOf": [{"$ref": "#/$defs/state_selection"}, {"type": "null"}]},
+    "last_success_at": {"$ref": "#/$defs/nullable_timestamp"},
+    "last_terminal_receipt_path": {"$ref": "#/$defs/nullable_absolute_path"},
+    "last_terminal_receipt_sha256": {"$ref": "#/$defs/nullable_sha256"},
+    "late_result_fence_status": {"enum": ["not_required", "sealed"]},
+    "luna_consumer_enabled": {"type": "boolean"},
+    "mcp_tool_call_count": {"const": 0},
+    "model_call_count": {"const": 0},
+    "next_action": {
+      "enum": [
+        "await_first_post_activation_capture", "activate_successor_canary",
+        "explicit_subject_resume_required", "consume_pending_post_activation_queue",
+        "await_continuous_concurrency_capacity", "await_active_task_terminal",
+        "await_post_activation_capture"
+      ]
+    },
+    "observability_counter_scope": {"const": "current_activation_cumulative"},
+    "observed_mcp_tool_call_count": {"type": "integer", "minimum": 0},
+    "observed_model_call_count": {"type": "integer", "minimum": 0},
+    "observed_provider_request_count": {"type": "integer", "minimum": 0},
+    "oldest_pending_age_seconds": {
+      "oneOf": [{"type": "integer", "minimum": 0}, {"type": "null"}]
+    },
+    "post_activation_only": {"const": true},
+    "preclaim_failure_resume_ack_sha256": {"$ref": "#/$defs/nullable_sha256"},
+    "producer_authority_fingerprint": {"$ref": "#/$defs/sha256"},
+    "producer_capture_enabled": {"const": true},
+    "producer_high_watermark": {"$ref": "#/$defs/producer_high_watermark"},
+    "producer_high_watermark_sha256": {"$ref": "#/$defs/sha256"},
+    "production_accepted": {"const": false},
+    "provider_request_count": {"const": 0},
+    "queue_classification": {"$ref": "#/$defs/queue_classification"},
+    "queue_depth": {"type": "integer", "minimum": 0},
+    "release_id": {"$ref": "#/$defs/sha256"},
+    "requested_service_tier": {"type": "null"},
+    "schema_version": {"const": "study-intake-production-canary-state-v2"},
+    "selected": {"oneOf": [{"$ref": "#/$defs/state_selection"}, {"type": "null"}]},
+    "sol_enabled": {"const": false},
+    "sol_formal_curation_enabled": {"const": false},
+    "state": {
+      "enum": [
+        "armed", "canary_in_flight", "continuous_concurrent_unlocked",
+        "failed_drained", "paused_drained", "inactive_rolled_back"
+      ]
+    },
+    "status": {"enum": ["production_canary_active", "production_canary_inactive"]},
+    "subject": {"$ref": "#/$defs/subject"},
+    "terminal_by_outcome": {"$ref": "#/$defs/terminal_counts"},
+    "terminal_index_path": {"$ref": "#/$defs/absolute_path"},
+    "terminal_index_sha256": {"$ref": "#/$defs/sha256"},
+    "terminal_task_count": {"type": "integer", "minimum": 0},
+    "unlocked_once": {"type": "boolean"},
+    "updated_at": {"$ref": "#/$defs/timestamp"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"state": {"const": "inactive_rolled_back"}}, "required": ["state"]},
+      "then": {
+        "properties": {
+          "status": {"const": "production_canary_inactive"},
+          "luna_consumer_enabled": {"const": false},
+          "active_task_count": {"const": 0},
+          "selected": {"type": "null"}
+        }
+      },
+      "else": {"properties": {"status": {"const": "production_canary_active"}}}
+    },
+    {
+      "if": {"properties": {"state": {"const": "armed"}}, "required": ["state"]},
+      "then": {
+        "properties": {
+          "luna_consumer_enabled": {"const": true},
+          "active_task_count": {"const": 0},
+          "selected": {"type": "null"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"state": {"const": "canary_in_flight"}}, "required": ["state"]},
+      "then": {
+        "properties": {
+          "luna_consumer_enabled": {"const": true},
+          "active_task_count": {"const": 1},
+          "selected": {"$ref": "#/$defs/state_selection"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"state": {"const": "continuous_concurrent_unlocked"}}, "required": ["state"]},
+      "then": {
+        "properties": {
+          "luna_consumer_enabled": {"const": true},
+          "selected": {"type": "null"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"state": {"const": "paused_drained"}}, "required": ["state"]},
+      "then": {
+        "properties": {
+          "luna_consumer_enabled": {"const": false},
+          "active_task_count": {"const": 0},
+          "selected": {"type": "null"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"state": {"const": "failed_drained"}}, "required": ["state"]},
+      "then": {
+        "properties": {
+          "luna_consumer_enabled": {"const": false},
+          "selected": {"type": "null"}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nullable_sha256": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+    "timestamp": {"type": "string", "format": "date-time", "minLength": 1},
+    "nullable_timestamp": {"oneOf": [{"$ref": "#/$defs/timestamp"}, {"type": "null"}]},
+    "absolute_path": {"type": "string", "pattern": "^/", "minLength": 2},
+    "nullable_absolute_path": {"oneOf": [{"$ref": "#/$defs/absolute_path"}, {"type": "null"}]},
+    "nullable_nonempty_string": {"type": ["string", "null"], "minLength": 1},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "evidence_refs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "authority": {
+      "type": "object",
+      "required": ["schema_version", "algorithm", "key_id", "purpose", "hmac_sha256"],
+      "properties": {
+        "schema_version": {"const": "study-intake-dispatch-authority-v1"},
+        "algorithm": {"const": "HMAC-SHA256"},
+        "key_id": {"$ref": "#/$defs/sha256"},
+        "purpose": {"const": "dispatch-production-canary-state"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "additionalProperties": false
+    },
+    "producer_high_watermark": {
+      "type": "object",
+      "required": [
+        "schema_version", "subject", "release_id", "recorded_at",
+        "producer_authority_fingerprint", "source_event_ids",
+        "source_event_set_sha256", "formal_write_count"
+      ],
+      "properties": {
+        "schema_version": {"const": "study-intake-producer-high-watermark-v1"},
+        "subject": {"$ref": "#/$defs/subject"},
+        "release_id": {"$ref": "#/$defs/sha256"},
+        "recorded_at": {"$ref": "#/$defs/timestamp"},
+        "producer_authority_fingerprint": {"$ref": "#/$defs/sha256"},
+        "source_event_ids": {
+          "type": "array", "maxItems": 0,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "source_event_set_sha256": {"$ref": "#/$defs/sha256"},
+        "formal_write_count": {"const": 0}
+      },
+      "additionalProperties": false
+    },
+    "state_selection": {
+      "type": "object",
+      "required": [
+        "producer_unit_id", "producer_recorded_at", "producer_input_contract_sha256",
+        "source_event_set_sha256", "unit_sha256", "frozen_payload_sha256",
+        "canary_gate_sha256", "canary_gate_path", "canary_gate_authority_sha256",
+        "lease_owner_id", "lease_fence", "context_root", "mcp_session_root",
+        "report_root", "process_identity_sha256", "process_identity_path"
+      ],
+      "properties": {
+        "producer_unit_id": {"type": "string", "minLength": 1},
+        "producer_recorded_at": {"$ref": "#/$defs/timestamp"},
+        "producer_input_contract_sha256": {"$ref": "#/$defs/sha256"},
+        "source_event_set_sha256": {"$ref": "#/$defs/sha256"},
+        "unit_sha256": {"$ref": "#/$defs/sha256"},
+        "frozen_payload_sha256": {"$ref": "#/$defs/sha256"},
+        "canary_gate_sha256": {"$ref": "#/$defs/sha256"},
+        "canary_gate_path": {"$ref": "#/$defs/absolute_path"},
+        "canary_gate_authority_sha256": {"$ref": "#/$defs/sha256"},
+        "lease_owner_id": {"type": "string", "minLength": 1},
+        "lease_fence": {"type": "integer", "minimum": 1},
+        "context_root": {"$ref": "#/$defs/absolute_path"},
+        "mcp_session_root": {"$ref": "#/$defs/absolute_path"},
+        "report_root": {"$ref": "#/$defs/absolute_path"},
+        "process_identity_sha256": {"$ref": "#/$defs/nullable_sha256"},
+        "process_identity_path": {"$ref": "#/$defs/nullable_absolute_path"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"process_identity_sha256": {"type": "null"}}, "required": ["process_identity_sha256"]},
+          "then": {"properties": {"process_identity_path": {"type": "null"}}},
+          "else": {"properties": {"process_identity_path": {"$ref": "#/$defs/absolute_path"}}}
+        }
+      ],
+      "additionalProperties": false
+    },
+    "queue_classification": {
+      "type": "object",
+      "required": ["pre_activation_frozen", "pending", "claimed", "succeeded", "failed"],
+      "properties": {
+        "pre_activation_frozen": {"type": "integer", "minimum": 0},
+        "pending": {"type": "integer", "minimum": 0},
+        "claimed": {"type": "integer", "minimum": 0},
+        "succeeded": {"type": "integer", "minimum": 0},
+        "failed": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "terminal_counts": {
+      "type": "object",
+      "required": ["succeeded", "failed", "cancelled", "timed_out", "needs_rework"],
+      "properties": {
+        "succeeded": {"type": "integer", "minimum": 0},
+        "failed": {"type": "integer", "minimum": 0},
+        "cancelled": {"type": "integer", "minimum": 0},
+        "timed_out": {"type": "integer", "minimum": 0},
+        "needs_rework": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

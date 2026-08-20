@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/three-subject-canary-activation-v1.json",
+  "title": "Three-subject production canary activation manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "release_id",
+    "release_manifest_sha256",
+    "post_activation_only",
+    "historical_backlog_drained",
+    "per_subject_limit",
+    "slots",
+    "model_call_count",
+    "provider_request_count",
+    "formal_write_count",
+    "sol_enabled",
+    "production_accepted"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "study-intake-three-subject-canary-activation-v1"
+    },
+    "status": {"const": "ready"},
+    "release_id": {"$ref": "#/$defs/sha256"},
+    "release_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "post_activation_only": {"const": true},
+    "historical_backlog_drained": {"const": true},
+    "per_subject_limit": {"const": 1},
+    "slots": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["math", "cs408", "english"],
+      "properties": {
+        "math": {"$ref": "#/$defs/mathSlot"},
+        "cs408": {"$ref": "#/$defs/cs408Slot"},
+        "english": {"$ref": "#/$defs/englishSlot"}
+      }
+    },
+    "model_call_count": {"const": 0},
+    "provider_request_count": {"const": 0},
+    "formal_write_count": {"const": 0},
+    "sol_enabled": {"const": false},
+    "production_accepted": {"const": false}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "slot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "subject",
+        "producer_authority_fingerprint",
+        "state",
+        "capture_id",
+        "completion_receipt_sha256"
+      ],
+      "properties": {
+        "subject": {"enum": ["math", "cs408", "english"]},
+        "producer_authority_fingerprint": {"$ref": "#/$defs/sha256"},
+        "state": {"const": "planned"},
+        "capture_id": {"type": "null"},
+        "completion_receipt_sha256": {"type": "null"}
+      }
+    },
+    "mathSlot": {
+      "allOf": [
+        {"$ref": "#/$defs/slot"},
+        {"properties": {"subject": {"const": "math"}}}
+      ]
+    },
+    "cs408Slot": {
+      "allOf": [
+        {"$ref": "#/$defs/slot"},
+        {"properties": {"subject": {"const": "cs408"}}}
+      ]
+    },
+    "englishSlot": {
+      "allOf": [
+        {"$ref": "#/$defs/slot"},
+        {"properties": {"subject": {"const": "english"}}}
+      ]
+    }
+  }
+}

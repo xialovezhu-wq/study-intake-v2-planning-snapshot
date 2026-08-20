@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/english-legacy-disposition-review-template-v2.json",
+  "title": "English Legacy Disposition Review Template v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "issue_id", "subject", "status", "inventory_status",
+    "requirements_sha256", "originating_thread_id", "authority",
+    "identified_target_count", "unidentified_target_count_lower_bound",
+    "targets", "unresolved_targets", "allowed_dispositions",
+    "mastered_items_boundary", "disposition_receipt_count",
+    "closure_eligible", "model_call_count", "formal_write_count"
+  ],
+  "properties": {
+    "schema_version": {"const": "english_legacy_disposition_review_template_v2"},
+    "issue_id": {"const": "EN-P0-006"},
+    "subject": {"const": "english"},
+    "status": {"const": "review_required_not_signable"},
+    "inventory_status": {"const": "evidence_incomplete"},
+    "requirements_sha256": {"$ref": "#/$defs/sha256"},
+    "originating_thread_id": {"type": "string", "minLength": 1},
+    "authority": {"$ref": "#/$defs/authority"},
+    "identified_target_count": {"type": "integer", "minimum": 1},
+    "unidentified_target_count_lower_bound": {"type": "integer", "minimum": 1},
+    "targets": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/target"}},
+    "unresolved_targets": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["placeholder_id", "reason"],
+        "properties": {
+          "placeholder_id": {"type": "string", "minLength": 1},
+          "reason": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "allowed_dispositions": {
+      "const": ["legacy_attestation", "deterministic_recuration", "rollback"]
+    },
+    "mastered_items_boundary": {"$ref": "#/$defs/mastered_items"},
+    "disposition_receipt_count": {"const": 0},
+    "closure_eligible": {"const": false},
+    "model_call_count": {"const": 0},
+    "formal_write_count": {"const": 0}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authority_path", "sha256", "role"],
+      "properties": {
+        "authority_path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "role": {
+          "enum": [
+            "article_learning_page", "master_bank_row",
+            "mastered_items_boundary", "sentence_pattern_card"
+          ]
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["generation", "fingerprint", "files"],
+      "properties": {
+        "generation": {"type": "string", "minLength": 1},
+        "fingerprint": {"$ref": "#/$defs/sha256"},
+        "files": {
+          "type": "array", "minItems": 4, "maxItems": 4,
+          "items": {"$ref": "#/$defs/file"}
+        }
+      }
+    },
+    "mastered_items": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority_path", "sha256", "row_count", "inference_forbidden",
+        "used_for_disposition"
+      ],
+      "properties": {
+        "authority_path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "row_count": {"type": "integer", "minimum": 0},
+        "inference_forbidden": {"const": true},
+        "used_for_disposition": {"const": false}
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_id", "target_kind", "record_id", "authority_path",
+        "authority_file_sha256", "current_object_sha256", "prehash_status",
+        "prehash_sha256", "originating_thread_id", "independent_review",
+        "user_selection"
+      ],
+      "properties": {
+        "target_id": {"type": "string", "minLength": 1},
+        "target_kind": {"enum": ["article_learning_page", "master_bank_row", "sentence_pattern_card"]},
+        "record_id": {"type": "string", "minLength": 1},
+        "authority_path": {"type": "string", "minLength": 1},
+        "authority_file_sha256": {"$ref": "#/$defs/sha256"},
+        "current_object_sha256": {"$ref": "#/$defs/sha256"},
+        "prehash_status": {"const": "evidence_incomplete"},
+        "prehash_sha256": {"type": "null"},
+        "originating_thread_id": {"type": "string", "minLength": 1},
+        "independent_review": {
+          "type": "object", "additionalProperties": false,
+          "required": ["status", "verdict", "receipt_sha256"],
+          "properties": {
+            "status": {"const": "pending"},
+            "verdict": {"type": "null"},
+            "receipt_sha256": {"type": "null"}
+          }
+        },
+        "user_selection": {
+          "type": "object", "additionalProperties": false,
+          "required": ["disposition", "authorization_event_id", "user_message_sha256"],
+          "properties": {
+            "disposition": {"type": "null"},
+            "authorization_event_id": {"type": "null"},
+            "user_message_sha256": {"type": "null"}
+          }
+        }
+      }
+    }
+  }
+}

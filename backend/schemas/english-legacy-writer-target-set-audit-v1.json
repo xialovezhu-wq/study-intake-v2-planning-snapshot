@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/english-legacy-writer-target-set-audit-v1.json",
+  "title": "English Legacy Writer Target Set Audit v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "issue_id", "subject", "work_item_batch_sha256",
+    "remediation_batch_id", "target_count", "copy_id", "isolated_root",
+    "source_unchanged", "counts", "items", "status", "model_call_count",
+    "formal_write_count", "completed_at"
+  ],
+  "properties": {
+    "schema_version": {"const": "english_legacy_writer_target_set_audit_v1"},
+    "issue_id": {"const": "EN-P0-006"},
+    "subject": {"const": "english"},
+    "work_item_batch_sha256": {"$ref": "#/$defs/sha256"},
+    "remediation_batch_id": {"type": "string", "minLength": 1},
+    "target_count": {"type": "integer", "minimum": 1},
+    "copy_id": {"type": "string", "minLength": 1},
+    "isolated_root": {"type": "string", "pattern": "^/"},
+    "source_unchanged": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_root", "expected_manifest_sha256", "actual_manifest_sha256",
+        "expected_tree_manifest_sha256", "actual_tree_manifest_sha256",
+        "unchanged", "checked_at"
+      ],
+      "properties": {
+        "source_root": {"type": "string", "pattern": "^/"},
+        "expected_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "actual_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "expected_tree_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "actual_tree_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "unchanged": {"type": "boolean"},
+        "checked_at": {"type": "string", "minLength": 1}
+      }
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["already_current_eligible", "review_required", "reject"],
+      "properties": {
+        "already_current_eligible": {"type": "integer", "minimum": 0},
+        "review_required": {"type": "integer", "minimum": 0},
+        "reject": {"type": "integer", "minimum": 0}
+      }
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/item"}
+    },
+    "status": {"enum": ["preflight_passed", "preflight_failed"]},
+    "model_call_count": {"const": 0},
+    "formal_write_count": {"const": 0},
+    "completed_at": {"type": "string", "minLength": 1}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nullable_sha256": {
+      "oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]
+    },
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ordinal", "target_id", "target_kind", "current_object_sha256",
+        "desired_object_sha256", "actual_object_sha256",
+        "stable_id_and_semantic_key_reopened", "current_matches",
+        "desired_matches", "outcome", "reason"
+      ],
+      "properties": {
+        "ordinal": {"type": "integer", "minimum": 1},
+        "target_id": {"type": "string", "minLength": 1},
+        "target_kind": {
+          "enum": ["master_bank_row", "sentence_pattern_card", "article_learning_page"]
+        },
+        "current_object_sha256": {"$ref": "#/$defs/sha256"},
+        "desired_object_sha256": {"$ref": "#/$defs/sha256"},
+        "actual_object_sha256": {"$ref": "#/$defs/nullable_sha256"},
+        "stable_id_and_semantic_key_reopened": {"type": "boolean"},
+        "current_matches": {"type": "boolean"},
+        "desired_matches": {"type": "boolean"},
+        "outcome": {
+          "enum": ["already_current_eligible", "review_required", "reject"]
+        },
+        "reason": {"oneOf": [{"type": "string", "minLength": 1}, {"type": "null"}]}
+      }
+    }
+  }
+}

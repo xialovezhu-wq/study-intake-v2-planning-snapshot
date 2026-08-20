@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/manual-live-authorization-v1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "subject", "capture_id", "capture_content_sha256", "release_id", "activation_id", "allow_terra", "allow_luna", "maximum_tasks", "not_before", "expires_at", "nonce", "issuer_authorization_receipt_sha256", "formal_write_allowed", "authorization_sha256"],
+  "properties": {
+    "schema_version": {"const": "study-intake-manual-live-authorization-v1"},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "capture_id": {"type": "string", "minLength": 1},
+    "capture_content_sha256": {"$ref": "#/$defs/sha"},
+    "release_id": {"$ref": "#/$defs/sha"},
+    "activation_id": {"$ref": "#/$defs/sha"},
+    "allow_terra": {"const": true},
+    "allow_luna": {"const": true},
+    "maximum_tasks": {"const": 1},
+    "not_before": {"type": "string", "format": "date-time"},
+    "expires_at": {"type": "string", "format": "date-time"},
+    "nonce": {"type": "string", "minLength": 16, "maxLength": 256},
+    "issuer_authorization_receipt_sha256": {"$ref": "#/$defs/sha"},
+    "formal_write_allowed": {"const": false},
+    "authorization_sha256": {"$ref": "#/$defs/sha"}
+  },
+  "$defs": {"sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+}

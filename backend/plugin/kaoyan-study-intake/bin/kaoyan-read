@@ -1,0 +1,17 @@
+#!/bin/sh
+set -eu
+exec /usr/bin/env -i \
+  PATH=/usr/bin:/bin \
+  PYTHONUTF8=1 \
+  PYTHONDONTWRITEBYTECODE=1 \
+  PYTHONNOUSERSITE=1 \
+  PYTHONSAFEPATH=1 \
+  /Users/xiazhibin/Documents/Codex/local-study-read-mcp/.venv/bin/python \
+  -I \
+  -S \
+  /Users/xiazhibin/.codex/local-study-read-mcp/releases/21d738a1d74586aab72c8a63dc62c680aa10c6ac837c2bd5041e757ba0e63425/scripts/sealed_launcher.py \
+  --release-root /Users/xiazhibin/.codex/local-study-read-mcp/releases/21d738a1d74586aab72c8a63dc62c680aa10c6ac837c2bd5041e757ba0e63425 \
+  --expected-release-id 21d738a1d74586aab72c8a63dc62c680aa10c6ac837c2bd5041e757ba0e63425 \
+  --expected-release-manifest-sha256 3753175de6a66b5cd67efe6b85622a6e8bdb519bee5166834677ee0bad08a5e5 \
+  --mode server \
+  "$@"

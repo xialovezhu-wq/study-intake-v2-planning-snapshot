@@ -1,0 +1,246 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Study intake preprocessing package",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "package_id",
+    "subject",
+    "capture_id",
+    "study_date",
+    "created_at",
+    "input_fingerprint",
+    "input_binding",
+    "processing_binding",
+    "processing_binding_sha256",
+    "capture_freeze_receipt_sha256",
+    "capture_freeze_receipt_ref",
+    "mcp_read_session_receipt_sha256",
+    "mcp_read_session_receipt_ref",
+    "read_session_id",
+    "read_session_manifest_sha256",
+    "evidence_generation",
+    "evidence_authority_fingerprint",
+    "host_semantic_prefetch",
+    "mcp_stage_transcripts",
+    "semantic_stage_count",
+    "provider_request_count",
+    "mcp_tool_call_count",
+    "model_call_count",
+    "consumed_terminal_duplicate_read_count",
+    "model_receipt",
+    "analysis",
+    "luna_proposal",
+    "luna_proposal_sha256",
+    "pipeline_status",
+    "pipeline",
+    "model",
+    "reasoning_effort",
+    "processing_contract_sha256",
+    "draft_analysis",
+    "critical_review",
+    "stage_receipts",
+    "analysis_checkpoint_sha256",
+    "analysis_checkpoint_ref",
+    "checkpoint_consumable",
+    "allowed_evidence_refs",
+    "formal_write_count"
+  ],
+  "properties": {
+    "schema_version": {"const": "study-intake-preprocess-package-v1"},
+    "package_id": {"type": "string", "pattern": "^SIP-PKG-[A-F0-9]{24}$"},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "capture_id": {"type": "string", "minLength": 3, "maxLength": 256},
+    "study_date": {"type": "string", "format": "date"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "input_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "input_binding": {"type": "object"},
+    "processing_binding": {"type": "object"},
+    "processing_binding_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "capture_freeze_receipt_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "capture_freeze_receipt_ref": {"type": "string", "pattern": "^study-intake-capture-freeze://sha256/[a-f0-9]{64}$"},
+    "mcp_read_session_receipt_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "mcp_read_session_receipt_ref": {"type": "string", "pattern": "^study-intake-mcp-read-session://sha256/[a-f0-9]{64}$"},
+    "read_session_id": {"type": "string", "minLength": 8},
+    "read_session_manifest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "evidence_generation": {"type": "string", "minLength": 1},
+    "evidence_authority_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "host_semantic_prefetch": {"const": false},
+    "mcp_stage_transcripts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["analysis", "critical_review"],
+      "properties": {
+        "analysis": {"$ref": "#/$defs/mcpStageTranscript"},
+        "critical_review": {"$ref": "#/$defs/mcpStageTranscript"}
+      }
+    },
+    "semantic_stage_count": {"const": 2},
+    "provider_request_count": {"type": "integer", "minimum": 4},
+    "mcp_tool_call_count": {"type": "integer", "minimum": 2},
+    "model_call_count": {"const": 2},
+    "consumed_terminal_duplicate_read_count": {"const": 0},
+    "model_receipt": {
+      "type": "object",
+      "required": ["requested_model", "requested_reasoning_effort", "runtime_model", "runtime_reasoning_effort", "runtime_metadata_provenance", "prompt_version", "duration_ms"],
+      "properties": {
+        "requested_model": {"const": "gpt-5.6-luna"},
+        "requested_reasoning_effort": {"const": "max"},
+        "runtime_model": {"type": ["string", "null"]},
+        "runtime_reasoning_effort": {"type": ["string", "null"]},
+        "runtime_metadata_provenance": {"enum": ["codex_json_attestation_v1", "unavailable"]},
+        "prompt_version": {"type": "string"},
+        "duration_ms": {"type": "integer", "minimum": 0}
+      }
+    },
+    "analysis": {"type": "object"},
+    "luna_proposal": {"$ref": "#/$defs/lunaProposal"},
+    "luna_proposal_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "pipeline_status": {"const": "two_pass_ready"},
+    "pipeline": {
+      "type": "array",
+      "prefixItems": [
+        {"const": "analysis"},
+        {"const": "critical_review"}
+      ],
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "model": {"const": "gpt-5.6-luna"},
+    "reasoning_effort": {"const": "max"},
+    "processing_contract_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "draft_analysis": {"type": "object"},
+    "critical_review": {"type": "object"},
+    "stage_receipts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["analysis", "critical_review", "read_session"],
+      "properties": {
+        "analysis": {"$ref": "#/$defs/stageReceipt"},
+        "critical_review": {"$ref": "#/$defs/stageReceipt"},
+        "read_session": {"$ref": "#/$defs/readSessionReceipt"}
+      }
+    },
+    "analysis_checkpoint_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "analysis_checkpoint_ref": {
+      "type": "string",
+      "pattern": "^study-intake-analysis-checkpoint://sha256/[a-f0-9]{64}$"
+    },
+    "checkpoint_consumable": {"const": false},
+    "allowed_evidence_refs": {
+      "type": "array",
+      "items": {"type": "string"},
+      "maxItems": 500
+    },
+    "formal_write_count": {"const": 0}
+  },
+  "$defs": {
+    "mcpStageTranscript": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["transcript_sha256", "transcript_ref", "call_receipt_sha256", "call_receipt_ref", "grounding_manifest_sha256", "grounding_refs", "provider_request_count", "mcp_tool_call_count"],
+      "properties": {
+        "transcript_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "transcript_ref": {"type": "string", "pattern": "^study-intake-mcp-stage-transcript://sha256/[a-f0-9]{64}$"},
+        "call_receipt_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "call_receipt_ref": {"type": "string", "pattern": "^study-intake-mcp-read-session-call://sha256/[a-f0-9]{64}$"},
+        "grounding_manifest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "grounding_refs": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^mcp-item:english:[a-f0-9]{64}$"}},
+        "provider_request_count": {"type": "integer", "minimum": 2},
+        "mcp_tool_call_count": {"type": "integer", "minimum": 1}
+      }
+    },
+    "readSessionReceipt": {
+      "type": "object",
+      "required": ["status", "receipt", "receipt_sha256", "receipt_ref", "model_mcp_tool_call_count", "provider_request_count", "provider_request_count_status", "pagination_coverage_complete", "formal_write_count"],
+      "properties": {
+        "status": {"const": "complete"},
+        "receipt": {"type": "object"},
+        "receipt_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "receipt_ref": {"type": "string", "pattern": "^study-intake-mcp-read-session://sha256/[a-f0-9]{64}$"},
+        "model_mcp_tool_call_count": {"type": "integer", "minimum": 2},
+        "provider_request_count": {"type": "integer", "minimum": 4},
+        "provider_request_count_status": {"const": "derived_from_codex_tool_loop"},
+        "pagination_coverage_complete": {"const": true},
+        "formal_write_count": {"const": 0}
+      }
+    },
+    "stageReceipt": {
+      "type": "object",
+      "required": [
+        "status",
+        "requested_model",
+        "requested_reasoning_effort"
+      ],
+      "properties": {
+        "status": {"const": "ready"},
+        "requested_model": {"const": "gpt-5.6-luna"},
+        "requested_reasoning_effort": {"const": "max"}
+      }
+    },
+    "lunaProposal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "subject", "capture_id", "processing_binding_sha256", "capture_freeze_receipt_sha256", "capture_freeze_receipt_ref", "read_session_id", "read_session_manifest_sha256", "mcp_read_session_receipt_sha256", "mcp_read_session_receipt_ref", "mcp_stage_transcript_sha256s", "mcp_grounding_manifest_sha256s", "consumed_mcp_evidence_refs", "operations", "review_status", "critical_review_outcome", "host_semantic_prefetch", "formal_write_count"],
+      "allOf": [
+        {
+          "if": {"properties": {"critical_review_outcome": {"const": "rejected"}}},
+          "then": {"properties": {"review_status": {"const": "rejected"}}},
+          "else": {"properties": {"review_status": {"const": "proposal_ready"}}}
+        }
+      ],
+      "properties": {
+        "schema_version": {"type": "string", "const": "luna_proposal_v2"},
+        "subject": {"type": "string", "enum": ["math", "cs408", "english"]},
+        "capture_id": {"type": "string", "minLength": 1},
+        "processing_binding_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "capture_freeze_receipt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "capture_freeze_receipt_ref": {"type": "string", "pattern": "^study-intake-capture-freeze://sha256/[0-9a-f]{64}$"},
+        "read_session_id": {"type": "string", "minLength": 8, "maxLength": 160},
+        "read_session_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "mcp_read_session_receipt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "mcp_read_session_receipt_ref": {"type": "string", "pattern": "^study-intake-mcp-read-session://sha256/[0-9a-f]{64}$"},
+        "mcp_stage_transcript_sha256s": {"type": "array", "minItems": 2, "maxItems": 2, "uniqueItems": true, "items": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+        "mcp_grounding_manifest_sha256s": {"type": "array", "minItems": 2, "maxItems": 2, "uniqueItems": true, "items": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+        "consumed_mcp_evidence_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^mcp-item:(?:math|cs408|english):[0-9a-f]{64}$"}},
+        "operations": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["operation", "target", "proposal", "evidence_refs", "sol_verification_action"],
+            "properties": {
+              "operation": {"type": "string", "enum": ["mark_existing_item", "propose_item_update", "propose_new_item", "mark_existing_knowledge", "propose_new_knowledge", "propose_relation", "mark_status", "propose_status_change", "needs_review"]},
+              "target": {"type": "string", "minLength": 1},
+              "proposal": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["subject_payload_sha256", "subject_payload_role", "host_semantic_projection"],
+                "properties": {
+                  "subject_payload_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+                  "subject_payload_role": {"type": "string", "const": "critical_review_revised"},
+                  "host_semantic_projection": {"type": "string", "const": "none"}
+                }
+              },
+              "evidence_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^mcp-item:(?:math|cs408|english):[0-9a-f]{64}$"}},
+              "sol_verification_action": {"type": "string", "minLength": 1}
+            }
+          }
+        },
+        "review_status": {"type": "string", "enum": ["proposal_ready", "rejected"]},
+        "critical_review_outcome": {"type": "string", "enum": ["accepted", "corrected", "rejected"]},
+        "host_semantic_prefetch": {"type": "boolean", "const": false},
+        "formal_write_count": {"type": "integer", "const": 0}
+      }
+    }
+  }
+}

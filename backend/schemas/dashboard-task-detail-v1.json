@@ -1,0 +1,405 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Study intake dashboard task detail v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "source_schema_version",
+    "capture_id",
+    "subject",
+    "task_identity",
+    "runtime",
+    "server_queue",
+    "evidence_integrity",
+    "stage_events",
+    "stage_statuses",
+    "checkpoints",
+    "deterministic_diff",
+    "phase",
+    "result",
+    "raw_available",
+    "model_call_count",
+    "mcp_tool_call_count",
+    "provider_request_count",
+    "consumed_terminal_duplicate_read_count",
+    "formal_write_count"
+  ],
+  "properties": {
+    "schema_version": {"const": "study-intake-dashboard-task-detail-v1"},
+    "source_schema_version": {"const": "study-intake-dispatch-task-detail-v1"},
+    "capture_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$"},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "task_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_id", "unit_sha256", "generation", "fence", "input_sha256", "rule_version"],
+      "properties": {
+        "task_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$"},
+        "unit_sha256": {"$ref": "#/$defs/sha256"},
+        "generation": {"type": "integer", "minimum": 0},
+        "fence": {"type": "integer", "minimum": 0},
+        "input_sha256": {"$ref": "#/$defs/sha256"},
+        "rule_version": {"type": "string", "minLength": 1, "maxLength": 160},
+        "rule_version_sha256": {"$ref": "#/$defs/sha256"},
+        "release_id": {"$ref": "#/$defs/sha256"},
+        "content_processing_id": {"$ref": "#/$defs/sha256"},
+        "member_reference_sha256": {"$ref": "#/$defs/sha256"},
+        "shared_execution": {"type": "boolean"}
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requested_model", "requested_reasoning_effort", "identity_confirmation"],
+      "properties": {
+        "requested_model": {"const": "gpt-5.6-luna"},
+        "requested_reasoning_effort": {"const": "max"},
+        "observed_model": {"type": ["string", "null"]},
+        "observed_reasoning_effort": {"type": ["string", "null"]},
+        "identity_confirmation": {"enum": ["runtime_attested", "requested_unverified"]}
+      }
+    },
+    "server_queue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["confirmation", "declared_status"],
+      "properties": {
+        "confirmation": {"enum": ["unconfirmed", "confirmed_event"]},
+        "declared_status": {"enum": ["unknown", "rate_limited"]}
+      }
+    },
+    "evidence_integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["declared_status", "authority_status"],
+      "properties": {
+        "declared_status": {"type": "string"},
+        "authority_status": {"enum": ["hmac_verified", "sealed_unverified", "unconfirmed"]}
+      }
+    },
+    "stage_events": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {"$ref": "#/$defs/stage_event"}
+    },
+    "checkpoints": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/checkpoint"}
+    },
+    "stage_receipts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "analysis": {"$ref": "#/$defs/stage_runtime_receipt"},
+        "critical_review": {"$ref": "#/$defs/stage_runtime_receipt"}
+      }
+    },
+    "stage_statuses": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["analysis", "critical_review"],
+      "properties": {
+        "analysis": {"$ref": "#/$defs/stage_lifecycle"},
+        "critical_review": {"$ref": "#/$defs/stage_lifecycle"}
+      }
+    },
+    "deterministic_diff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "fields", "reason"],
+      "properties": {
+        "status": {"enum": ["confirmed", "unconfirmed"]},
+        "fields": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/diff"}
+        },
+        "compared_count": {"type": "integer", "minimum": 0},
+        "changed_count": {"type": "integer", "minimum": 0},
+        "unchanged_count": {"type": "integer", "minimum": 0},
+        "reason": {"type": "string", "minLength": 1, "maxLength": 160}
+      }
+    },
+    "phase": {"type": "string"},
+    "result": {"$ref": "#/$defs/result"},
+    "structured_stages": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "analysis": {"$ref": "#/$defs/stage_summary"},
+        "critical_review": {"$ref": "#/$defs/stage_summary"},
+        "final_result": {"$ref": "#/$defs/stage_summary"}
+      }
+    },
+    "math_pipeline": {"$ref": "#/$defs/math_pipeline"},
+    "cs408_visual": {"$ref": "#/$defs/cs408_visual"},
+    "raw_available": {"type": "boolean"},
+    "model_call_count": {"type": "integer", "minimum": 0, "maximum": 2},
+    "mcp_tool_call_count": {"type": "integer", "minimum": 0},
+    "provider_request_count": {"type": "integer", "minimum": 0},
+    "consumed_terminal_duplicate_read_count": {"const": 0},
+    "raw_sections": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "label", "verification", "content_type", "content"],
+        "properties": {
+          "kind": {"enum": ["source_excerpt", "deterministic_output"]},
+          "label": {"type": "string", "minLength": 1, "maxLength": 120},
+          "verification": {"const": "hmac_verified_package"},
+          "content_type": {"const": "structured_output_not_hidden_reasoning"},
+          "content": {"type": "string", "minLength": 1, "maxLength": 1000000}
+        }
+      }
+    },
+    "formal_write_count": {"const": 0}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "stage": {"enum": ["queued", "dispatched", "analysis", "critical_review", "evidence_validation", "completed", "failed", "stale"]},
+    "stage_event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_id",
+        "event_type",
+        "event",
+        "sequence",
+        "stage",
+        "status",
+        "changed_at",
+        "generation",
+        "fence",
+        "event_sha256"
+      ],
+      "properties": {
+        "event_id": {"type": "string", "minLength": 1, "maxLength": 320},
+        "event_type": {"const": "stage_transition"},
+        "event": {
+          "enum": [
+            "claim",
+            "process_started",
+            "model_submitted",
+            "analysis_submitted",
+            "analysis_completed",
+            "analysis_checkpoint_reused",
+            "critical_started",
+            "critical_completed",
+            "recovery_scheduled",
+            "retry_wait",
+            "published",
+            "failed",
+            "timeout",
+            "cancel"
+          ]
+        },
+        "sequence": {"type": "integer", "minimum": 0},
+        "stage": {"$ref": "#/$defs/stage"},
+        "status": {"enum": ["queued", "running", "retrying", "ready", "failed", "stale", "degraded"]},
+        "changed_at": {"type": "string", "format": "date-time"},
+        "generation": {"type": "integer", "minimum": 0},
+        "fence": {"type": "integer", "minimum": 0},
+        "event_sha256": {"$ref": "#/$defs/sha256"},
+        "checkpoint_sha256": {"$ref": "#/$defs/sha256"},
+        "receipt_sha256": {"$ref": "#/$defs/sha256"},
+        "error_code": {"type": "string", "pattern": "^[A-Za-z0-9._:-]+$"}
+      }
+    },
+    "checkpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stage", "status", "checkpoint_sha256"],
+      "properties": {
+        "stage": {"$ref": "#/$defs/stage"},
+        "status": {"enum": ["ready", "failed", "stale"]},
+        "checkpoint_sha256": {"$ref": "#/$defs/sha256"},
+        "receipt_sha256": {"$ref": "#/$defs/sha256"}
+        ,"authority_status": {"enum": ["hmac_verified", "unconfirmed"]}
+      }
+    },
+    "diff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["field", "before_sha256", "after_sha256", "changed"],
+      "properties": {
+        "field": {"type": "string", "pattern": "^[A-Za-z0-9_.:\\[\\]-]+$"},
+        "before_sha256": {"$ref": "#/$defs/sha256"},
+        "after_sha256": {"$ref": "#/$defs/sha256"},
+        "changed": {"type": "boolean"}
+      }
+    },
+    "stage_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "payload_sha256",
+        "top_level_fields",
+        "leaf_count",
+        "content_policy"
+      ],
+      "properties": {
+        "status": {"const": "completed"},
+        "payload_sha256": {"$ref": "#/$defs/sha256"},
+        "top_level_fields": {
+          "type": "array",
+          "maxItems": 80,
+          "items": {"type": "string", "minLength": 1, "maxLength": 160}
+        },
+        "leaf_count": {"type": "integer", "minimum": 0},
+        "content_policy": {"const": "protected_structure_only"}
+        ,"source": {"enum": ["authoritative_package", "hmac_checkpoint"]}
+      }
+    },
+    "stage_runtime_receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "requested_model",
+        "requested_reasoning_effort",
+        "runtime_identity_status"
+      ],
+      "properties": {
+        "status": {"const": "completed"},
+        "requested_model": {"const": "gpt-5.6-luna"},
+        "requested_reasoning_effort": {"const": "max"},
+        "runtime_identity_status": {"type": "string", "const": "requested_unverified"},
+        "runtime_model": {"type": "string", "minLength": 1, "maxLength": 160},
+        "runtime_reasoning_effort": {"type": "string", "minLength": 1, "maxLength": 160},
+        "observed_identity_provenance": {"type": "string", "minLength": 1, "maxLength": 160},
+        "duration_ms": {"type": "integer", "minimum": 0},
+        "read_session_id": {"type": "string", "minLength": 8, "maxLength": 160},
+        "semantic_stage_count": {"const": 1},
+        "provider_request_count": {"type": "integer", "minimum": 1},
+        "mcp_tool_call_count": {"type": "integer", "minimum": 0},
+        "model_call_count": {"const": 1},
+        "consumed_terminal_duplicate_read_count": {"const": 0}
+      }
+    },
+    "stage_lifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": {
+          "enum": [
+            "not_started",
+            "running",
+            "completed",
+            "waiting_retry",
+            "timed_out",
+            "failed",
+            "cancelled"
+          ]
+        },
+        "started_at": {"type": "string", "minLength": 1, "maxLength": 64},
+        "finished_at": {"type": "string", "minLength": 1, "maxLength": 64},
+        "error_code": {"type": "string", "minLength": 1, "maxLength": 160},
+        "checkpoint_reused": {"type": "boolean"}
+      }
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "consumable", "generation", "fence"],
+      "properties": {
+        "status": {"enum": ["ready", "failed", "stale", "degraded", "pending"]},
+        "consumable": {"type": "boolean"},
+        "consumability_confirmation": {"enum": ["authoritative", "unconfirmed"]},
+        "outcome": {"type": "string"},
+        "generation": {"type": "integer", "minimum": 0},
+        "fence": {"type": "integer", "minimum": 0},
+        "final_sha256": {"$ref": "#/$defs/sha256"},
+        "receipt_sha256": {"$ref": "#/$defs/sha256"},
+        "error_code": {"type": "string", "pattern": "^[A-Za-z0-9._:-]+$"}
+      }
+    },
+    "math_pipeline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "source_type",
+        "relationship_mode",
+        "candidate_file_validation",
+        "runtime_identity",
+        "stages",
+        "formal_write_count"
+      ],
+      "properties": {
+        "status": {"enum": ["pending", "completed", "failed"]},
+        "source_type": {"enum": ["old_existing", "new_intake", "unknown"]},
+        "relationship_mode": {"const": "SHADOW"},
+        "candidate_file_validation": {"enum": ["unavailable", "content_hash_verified"]},
+        "candidate_file_sha256": {"$ref": "#/$defs/sha256"},
+        "knowledge_source_set_sha256": {"$ref": "#/$defs/sha256"},
+        "relationship_context_sha256": {"$ref": "#/$defs/sha256"},
+        "read_session_id": {"type": "string", "minLength": 8, "maxLength": 160},
+        "model_call_count": {"type": "integer", "minimum": 0, "maximum": 2},
+        "mcp_tool_call_count": {"type": "integer", "minimum": 0},
+        "mcp_stage_transcript_count": {"type": "integer", "minimum": 0, "maximum": 2},
+        "consumed_terminal_duplicate_read_count": {"const": 0},
+        "runtime_identity": {"enum": ["runtime_attested", "requested_unverified"]},
+        "error_code": {"type": "string", "pattern": "^[A-Za-z0-9._:-]+$"},
+        "stages": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "items": {"$ref": "#/$defs/math_pipeline_stage"}
+        },
+        "formal_write_count": {"const": 0}
+      }
+    },
+    "math_pipeline_stage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stage", "status", "item_count"],
+      "properties": {
+        "stage": {
+          "enum": [
+            "evidence_assembly",
+            "model_mcp_investigation",
+            "knowledge_snapshot",
+            "knowledge_error_extraction",
+            "relationship_retrieval",
+            "independent_review",
+            "sol_candidate"
+          ]
+        },
+        "status": {"enum": ["pending", "running", "completed", "failed"]},
+        "item_count": {"type": "integer", "minimum": 0}
+      }
+    },
+    "cs408_visual": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "role_counts", "role_order", "validation_status", "reason"],
+      "properties": {
+        "role_counts": {
+          "type": "object",
+          "additionalProperties": {"type": "integer", "minimum": 0}
+        },
+        "role_order": {"type": "array", "items": {"type": "string", "maxLength": 80}},
+        "status": {"enum": ["confirmed", "unconfirmed"]},
+        "validation_status": {
+          "enum": ["hmac_verified", "package_verified", "unconfirmed"]
+        },
+        "question_mode": {
+          "enum": ["dialogue_only", "image_question", "unknown"]
+        },
+        "required_roles": {
+          "type": "array",
+          "items": {"enum": ["question_image", "solution_image"]}
+        },
+        "missing_roles": {
+          "type": "array",
+          "items": {"enum": ["question_image", "solution_image"]}
+        },
+        "reason": {"type": "string", "minLength": 1, "maxLength": 160}
+      }
+    }
+  }
+}

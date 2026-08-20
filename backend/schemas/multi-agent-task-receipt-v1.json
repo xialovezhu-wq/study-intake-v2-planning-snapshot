@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "https://local.invalid/study-intake/multi-agent-task-receipt-v1.json",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "subject", "capture_id", "plan_sha256", "stage_receipt_sha256s", "read_bundle_sha256", "candidate_sha256", "review_sha256", "risk_report_sha256", "handoff_sha256", "execution_status", "sol_review_ready", "quality_clean", "formal_write_count", "receipt_sha256"],
+  "properties": {
+    "schema_version": {"const": "multi_agent_task_receipt_v1"}, "subject": {"enum": ["math", "cs408", "english"]}, "capture_id": {"type": "string", "minLength": 1}, "plan_sha256": {"$ref": "#/$defs/sha"}, "stage_receipt_sha256s": {"type": "array", "items": {"$ref": "#/$defs/sha"}}, "read_bundle_sha256": {"$ref": "#/$defs/sha"}, "candidate_sha256": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/sha"}]}, "review_sha256": {"$ref": "#/$defs/sha"}, "risk_report_sha256": {"$ref": "#/$defs/sha"}, "handoff_sha256": {"$ref": "#/$defs/sha"},
+    "execution_status": {"enum": ["succeeded", "technical_quarantine"]}, "sol_review_ready": {"type": "boolean"}, "quality_clean": {"type": "boolean"}, "formal_write_count": {"const": 0}, "receipt_sha256": {"$ref": "#/$defs/sha"}
+  },
+  "$defs": {"sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+}

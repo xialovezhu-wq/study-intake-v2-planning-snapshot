@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Kaoyan model-driven MCP processing binding v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "base_release_id", "candidate_release_id", "plugin", "skill", "mcp", "schemas", "validator_sha256", "host_semantic_prefetch", "binding_sha256", "formal_write_count"],
+  "properties": {
+    "schema_version": {"type": "string", "const": "processing_binding_v2"},
+    "base_release_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "candidate_release_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "plugin": {"$ref": "#/$defs/component"},
+    "skill": {"$ref": "#/$defs/component"},
+    "mcp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "sha256", "profile", "subject"],
+      "properties": {
+        "id": {"type": "string", "enum": ["kaoyan_math_read", "kaoyan_cs408_read", "kaoyan_english_read"]},
+        "version": {"type": "string", "pattern": "^0\\.3\\.0\\+sha256\\.[0-9a-f]{64}$"},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "profile": {"type": "string", "const": "luna"},
+        "subject": {"type": "string", "enum": ["math", "cs408", "english"]}
+      }
+    },
+    "schemas": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider_sha256", "canonical_sha256"],
+      "properties": {
+        "provider_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "canonical_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "validator_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "host_semantic_prefetch": {"type": "boolean", "const": false},
+    "binding_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "formal_write_count": {"type": "integer", "const": 0}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"mcp": {"properties": {"subject": {"const": "math"}}}}},
+      "then": {"properties": {"mcp": {"properties": {"id": {"const": "kaoyan_math_read"}}}}}
+    },
+    {
+      "if": {"properties": {"mcp": {"properties": {"subject": {"const": "cs408"}}}}},
+      "then": {"properties": {"mcp": {"properties": {"id": {"const": "kaoyan_cs408_read"}}}}}
+    },
+    {
+      "if": {"properties": {"mcp": {"properties": {"subject": {"const": "english"}}}}},
+      "then": {"properties": {"mcp": {"properties": {"id": {"const": "kaoyan_english_read"}}}}}
+    }
+  ],
+  "$defs": {
+    "component": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "sha256"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    }
+  }
+}

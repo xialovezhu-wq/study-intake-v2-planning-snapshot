@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/daily-sol-batch-v2.json",
+  "title": "Daily Sol Batch v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "batch_id", "subject", "study_date",
+    "subject_luna_batch", "subject_luna_batch_sha256", "proposal_sha256s",
+    "package_sha256s", "quality_receipt_sha256s", "authorization_receipt",
+    "authorization_receipt_sha256", "writer_adapter", "idempotency_key",
+    "status", "formal_write_count"
+  ],
+  "properties": {
+    "schema_version": {"const": "daily_sol_batch_v2"},
+    "batch_id": {"type": "string", "minLength": 1},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "study_date": {"type": "string", "minLength": 1},
+    "subject_luna_batch": {"type": "object"},
+    "subject_luna_batch_sha256": {"$ref": "#/$defs/sha256"},
+    "proposal_sha256s": {"$ref": "#/$defs/hash_array"},
+    "package_sha256s": {"$ref": "#/$defs/hash_array"},
+    "quality_receipt_sha256s": {"$ref": "#/$defs/hash_array"},
+    "authorization_receipt": {"$ref": "#/$defs/authorization"},
+    "authorization_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "writer_adapter": {
+      "enum": [
+        "math_nightly_writer_v1", "cs408_daily_intake_writer_v1",
+        "english_daily_intake_writer_v1"
+      ]
+    },
+    "idempotency_key": {"type": "string", "minLength": 1},
+    "status": {"const": "authorized"},
+    "formal_write_count": {"const": 0}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "hash_array": {
+      "type": "array", "minItems": 1, "uniqueItems": true,
+      "items": {"$ref": "#/$defs/sha256"}
+    },
+    "seal": {
+      "type": "object", "additionalProperties": false,
+      "required": ["algorithm", "purpose", "hmac_sha256"],
+      "properties": {
+        "algorithm": {"const": "HMAC-SHA256"},
+        "purpose": {"const": "user-sol-authorization-receipt"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "event": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "event_id", "event_type", "subject", "study_date",
+        "subject_luna_batch_id", "authorized_at"
+      ],
+      "properties": {
+        "event_id": {"type": "string", "minLength": 1},
+        "event_type": {"const": "explicit_user_sol_authorization"},
+        "subject": {"enum": ["math", "cs408", "english"]},
+        "study_date": {"type": "string", "minLength": 1},
+        "subject_luna_batch_id": {"type": "string", "minLength": 1},
+        "authorized_at": {"type": "string", "minLength": 1}
+      }
+    },
+    "authorization": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "schema_version", "sol_batch_id", "subject", "study_date", "subject_luna_batch_id",
+        "subject_luna_batch_sha256", "proposal_sha256s", "package_sha256s",
+        "quality_receipt_sha256s", "writer_adapter", "idempotency_key",
+        "event", "formal_write_count", "seal"
+      ],
+      "properties": {
+        "schema_version": {"const": "user_sol_authorization_receipt_v1"},
+        "sol_batch_id": {"type": "string", "minLength": 1},
+        "subject": {"enum": ["math", "cs408", "english"]},
+        "study_date": {"type": "string", "minLength": 1},
+        "subject_luna_batch_id": {"type": "string", "minLength": 1},
+        "subject_luna_batch_sha256": {"$ref": "#/$defs/sha256"},
+        "proposal_sha256s": {"$ref": "#/$defs/hash_array"},
+        "package_sha256s": {"$ref": "#/$defs/hash_array"},
+        "quality_receipt_sha256s": {"$ref": "#/$defs/hash_array"},
+        "writer_adapter": {
+          "enum": [
+            "math_nightly_writer_v1", "cs408_daily_intake_writer_v1",
+            "english_daily_intake_writer_v1"
+          ]
+        },
+        "idempotency_key": {"type": "string", "minLength": 1},
+        "event": {"$ref": "#/$defs/event"},
+        "formal_write_count": {"const": 0},
+        "seal": {"$ref": "#/$defs/seal"}
+      }
+    }
+  }
+}

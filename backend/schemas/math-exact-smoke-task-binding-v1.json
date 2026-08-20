@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "study-intake-math-exact-smoke-task-binding-v1",
+  "type": "object",
+  "required": [
+    "schema_version", "scope_id", "sequence", "formal_id",
+    "execution_authorization_sha256", "execution_authorization_path",
+    "capture_apply_receipt_sha256", "capture_apply_receipt_path", "capture_event_id",
+    "capture_event_sha256", "capture_idempotency_key", "math_repo_root",
+    "processing_attempt_number", "processing_attempt_id", "attempt_idempotency_key",
+    "expected_unit_sha256", "content_processing_id", "prior_terminal_receipt_sha256",
+    "prior_terminal_receipt_path", "target_release_id", "activation_id",
+    "authority_generation", "authority_fingerprint", "producer_authority_fingerprint",
+    "single_active_attempt_required", "single_accepted_package_required",
+    "capture_write_count", "formal_write_count", "sol_enabled"
+  ],
+  "properties": {
+    "schema_version": {"const": "study-intake-math-exact-smoke-task-binding-v1"},
+    "scope_id": {"const": "math-smoke-2026-08-13-five-sample-v1"},
+    "sequence": {"type": "integer", "minimum": 1, "maximum": 5},
+    "formal_id": {"enum": ["GS-269", "GS-566", "GS-225", "LA-050", "LA-016"]},
+    "execution_authorization_sha256": {"$ref": "#/$defs/sha256"},
+    "execution_authorization_path": {"$ref": "#/$defs/path"},
+    "capture_apply_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "capture_apply_receipt_path": {"$ref": "#/$defs/path"},
+    "capture_event_id": {"pattern": "^MFI-CAP-[0-9a-f]{24}$"},
+    "capture_event_sha256": {"$ref": "#/$defs/sha256"},
+    "capture_idempotency_key": {"$ref": "#/$defs/sha256"},
+    "math_repo_root": {"$ref": "#/$defs/path"},
+    "processing_attempt_number": {"const": 1},
+    "processing_attempt_id": {"pattern": "^MATH-SMOKE-ATTEMPT-[0-9a-f]{24}$"},
+    "attempt_idempotency_key": {"$ref": "#/$defs/sha256"},
+    "expected_unit_sha256": {"$ref": "#/$defs/sha256"},
+    "content_processing_id": {"$ref": "#/$defs/sha256"},
+    "prior_terminal_receipt_sha256": {"type": "null"},
+    "prior_terminal_receipt_path": {"type": "null"},
+    "target_release_id": {"$ref": "#/$defs/sha256"},
+    "activation_id": {"$ref": "#/$defs/sha256"},
+    "authority_generation": {"type": "string", "minLength": 1},
+    "authority_fingerprint": {"$ref": "#/$defs/sha256"},
+    "producer_authority_fingerprint": {"$ref": "#/$defs/sha256"},
+    "single_active_attempt_required": {"const": true},
+    "single_accepted_package_required": {"const": true},
+    "capture_write_count": {"const": 0},
+    "formal_write_count": {"const": 0},
+    "sol_enabled": {"const": false}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "path": {"type": "string", "pattern": "^/", "minLength": 2}
+  },
+  "additionalProperties": false
+}

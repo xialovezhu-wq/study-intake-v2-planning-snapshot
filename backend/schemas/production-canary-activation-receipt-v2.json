@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "study-intake-production-canary-activation-receipt-v2",
+  "type": "object",
+  "required": [
+    "activated_at",
+    "activation_id",
+    "authority",
+    "continuous_concurrency_limit",
+    "fast_mode_effective",
+    "fast_mode_requested",
+    "formal_write_count",
+    "initial_canary_inflight_limit",
+    "keep_backlog_drained",
+    "mcp_tool_call_count",
+    "model_call_count",
+    "post_activation_only",
+    "producer_authority",
+    "producer_authority_fingerprint",
+    "producer_capture_enabled",
+    "producer_high_watermark",
+    "producer_high_watermark_sha256",
+    "production_accepted",
+    "provider_request_count",
+    "release_id",
+    "requested_service_tier",
+    "schema_version",
+    "sol_enabled",
+    "sol_formal_curation_enabled",
+    "subject"
+  ],
+  "properties": {
+    "activated_at": {"$ref": "#/$defs/timestamp"},
+    "activation_id": {"$ref": "#/$defs/sha256"},
+    "authority": {"$ref": "#/$defs/authority"},
+    "continuous_concurrency_limit": {"type": "integer", "minimum": 1, "maximum": 64},
+    "fast_mode_effective": {"const": "not_requested"},
+    "fast_mode_requested": {"const": false},
+    "formal_write_count": {"const": 0},
+    "initial_canary_inflight_limit": {"const": 1},
+    "keep_backlog_drained": {"const": true},
+    "mcp_tool_call_count": {"const": 0},
+    "model_call_count": {"const": 0},
+    "post_activation_only": {"const": true},
+    "producer_authority": {"$ref": "#/$defs/producer_authority"},
+    "producer_authority_fingerprint": {"$ref": "#/$defs/sha256"},
+    "producer_capture_enabled": {"const": true},
+    "producer_high_watermark": {"$ref": "#/$defs/producer_high_watermark"},
+    "producer_high_watermark_sha256": {"$ref": "#/$defs/sha256"},
+    "production_accepted": {"const": false},
+    "provider_request_count": {"const": 0},
+    "release_id": {"$ref": "#/$defs/sha256"},
+    "requested_service_tier": {"type": "null"},
+    "schema_version": {"const": "study-intake-production-canary-activation-receipt-v2"},
+    "sol_enabled": {"const": false},
+    "sol_formal_curation_enabled": {"const": false},
+    "subject": {"$ref": "#/$defs/subject"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "timestamp": {"type": "string", "format": "date-time", "minLength": 1},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "authority": {
+      "type": "object",
+      "required": ["schema_version", "algorithm", "key_id", "purpose", "hmac_sha256"],
+      "properties": {
+        "schema_version": {"const": "study-intake-dispatch-authority-v1"},
+        "algorithm": {"const": "HMAC-SHA256"},
+        "key_id": {"$ref": "#/$defs/sha256"},
+        "purpose": {"const": "dispatch-production-canary-activation"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "additionalProperties": false
+    },
+    "producer_authority": {
+      "type": "object",
+      "required": [
+        "schema_version", "subject", "release_id", "loaded_core_sha256",
+        "processing_contract_sha256", "model", "reasoning_effort",
+        "formal_write_count", "authority_fingerprint"
+      ],
+      "properties": {
+        "schema_version": {"const": "study-intake-producer-authority-v1"},
+        "subject": {"$ref": "#/$defs/subject"},
+        "release_id": {"$ref": "#/$defs/sha256"},
+        "loaded_core_sha256": {"$ref": "#/$defs/sha256"},
+        "processing_contract_sha256": {"$ref": "#/$defs/sha256"},
+        "model": {"const": "gpt-5.6-luna"},
+        "reasoning_effort": {"const": "max"},
+        "formal_write_count": {"const": 0},
+        "authority_fingerprint": {"$ref": "#/$defs/sha256"}
+      },
+      "additionalProperties": false
+    },
+    "producer_high_watermark": {
+      "type": "object",
+      "required": [
+        "schema_version", "subject", "release_id", "recorded_at",
+        "producer_authority_fingerprint", "source_event_ids",
+        "source_event_set_sha256", "formal_write_count"
+      ],
+      "properties": {
+        "schema_version": {"const": "study-intake-producer-high-watermark-v1"},
+        "subject": {"$ref": "#/$defs/subject"},
+        "release_id": {"$ref": "#/$defs/sha256"},
+        "recorded_at": {"$ref": "#/$defs/timestamp"},
+        "producer_authority_fingerprint": {"$ref": "#/$defs/sha256"},
+        "source_event_ids": {
+          "type": "array",
+          "maxItems": 0,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "source_event_set_sha256": {"$ref": "#/$defs/sha256"},
+        "formal_write_count": {"const": 0}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

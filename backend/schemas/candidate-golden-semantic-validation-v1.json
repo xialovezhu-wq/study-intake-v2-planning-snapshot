@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/candidate-golden-semantic-validation-v1.json",
+  "title": "Candidate-bound daily Golden semantic validation v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "status", "candidate_release_id",
+    "evidence_manifest_sha256", "controlled_replay_spec_sha256s",
+    "math_live_business_manifest_sha256", "task_count", "results",
+    "model_call_count", "formal_write_count", "seal"
+  ],
+  "properties": {
+    "schema_version": {"const": "candidate-golden-semantic-validation-v1"},
+    "status": {"const": "passed"},
+    "candidate_release_id": {"$ref": "#/$defs/sha256"},
+    "evidence_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "controlled_replay_spec_sha256s": {
+      "type": "object", "additionalProperties": false,
+      "required": ["math", "cs408", "english"],
+      "properties": {
+        "math": {"$ref": "#/$defs/sha256"},
+        "cs408": {"$ref": "#/$defs/sha256"},
+        "english": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "math_live_business_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "task_count": {"const": 11},
+    "results": {
+      "type": "array", "minItems": 11, "maxItems": 11,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": [
+          "role", "subject", "capture_id", "package_sha256",
+          "quality_receipt_sha256", "assertions", "status",
+          "model_call_count", "formal_write_count"
+        ],
+        "properties": {
+          "role": {"type": "string", "minLength": 1},
+          "subject": {"enum": ["math", "cs408", "english"]},
+          "capture_id": {"type": "string", "minLength": 1},
+          "package_sha256": {"$ref": "#/$defs/sha256"},
+          "quality_receipt_sha256": {"$ref": "#/$defs/sha256"},
+          "assertions": {
+            "type": "array", "minItems": 1,
+            "items": {"type": "string", "minLength": 1}, "uniqueItems": true
+          },
+          "status": {"const": "passed"},
+          "model_call_count": {"const": 2},
+          "formal_write_count": {"const": 0}
+        }
+      }
+    },
+    "model_call_count": {"const": 22},
+    "formal_write_count": {"const": 0},
+    "seal": {
+      "type": "object", "additionalProperties": false,
+      "required": ["algorithm", "purpose", "hmac_sha256"],
+      "properties": {
+        "algorithm": {"const": "HMAC-SHA256"},
+        "purpose": {"const": "candidate-golden-semantic-validation-v1"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

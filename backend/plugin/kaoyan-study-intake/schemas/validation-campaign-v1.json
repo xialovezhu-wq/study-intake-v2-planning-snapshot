@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://xiazhibin.local/schemas/validation-campaign-v1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "fixture_only", "campaign_id", "captures", "authorizations", "backlog_scan_allowed", "worker_start_count", "model_call_count", "formal_write_count", "created_at", "receipt_sha256"],
+  "properties": {
+    "schema_version": {"const": "study-intake-validation-fixture-campaign-v1"},
+    "fixture_only": {"const": true},
+    "campaign_id": {"type": "string"},
+    "captures": {"type": "array", "minItems": 1},
+    "authorizations": {"type": "array", "minItems": 1},
+    "backlog_scan_allowed": {"const": false},
+    "worker_start_count": {"const": 0},
+    "model_call_count": {"const": 0},
+    "formal_write_count": {"const": 0},
+    "created_at": {"type": "string", "format": "date-time"},
+    "receipt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

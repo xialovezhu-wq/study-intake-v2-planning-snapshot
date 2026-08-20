@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "study_intake_subject_batch_recovery_supersede_receipt_v1",
+  "type": "object",
+  "required": [
+    "schema_version", "subject", "recovery_receipt_sha256",
+    "recovery_receipt_path", "old_activation_id", "old_queue_entry_sha256",
+    "old_producer_input_contract_sha256", "source_event_set_sha256",
+    "source_event_ids", "target_activation_id", "target_release_id",
+    "replacement_task", "replacement_queue_entry_sha256",
+    "replacement_queue_entry_path", "model_call_count",
+    "provider_request_count", "formal_write_count", "sol_enabled",
+    "created_at", "authority"
+  ],
+  "properties": {
+    "schema_version": {"const": "study-intake-subject-batch-recovery-supersede-receipt-v1"},
+    "subject": {"const": "english"},
+    "recovery_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "recovery_receipt_path": {"$ref": "#/$defs/absolute_path"},
+    "old_activation_id": {"$ref": "#/$defs/sha256"},
+    "old_queue_entry_sha256": {"$ref": "#/$defs/sha256"},
+    "old_producer_input_contract_sha256": {"$ref": "#/$defs/sha256"},
+    "source_event_set_sha256": {"$ref": "#/$defs/sha256"},
+    "source_event_ids": {
+      "type": "array", "minItems": 1, "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "target_activation_id": {"$ref": "#/$defs/sha256"},
+    "target_release_id": {"$ref": "#/$defs/sha256"},
+    "replacement_task": {
+      "type": "object",
+      "required": [
+        "unit_sha256", "frozen_payload_sha256", "task_object_sha256",
+        "task_object_path", "producer_input_contract_sha256",
+        "source_event_set_sha256"
+      ],
+      "properties": {
+        "unit_sha256": {"$ref": "#/$defs/sha256"},
+        "frozen_payload_sha256": {"$ref": "#/$defs/sha256"},
+        "task_object_sha256": {"$ref": "#/$defs/sha256"},
+        "task_object_path": {"$ref": "#/$defs/absolute_path"},
+        "producer_input_contract_sha256": {"$ref": "#/$defs/sha256"},
+        "source_event_set_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "additionalProperties": false
+    },
+    "replacement_queue_entry_sha256": {"$ref": "#/$defs/sha256"},
+    "replacement_queue_entry_path": {"$ref": "#/$defs/absolute_path"},
+    "model_call_count": {"const": 0},
+    "provider_request_count": {"const": 0},
+    "formal_write_count": {"const": 0},
+    "sol_enabled": {"const": false},
+    "created_at": {"type": "string", "format": "date-time"},
+    "authority": {"$ref": "#/$defs/authority"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "absolute_path": {"type": "string", "pattern": "^/", "minLength": 2},
+    "authority": {
+      "type": "object",
+      "required": ["schema_version", "algorithm", "key_id", "purpose", "hmac_sha256"],
+      "properties": {
+        "schema_version": {"const": "study-intake-dispatch-authority-v1"},
+        "algorithm": {"const": "HMAC-SHA256"},
+        "key_id": {"$ref": "#/$defs/sha256"},
+        "purpose": {"const": "dispatch-subject-batch-recovery-supersede"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

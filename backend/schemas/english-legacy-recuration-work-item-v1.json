@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EN-P0-006 English legacy recuration work item v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "remediation_batch_id",
+    "inventory_sha256",
+    "batch_authorization_sha256",
+    "target_authorization_receipt_sha256",
+    "target_id",
+    "target_kind",
+    "record_id",
+    "ordinal",
+    "historical_operation",
+    "current_object_sha256",
+    "desired_object_sha256",
+    "target_evidence",
+    "authority",
+    "study_date",
+    "frozen_at",
+    "attempt",
+    "formal_write_count"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "english_legacy_recuration_work_item_v1"
+    },
+    "remediation_batch_id": {"type": "string", "minLength": 1, "maxLength": 160},
+    "inventory_sha256": {"$ref": "#/$defs/sha256"},
+    "batch_authorization_sha256": {"$ref": "#/$defs/sha256"},
+    "target_authorization_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "target_id": {"type": "string", "minLength": 1, "maxLength": 240},
+    "target_kind": {
+      "enum": ["master_bank_row", "sentence_pattern_card", "article_learning_page"]
+    },
+    "record_id": {"type": "string", "minLength": 1, "maxLength": 240},
+    "ordinal": {"type": "integer", "minimum": 1},
+    "historical_operation": {
+      "enum": ["created", "updated", "representation_reorder_only"]
+    },
+    "current_object_sha256": {"$ref": "#/$defs/sha256"},
+    "desired_object_sha256": {"$ref": "#/$defs/sha256"},
+    "target_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "payload_sha256", "payload"],
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$"
+        },
+        "payload_sha256": {"$ref": "#/$defs/sha256"},
+        "payload": {"type": "object"}
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["generation", "authority_fingerprint"],
+      "properties": {
+        "generation": {"type": "string", "minLength": 1, "maxLength": 160},
+        "authority_fingerprint": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "study_date": {"type": "string", "format": "date"},
+    "frozen_at": {"type": "string", "format": "date-time"},
+    "attempt": {"type": "integer", "minimum": 1},
+    "formal_write_count": {"const": 0}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

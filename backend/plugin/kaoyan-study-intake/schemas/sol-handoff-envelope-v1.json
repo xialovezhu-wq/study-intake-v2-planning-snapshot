@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "https://local.invalid/study-intake/sol-handoff-envelope-v1.json",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "subject", "capture_id", "read_bundle_sha256", "candidate_sha256", "review_sha256", "risk_report_sha256", "sol_review_ready", "diagnostic_review_ready", "quality_clean", "allowed_sol_actions", "formal_apply_authorized", "formal_write_count", "handoff_sha256"],
+  "properties": {
+    "schema_version": {"const": "sol_handoff_envelope_v1"}, "subject": {"enum": ["math", "cs408", "english"]}, "capture_id": {"type": "string", "minLength": 1}, "read_bundle_sha256": {"$ref": "#/$defs/sha"},
+    "candidate_sha256": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/sha"}]}, "review_sha256": {"$ref": "#/$defs/sha"}, "risk_report_sha256": {"$ref": "#/$defs/sha"},
+    "sol_review_ready": {"type": "boolean"}, "diagnostic_review_ready": {"type": "boolean"}, "quality_clean": {"type": "boolean"},
+    "allowed_sol_actions": {"type": "array", "uniqueItems": true, "items": {"enum": ["adopt", "modify", "reject", "request_reread", "defer"]}},
+    "formal_apply_authorized": {"const": false}, "formal_write_count": {"const": 0}, "handoff_sha256": {"$ref": "#/$defs/sha"}
+  },
+  "$defs": {"sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+}

@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "study-intake-math-exact-smoke-execution-authorization-v1",
+  "type": "object",
+  "required": [
+    "schema_version", "scope_id", "mode", "target_release_id", "activation_id",
+    "authority_generation", "authority_fingerprint", "producer_authority_fingerprint",
+    "batch_manifest_sha256", "checksums_sha256", "gates_sha256", "readme_sha256",
+    "initial_ledger_sha256", "review_unit_sha256", "execution_order", "samples",
+    "execution_authorized_by_user", "original_samples_execution_authorized",
+    "sol_enabled", "formal_write_count", "model_call_count_at_authorization",
+    "provider_request_count_at_authorization", "descriptor_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "study-intake-math-exact-smoke-execution-authorization-v1"},
+    "scope_id": {"const": "math-smoke-2026-08-13-five-sample-v1"},
+    "mode": {"const": "exact_five_sample_capture_once_then_successor_attempt_one"},
+    "target_release_id": {"$ref": "#/$defs/sha256"},
+    "activation_id": {"$ref": "#/$defs/sha256"},
+    "authority_generation": {"type": "string", "minLength": 1},
+    "authority_fingerprint": {"$ref": "#/$defs/sha256"},
+    "producer_authority_fingerprint": {"$ref": "#/$defs/sha256"},
+    "batch_manifest_sha256": {"const": "af251d73fb772f4d97a628073760bbc048eda8600dab9468be5e694fd920f606"},
+    "checksums_sha256": {"const": "a1ca7caa3ef44711eb6034b8362eb17bbb47873f535f34c8f28a0a284b06503a"},
+    "gates_sha256": {"const": "d794d0b2f301535a647e0ef96a389cde494ed16aa4a76abd66ff9e36fcbefb50"},
+    "readme_sha256": {"const": "7ecbbd64c9475f76bea70e613a5c79ea7f3bf63308a5ae4a6380bda53877ce78"},
+    "initial_ledger_sha256": {"const": "289168feaec0899976d4f05fb1f1a9f753666f455979f21ecc566f8451c5a7e2"},
+    "review_unit_sha256": {"const": "95c99baf2f0b713fb4a8683534e47cf9b20bad593a292ad92b9d6d639fe4cee7"},
+    "execution_order": {
+      "type": "array", "prefixItems": [
+        {"const": "GS-269"}, {"const": "GS-566"}, {"const": "GS-225"},
+        {"const": "LA-050"}, {"const": "LA-016"}
+      ], "items": false, "minItems": 5, "maxItems": 5
+    },
+    "samples": {
+      "type": "array", "minItems": 5, "maxItems": 5,
+      "items": {"$ref": "#/$defs/sample"}
+    },
+    "execution_authorized_by_user": {"const": true},
+    "original_samples_execution_authorized": {"const": false},
+    "sol_enabled": {"const": false},
+    "formal_write_count": {"const": 0},
+    "model_call_count_at_authorization": {"const": 0},
+    "provider_request_count_at_authorization": {"const": 0},
+    "descriptor_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nullable_sha256": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+    "nullable_path": {"oneOf": [{"type": "string", "minLength": 1}, {"type": "null"}]},
+    "sample": {
+      "type": "object",
+      "required": [
+        "sequence", "formal_id", "sample_id", "sample_sha256", "formal_card_path",
+        "formal_card_sha256", "question_path", "question_sha256", "attachment_path",
+        "attachment_sha256", "stage_required", "stage_bundle_id", "stage_manifest_sha256",
+        "capture_event_id", "capture_idempotency_key", "capture_count", "source_stage_count"
+      ],
+      "properties": {
+        "sequence": {"type": "integer", "minimum": 1, "maximum": 5},
+        "formal_id": {"enum": ["GS-269", "GS-566", "GS-225", "LA-050", "LA-016"]},
+        "sample_id": {"type": "string", "minLength": 1},
+        "sample_sha256": {"$ref": "#/$defs/sha256"},
+        "formal_card_path": {"type": "string", "minLength": 1},
+        "formal_card_sha256": {"$ref": "#/$defs/sha256"},
+        "question_path": {"type": "string", "minLength": 1},
+        "question_sha256": {"$ref": "#/$defs/sha256"},
+        "attachment_path": {"$ref": "#/$defs/nullable_path"},
+        "attachment_sha256": {"$ref": "#/$defs/nullable_sha256"},
+        "stage_required": {"type": "boolean"},
+        "stage_bundle_id": {"$ref": "#/$defs/nullable_path"},
+        "stage_manifest_sha256": {"$ref": "#/$defs/nullable_sha256"},
+        "capture_event_id": {"pattern": "^MFI-CAP-[0-9a-f]{24}$"},
+        "capture_idempotency_key": {"$ref": "#/$defs/sha256"},
+        "capture_count": {"const": 0},
+        "source_stage_count": {"enum": [0, 1]}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

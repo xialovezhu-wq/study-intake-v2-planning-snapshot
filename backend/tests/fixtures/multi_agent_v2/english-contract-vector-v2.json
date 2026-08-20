@@ -1,0 +1,61 @@
+{
+  "schema_version": "study-intake-subject-contract-vector-v2",
+  "subject": "english",
+  "foreground_skill": {
+    "id": "kaoyan-english-intensive-reading",
+    "version": "content-sha256-v1"
+  },
+  "producer": {
+    "contract_id": "english-learning-pipeline-producer",
+    "contract_version": "v2",
+    "entrypoint": "scripts/english_learning_pipeline.py",
+    "event_module": "english_pipeline/events.py"
+  },
+  "capture_contract": {
+    "id": "english-capture",
+    "version": "v2",
+    "synthetic_capture_id": "EVT-SHADOW-ENGLISH-0001",
+    "capture_shape": {
+      "schema_version": "english_capture_event_v2",
+      "article_locator_required": true,
+      "source_id_required": true,
+      "article_source_hash_required": true,
+      "sentence_id_required": true,
+      "sentence_hash_required": true,
+      "first_translation_preserved": true
+    },
+    "receipt_shape": {
+      "schema_version": "english_capture_receipt_v2",
+      "projection_status": "rendered_or_failed",
+      "producer_binding_status": "attested",
+      "formal_write_count": 0
+    }
+  },
+  "attestation_schema": "producer_binding_attestation_v1",
+  "scanner_adapter": "english-microbatch-v1",
+  "processing_binding": "processing_binding_v3",
+  "background_skill": "background-english-processing",
+  "mcp_server": "kaoyan_english_read",
+  "mcp_tools": [
+    "get_task_context",
+    "read_task_artifact",
+    "list_records",
+    "get_records",
+    "search_records",
+    "query_relations"
+  ],
+  "expected_pipeline": [
+    "producer_validation",
+    "capture_event",
+    "capture_receipt",
+    "producer_attestation",
+    "scanner_binding",
+    "processing_binding_v3",
+    "frozen_task_identity",
+    "pre_model_tripwire"
+  ],
+  "model_call_count": 0,
+  "provider_request_count": 0,
+  "mcp_call_count": 0,
+  "formal_write_count": 0
+}

@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "study-intake-task-process-identity-v1",
+  "type": "object",
+  "required": [
+    "argv_sha256",
+    "authority",
+    "capture_id",
+    "child_pgid",
+    "child_pid",
+    "context_root",
+    "dispatcher_pid",
+    "executable_path",
+    "executable_sha256",
+    "expected_mcp_session_root",
+    "expected_report_root",
+    "formal_write_count",
+    "frozen_payload_sha256",
+    "launch_nonce",
+    "launched_at",
+    "lease_fence",
+    "model_call_count",
+    "owner_id",
+    "process_start_token",
+    "provider_request_count",
+    "release_id",
+    "schema_version",
+    "sol_enabled",
+    "start_new_session",
+    "subject",
+    "unit_sha256"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "study-intake-task-process-identity-v1"
+    },
+    "unit_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "frozen_payload_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "subject": {
+      "enum": ["math", "cs408", "english"]
+    },
+    "capture_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "release_id": {
+      "$ref": "#/$defs/sha256"
+    },
+    "owner_id": {
+      "type": "string",
+      "pattern": "^dispatcher-[1-9][0-9]*-[0-9a-f]{32}$"
+    },
+    "lease_fence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "dispatcher_pid": {
+      "type": "integer",
+      "minimum": 2
+    },
+    "child_pid": {
+      "type": "integer",
+      "minimum": 2
+    },
+    "child_pgid": {
+      "type": "integer",
+      "minimum": 2
+    },
+    "process_start_token": {
+      "$ref": "#/$defs/processStartToken"
+    },
+    "launch_nonce": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    },
+    "launched_at": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "argv_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "executable_path": {
+      "$ref": "#/$defs/absolutePath"
+    },
+    "executable_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "context_root": {
+      "$ref": "#/$defs/absolutePath"
+    },
+    "expected_mcp_session_root": {
+      "$ref": "#/$defs/absolutePath"
+    },
+    "expected_report_root": {
+      "$ref": "#/$defs/absolutePath"
+    },
+    "start_new_session": {
+      "const": true
+    },
+    "model_call_count": {
+      "const": 0
+    },
+    "provider_request_count": {
+      "const": 0
+    },
+    "formal_write_count": {
+      "const": 0
+    },
+    "sol_enabled": {
+      "const": false
+    },
+    "authority": {
+      "$ref": "#/$defs/authority"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "absolutePath": {
+      "type": "string",
+      "pattern": "^/[^\\u0000]+$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "minLength": 20,
+      "maxLength": 40
+    },
+    "processStartToken": {
+      "type": "string",
+      "pattern": "^darwin-libproc-bsdinfo-v1:[1-9][0-9]*:[1-9][0-9]*:[0-9]{6}$"
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "algorithm",
+        "key_id",
+        "purpose",
+        "hmac_sha256"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "study-intake-dispatch-authority-v1"
+        },
+        "algorithm": {
+          "const": "HMAC-SHA256"
+        },
+        "key_id": {
+          "$ref": "#/$defs/sha256"
+        },
+        "purpose": {
+          "const": "dispatch-task-process-identity"
+        },
+        "hmac_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

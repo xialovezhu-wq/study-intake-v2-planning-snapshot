@@ -1,0 +1,40 @@
+.DS_Store
+*/.DS_Store
+
+# 大体积讲义 PDF 本地保留；普通 Git/Gitee 不适合直接管理 100MB+ 到 1GB 文件。
+*.pdf
+
+# Python/Swift 临时产物
+__pycache__/
+*.pyc
+.build/
+
+# 回滚复习系统的本地事务锁只用于并发保护，不属于学习事实或可迁移数据。
+/数学一回滚复习系统/*.lock
+
+# Codex 本机 staging、缓存、凭据和数据库旁路文件不进入版本库。
+/.codex_tmp/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+node_modules/
+.env
+.env.*
+*.pem
+*.p12
+*.key
+*.sqlite
+*.sqlite3
+*.db
+*-wal
+*-shm
+*.bak
+*.backup
+/数学一回滚复习系统/快速入库来源/
+/数学一回滚复习系统/快速入库事件.jsonl
+/数学一回滚复习系统/复习记录.jsonl
+/数学一回滚复习系统/学习前5题记录.jsonl
+/错题知识网络/错题卡/
+/错题知识网络/生成/

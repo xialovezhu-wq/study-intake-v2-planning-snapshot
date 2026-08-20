@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/producer-binding-descriptor-v1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "subject", "attestation_required_after", "foreground_skill", "producer", "capture_contract", "attestation_relative_root", "formal_write_count", "descriptor_content_sha256"],
+  "properties": {
+    "schema_version": {"const": "producer_binding_descriptor_v1"},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "attestation_required_after": {"type": "string", "format": "date-time"},
+    "foreground_skill": {"type": "object"},
+    "producer": {"type": "object"},
+    "capture_contract": {"type": "object"},
+    "attestation_relative_root": {"type": "string", "minLength": 1},
+    "formal_write_count": {"const": 0},
+    "descriptor_content_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

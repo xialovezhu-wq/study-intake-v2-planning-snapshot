@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/english-legacy-disposition-receipt-v3.json",
+  "title": "English Legacy Disposition Receipt v3",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "issue_id", "subject", "batch_authorization_sha256",
+    "authorization_event_sha256", "inventory_sha256", "target_set_sha256",
+    "target", "disposition", "authority_key_id", "model_call_count",
+    "formal_write_count", "issued_at", "seal"
+  ],
+  "properties": {
+    "schema_version": {"const": "english_legacy_disposition_receipt_v3"},
+    "issue_id": {"const": "EN-P0-006"},
+    "subject": {"const": "english"},
+    "batch_authorization_sha256": {"$ref": "#/$defs/sha256"},
+    "authorization_event_sha256": {"$ref": "#/$defs/sha256"},
+    "inventory_sha256": {"$ref": "#/$defs/sha256"},
+    "target_set_sha256": {"$ref": "#/$defs/sha256"},
+    "target": {"$ref": "#/$defs/target"},
+    "disposition": {"const": "deterministic_recuration"},
+    "authority_key_id": {"$ref": "#/$defs/sha256"},
+    "model_call_count": {"const": 0},
+    "formal_write_count": {"const": 0},
+    "issued_at": {"type": "string", "format": "date-time"},
+    "seal": {"$ref": "#/$defs/seal"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "target": {
+      "type": "object", "additionalProperties": false,
+      "required": ["ordinal", "target_id", "target_kind", "record_id", "historical_operation", "current_object_sha256", "origin_postimage_sha256"],
+      "properties": {
+        "ordinal": {"type": "integer", "minimum": 1},
+        "target_id": {"type": "string", "minLength": 1},
+        "target_kind": {"enum": ["article_learning_page", "master_bank_row", "sentence_pattern_card"]},
+        "record_id": {"type": "string", "minLength": 1},
+        "historical_operation": {"enum": ["created", "updated", "representation_reorder_only"]},
+        "current_object_sha256": {"$ref": "#/$defs/sha256"},
+        "origin_postimage_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "seal": {
+      "type": "object", "additionalProperties": false,
+      "required": ["algorithm", "purpose", "hmac_sha256"],
+      "properties": {
+        "algorithm": {"const": "HMAC-SHA256"},
+        "purpose": {"const": "english-legacy-disposition-receipt-v3"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

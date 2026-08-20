@@ -1,0 +1,4 @@
+interface:
+  display_name: "数学夜间质量收口"
+  short_description: "从快速账本批量正式改写并闭合全部派生层。"
+  default_prompt: "Use $kaoyan-math-nightly-qa to replay pending fast-intake events, revalidate every staged source manifest and child, resolve identity and freeze the exact target set before formal writes, rewrite each grouped card once, run one batch rebuild, complete rollback and required Wiki checks, and append closeout-v2 only after built-in verification passes."

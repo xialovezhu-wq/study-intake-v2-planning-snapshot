@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/english-legacy-writer-fault-recovery-validation-v1.json",
+  "title": "English Legacy Writer Fault Recovery Validation v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "issue_id", "subject", "authority_mode",
+    "test_only_bootstrap", "target_id", "pre_object_sha256",
+    "restored_object_sha256", "desired_object_sha256", "transaction_state",
+    "failure_receipt_sha256", "recovery_position_sha256",
+    "writer_process_stopped", "writer_exit_code", "runtime_state",
+    "copy_pre_authority_manifest_sha256",
+    "copy_post_authority_manifest_sha256", "copy_authority_restored",
+    "source_unchanged", "model_call_count", "formal_write_count", "status",
+    "completed_at"
+  ],
+  "properties": {
+    "schema_version": {"const": "english_legacy_writer_fault_recovery_validation_v1"},
+    "issue_id": {"const": "EN-P0-006"},
+    "subject": {"const": "english"},
+    "authority_mode": {"const": "isolated_synthetic_fault_validation"},
+    "test_only_bootstrap": {"const": true},
+    "target_id": {"type": "string", "minLength": 1},
+    "pre_object_sha256": {"$ref": "#/$defs/sha256"},
+    "restored_object_sha256": {"$ref": "#/$defs/sha256"},
+    "desired_object_sha256": {"$ref": "#/$defs/sha256"},
+    "transaction_state": {"enum": ["rolled_back", "failed"]},
+    "failure_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "recovery_position_sha256": {"$ref": "#/$defs/sha256"},
+    "writer_process_stopped": {"type": "boolean"},
+    "writer_exit_code": {"type": "integer"},
+    "runtime_state": {"enum": ["safe_paused", "active"]},
+    "copy_pre_authority_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "copy_post_authority_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "copy_authority_restored": {"type": "boolean"},
+    "source_unchanged": {"$ref": "#/$defs/source_check"},
+    "model_call_count": {"const": 0},
+    "formal_write_count": {"const": 0},
+    "status": {"enum": ["verified_rolled_back", "failed"]},
+    "completed_at": {"type": "string", "minLength": 1}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "source_check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_root", "expected_manifest_sha256", "actual_manifest_sha256",
+        "expected_tree_manifest_sha256", "actual_tree_manifest_sha256",
+        "unchanged", "checked_at"
+      ],
+      "properties": {
+        "source_root": {"type": "string", "pattern": "^/"},
+        "expected_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "actual_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "expected_tree_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "actual_tree_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "unchanged": {"type": "boolean"},
+        "checked_at": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

@@ -1,0 +1,192 @@
+{
+  "schema_version": "kaoyan-study-intake-components.v1",
+  "agent_plugins_spec": "1.0.0",
+  "plugin": {
+    "name": "kaoyan-study-intake",
+    "version": "0.6.0+codex.20260818-prelive-finalization",
+    "description": "Offline-locked Study Intake commissioning with three-subject foreground closure, capture-free Sol MCP preflight, protected validation console, and proposal-only Terra/Luna production contracts.",
+    "author": {"name": "Xiazhibin Local Study Systems"},
+    "keywords": ["kaoyan", "study-intake", "mcp", "luna", "skills"]
+  },
+  "external_runtime_sources": {
+    "math_status_script": {
+      "path": "/Users/xiazhibin/Documents/kaoyan-math/数学一回滚复习系统/scripts/quick_intake.py",
+      "sha256": "1d2c780be9442304d7f69cff8a35c70958b6ea3dddd59b7d5e3f76844c236fc3"
+    },
+    "cs408_status_script": {
+      "path": "/Users/xiazhibin/Documents/kaoyan-408/scripts/intake_fact_capture_408.py",
+      "sha256": "f459b18a174ca93de303ddc1446b75317536d5d6f1816fb97392ca3024310559"
+    },
+    "english_events_module": {
+      "path": "/Users/xiazhibin/Documents/kaoyan-english/english_pipeline/events.py",
+      "sha256": "06f04af255fda4da1f930418be52cdff4ea048c8c9c9e412d0d553d2ac852ff5"
+    }
+  },
+  "foreground_capture_contracts": {
+    "math": {
+      "descriptor_path": "/Users/xiazhibin/Documents/kaoyan-math/数学一回滚复习系统/schema/producer-binding-v1.json",
+      "descriptor_sha256": "e77e4e070e384f2379c232560e4e21c9eedf536209551db1321990f02a609df1",
+      "attestation_required_after": "2026-08-17T06:30:00+00:00",
+      "producer_source_closure_sha256": "efdbd8330fea934bd7cb37c54e84ddba3284059fab03c7bb27e48334a4c12712",
+      "foreground_skill_sha256": "8f09e4092e64095e32f4c16442bf73872775fddf76c66f3d28f091839f192979"
+    },
+    "cs408": {
+      "descriptor_path": "/Users/xiazhibin/Documents/kaoyan-408/schema/producer-binding-v1.json",
+      "descriptor_sha256": "2df5dcf0e627b2f80ece50761f32518d3c8c0f05ac58dbe5c185fedc3afbf3ea",
+      "attestation_required_after": "2026-08-17T06:30:00+00:00",
+      "producer_source_closure_sha256": "a9d8669faa13d6ef43df6eccd9e6aa584e1aa3b79807696397154122f7513b08",
+      "foreground_skill_sha256": "8079229c8041407e4097ec89aaea8312cbc4b2c2d1e6e810f8b3fbc2a10407eb"
+    },
+    "english": {
+      "descriptor_path": "/Users/xiazhibin/Documents/kaoyan-english/schema/english_pipeline/producer-binding-v1.json",
+      "descriptor_sha256": "2276c37251543e8cf044b4cdd6c2feba7b47ea86fb531fe9333e2daaaef37b87",
+      "attestation_required_after": "2026-08-17T06:30:00+00:00",
+      "producer_source_closure_sha256": "22e4074021c919bd5f1d688fb43469bda7f2e509f08e45be01623735a63d8392",
+      "foreground_skill_sha256": "cb60672254c18b9eaf0b410af2c0af70a5f596046ef474e7bc32e5f81bbdd25f"
+    }
+  },
+  "fixture_contracts": {
+    "math": {
+      "profile": "multi_agent_v2_math_v2",
+      "path": "tests/fixtures/multi_agent_v2/math-contract-vector-v2.json",
+      "sha256": "911a23673f146798fb4d8edbf8090a49a01a5a4b73ee9fdd71e411515b2b818f"
+    },
+    "cs408": {
+      "profile": "multi_agent_v2_cs408_v2",
+      "path": "tests/fixtures/multi_agent_v2/cs408-contract-vector-v2.json",
+      "sha256": "9d67bd1716625aa2adcd2ae643a2152ff646c8efa8408dfc2d34606bbd56a81e"
+    },
+    "english": {
+      "profile": "multi_agent_v2_english_v2",
+      "path": "tests/fixtures/multi_agent_v2/english-contract-vector-v2.json",
+      "sha256": "ec0a6ff8a961b09aefa57e2ce3e97a1287b6de4bd3c3efc9bdc05d2552a9ec1d"
+    }
+  },
+  "sol_mcp_preflight": {
+    "purpose": "infrastructure_preflight",
+    "launcher_mode": "preflight-server",
+    "tool_policy": "agents/sol-mcp-preflight-tool-policy.json",
+    "enabled_tools": [
+      "list_records",
+      "get_records",
+      "search_records",
+      "query_relations"
+    ],
+    "session_schema": "study-read-mcp-infrastructure-preflight-session.v1",
+    "call_receipt_schema": "sol-mcp-preflight-call-receipt-v1",
+    "terminal_schema": "sol-mcp-preflight-terminal-v1",
+    "write_call_count": 0,
+    "formal_write_count": 0
+  },
+  "mcp": {
+    "minimum_server_release": "0.4.1",
+    "server_release": "0.4.1+sha256.21d738a1d74586aab72c8a63dc62c680aa10c6ac837c2bd5041e757ba0e63425",
+    "release_root": "/Users/xiazhibin/.codex/local-study-read-mcp/releases/21d738a1d74586aab72c8a63dc62c680aa10c6ac837c2bd5041e757ba0e63425",
+    "release_id": "21d738a1d74586aab72c8a63dc62c680aa10c6ac837c2bd5041e757ba0e63425",
+    "release_manifest": "/Users/xiazhibin/.codex/local-study-read-mcp/releases/21d738a1d74586aab72c8a63dc62c680aa10c6ac837c2bd5041e757ba0e63425/release.json",
+    "release_manifest_sha256": "3753175de6a66b5cd67efe6b85622a6e8bdb519bee5166834677ee0bad08a5e5",
+    "python_executable": "/Users/xiazhibin/Documents/Codex/local-study-read-mcp/.venv/bin/python",
+    "python_flags": ["-I", "-S"],
+    "sealed_launcher_path": "/Users/xiazhibin/.codex/local-study-read-mcp/releases/21d738a1d74586aab72c8a63dc62c680aa10c6ac837c2bd5041e757ba0e63425/scripts/sealed_launcher.py",
+    "sealed_launcher_sha256": "d0bb1103adab1d606491100f528788cd111deb199db7e63a55109a318656b796",
+    "launcher": "./bin/kaoyan-read",
+    "profile": "ordinary",
+    "legacy_server_names": ["kaoyan_read", "kaoyan_read_v2", "kaoyan_read_v3"],
+    "focused_tool_names": [
+      "get_task_context",
+      "read_task_artifact",
+      "list_records",
+      "get_records",
+      "search_records",
+      "query_relations"
+    ],
+    "ordinary_servers": {
+      "math": {
+        "server_name": "kaoyan_math_read",
+        "subject": "math",
+        "tool_name": "math_read_bundle"
+      },
+      "cs408": {
+        "server_name": "kaoyan_cs408_read",
+        "subject": "cs408",
+        "tool_name": "cs408_read_bundle"
+      },
+      "english": {
+        "server_name": "kaoyan_english_read",
+        "subject": "english",
+        "tool_name": "english_read_bundle"
+      }
+    },
+    "luna_servers": {
+      "math": {
+        "server_name": "kaoyan_math_read",
+        "launch_mode": "subject-server"
+      },
+      "cs408": {
+        "server_name": "kaoyan_cs408_read",
+        "launch_mode": "subject-server"
+      },
+      "english": {
+        "server_name": "kaoyan_english_read",
+        "launch_mode": "subject-server"
+      }
+    },
+    "ordinary_skill_tools": {
+      "kaoyan-math-visual-review": {"subject": "math", "tool_name": "math_read_bundle"},
+      "kaoyan-math-weak-edge-audit": {"subject": "math", "tool_name": "math_read_bundle"},
+      "kaoyan-math-nightly-qa": {"subject": "math", "tool_name": "math_read_bundle"},
+      "kaoyan-english-vocab-export": {"subject": "english", "tool_name": "english_read_bundle"},
+      "kaoyan-english-intensive-reading": {"subject": "english", "tool_name": "english_read_bundle"},
+      "kaoyan-408-daily-intake-curation": {"subject": "cs408", "tool_name": "cs408_read_bundle"}
+    }
+  },
+  "multi_agent": {
+    "schema_version": "study-intake-multi-agent-component-registry-v1",
+    "orchestrate_skill": {
+      "id": "multi-agent-read-orchestrate",
+      "version": "1.0.0",
+      "path": "skills/multi-agent-read-orchestrate/SKILL.md"
+    },
+    "roles": {
+      "orchestrator": {
+        "model": "gpt-5.6-terra",
+        "reasoning_effort": "ultra",
+        "agents_enabled": true,
+        "agent_config": "agents/terra-orchestrator.toml",
+        "tool_policy": "agents/terra-orchestrator-tool-policy.json"
+      },
+      "reader": {
+        "model": "gpt-5.6-luna",
+        "reasoning_effort": "max",
+        "agents_enabled": false,
+        "agent_config": "agents/luna-reader.toml",
+        "tool_policy": "agents/luna-reader-tool-policy.json"
+      },
+      "critical_reviewer": {
+        "model": "gpt-5.6-terra",
+        "reasoning_effort": "ultra",
+        "agents_enabled": false,
+        "fresh_context": true,
+        "agent_config": "agents/terra-critical-reviewer.toml",
+        "tool_policy": "agents/terra-critical-reviewer-tool-policy.json"
+      }
+    },
+    "logical_branch_limit": null,
+    "physical_concurrency_mode": "dynamic",
+    "overflow_policy": "queue_in_waves",
+    "drop_policy": "never",
+    "formal_write_count": 0
+  },
+  "skills": {
+    "multi-agent-read-orchestrate": "1.0.0",
+    "background-math-processing": "4.0.0",
+    "background-cs408-processing": "4.0.0",
+    "background-english-processing": "4.0.0",
+    "kaoyan-math-visual-review": "2.1.0",
+    "kaoyan-math-weak-edge-audit": "2.1.0",
+    "kaoyan-math-nightly-qa": "2.1.0",
+    "kaoyan-english-vocab-export": "2.1.0",
+    "kaoyan-english-intensive-reading": "2.1.1",
+    "kaoyan-408-daily-intake-curation": "2.1.0"
+  }
+}

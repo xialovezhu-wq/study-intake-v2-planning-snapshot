@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/subject-exclusion-receipt-v1.json",
+  "title": "Subject Exclusion Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "subject", "original_batch", "excluded_task",
+    "user_authorization", "user_authorization_receipt_sha256",
+    "reason", "authority_key_id",
+    "formal_write_count", "issued_at", "seal"
+  ],
+  "properties": {
+    "schema_version": {"const": "subject_exclusion_receipt_v1"},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "original_batch": {"$ref": "#/$defs/original_batch"},
+    "excluded_task": {"$ref": "#/$defs/task"},
+    "user_authorization": {"$ref": "#/$defs/user_authorization"},
+    "user_authorization_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "reason": {"type": "string", "minLength": 1},
+    "authority_key_id": {"$ref": "#/$defs/sha256"},
+    "formal_write_count": {"const": 0},
+    "issued_at": {"type": "string", "format": "date-time"},
+    "seal": {"$ref": "#/$defs/seal"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nullable_sha256": {
+      "anyOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]
+    },
+    "original_batch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "batch_id", "batch_sha256", "study_date", "authority_generation",
+        "authority_fingerprint"
+      ],
+      "properties": {
+        "batch_id": {"type": "string", "minLength": 1},
+        "batch_sha256": {"$ref": "#/$defs/sha256"},
+        "study_date": {"type": "string", "minLength": 1},
+        "authority_generation": {"type": "string", "minLength": 1},
+        "authority_fingerprint": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "capture_id", "unit_sha256", "input_fingerprint", "study_date",
+        "frozen_payload_sha256", "status",
+        "proposal_sha256", "package_sha256", "quality_receipt_sha256",
+        "terminal_receipt_sha256", "error_code"
+      ],
+      "properties": {
+        "capture_id": {"type": "string", "minLength": 1},
+        "unit_sha256": {"$ref": "#/$defs/sha256"},
+        "input_fingerprint": {"$ref": "#/$defs/sha256"},
+        "study_date": {"type": "string", "minLength": 1},
+        "frozen_payload_sha256": {"$ref": "#/$defs/sha256"},
+        "status": {"enum": ["needs_rework", "failed", "evidence_pending"]},
+        "proposal_sha256": {"$ref": "#/$defs/nullable_sha256"},
+        "package_sha256": {"$ref": "#/$defs/nullable_sha256"},
+        "quality_receipt_sha256": {"$ref": "#/$defs/nullable_sha256"},
+        "terminal_receipt_sha256": {"$ref": "#/$defs/nullable_sha256"},
+        "error_code": {"type": ["string", "null"]}
+      }
+    },
+    "user_authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version", "event_id", "event_type", "subject",
+        "original_batch_id", "original_batch_sha256", "capture_id",
+        "unit_sha256", "reason", "authorized_at", "formal_write_count", "seal"
+      ],
+      "properties": {
+        "schema_version": {"const": "user_subject_exclusion_authorization_receipt_v1"},
+        "event_id": {"type": "string", "minLength": 1},
+        "event_type": {"const": "explicit_user_subject_exclusion"},
+        "subject": {"enum": ["math", "cs408", "english"]},
+        "original_batch_id": {"type": "string", "minLength": 1},
+        "original_batch_sha256": {"$ref": "#/$defs/sha256"},
+        "capture_id": {"type": "string", "minLength": 1},
+        "unit_sha256": {"$ref": "#/$defs/sha256"},
+        "reason": {"type": "string", "minLength": 1},
+        "authorized_at": {"type": "string", "format": "date-time"},
+        "formal_write_count": {"const": 0},
+        "seal": {"$ref": "#/$defs/user_authorization_seal"}
+      }
+    },
+    "user_authorization_seal": {
+      "type": "object", "additionalProperties": false,
+      "required": ["algorithm", "purpose", "hmac_sha256"],
+      "properties": {
+        "algorithm": {"const": "HMAC-SHA256"},
+        "purpose": {"const": "user-subject-exclusion-authorization-receipt"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "seal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "purpose", "hmac_sha256"],
+      "properties": {
+        "algorithm": {"const": "HMAC-SHA256"},
+        "purpose": {"const": "subject-exclusion-receipt"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

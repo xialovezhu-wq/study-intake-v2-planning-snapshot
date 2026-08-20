@@ -1,0 +1,43 @@
+{
+  "attestation_relative_root": "数学一回滚复习系统/快速入库生产绑定",
+  "attestation_required_after": "2026-08-17T06:30:00+00:00",
+  "capture_contract": {
+    "contract_id": "math-fast-intake-capture",
+    "contract_version": "v2",
+    "files": [
+      {
+        "path": "/Users/xiazhibin/Documents/kaoyan-math/数学一回滚复习系统/schema/quick_intake_events.md",
+        "sha256": "eb11368b4f8c0ad43711955ae667de5fbfeec49b7ceabb823cd8759d394b550c"
+      }
+    ],
+    "files_sha256": "fcb89635b75d0a61dc34af058eca36bf4d6a42c544f2ac78064844815385c4de"
+  },
+  "descriptor_content_sha256": "69c1b24de09595ba2810a3816b4b4e46b0b1ba875d5825023cfd9c536cf33fa3",
+  "foreground_skill": {
+    "authoritative_path": "/Users/xiazhibin/Documents/kaoyan-math/codex-skill-sources/kaoyan-math-wrong-intake/SKILL.md",
+    "authoritative_sha256": "8f09e4092e64095e32f4c16442bf73872775fddf76c66f3d28f091839f192979",
+    "id": "kaoyan-math-wrong-intake",
+    "installed_path": "/Users/xiazhibin/.codex/skills/kaoyan-math-wrong-intake/SKILL.md",
+    "installed_sha256": "8f09e4092e64095e32f4c16442bf73872775fddf76c66f3d28f091839f192979",
+    "version": "content-sha256-v1"
+  },
+  "formal_write_count": 0,
+  "producer": {
+    "contract_id": "math-fast-intake-producer",
+    "contract_version": "v2",
+    "entrypoint_path": "/Users/xiazhibin/Documents/kaoyan-math/数学一回滚复习系统/scripts/quick_intake.py",
+    "source_closure_sha256": "efdbd8330fea934bd7cb37c54e84ddba3284059fab03c7bb27e48334a4c12712",
+    "source_files": [
+      {
+        "path": "/Users/xiazhibin/Documents/kaoyan-math/数学一回滚复习系统/scripts/quick_intake.py",
+        "sha256": "1d2c780be9442304d7f69cff8a35c70958b6ea3dddd59b7d5e3f76844c236fc3"
+      },
+      {
+        "path": "/Users/xiazhibin/Documents/kaoyan-math/数学一回滚复习系统/scripts/producer_binding_attestation.py",
+        "sha256": "7b5b27af9127663ecb1a8386591923eb9933997038ff9c14fe6b136807f2ef92"
+      }
+    ]
+  },
+  "schema_version": "producer_binding_descriptor_v1",
+  "subject": "math"
+}

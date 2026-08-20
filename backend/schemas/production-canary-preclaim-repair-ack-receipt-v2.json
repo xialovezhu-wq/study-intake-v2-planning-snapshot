@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "study-intake-production-canary-preclaim-repair-ack-receipt-v2",
+  "type": "object",
+  "required": [
+    "schema_version", "repair_ack_id", "activation_id", "release_id", "subject",
+    "unit_sha256", "preclaim_failure_receipt_sha256", "acknowledged_at",
+    "preclaim_failure_receipt_path", "failure_stage", "error_code", "ack_action",
+    "model_call_count", "provider_request_count", "mcp_tool_call_count",
+    "formal_write_count", "sol_enabled", "authority"
+  ],
+  "properties": {
+    "schema_version": {"const": "study-intake-production-canary-preclaim-repair-ack-receipt-v2"},
+    "repair_ack_id": {"$ref": "#/$defs/sha256"},
+    "activation_id": {"$ref": "#/$defs/sha256"},
+    "release_id": {"$ref": "#/$defs/sha256"},
+    "subject": {"$ref": "#/$defs/subject"},
+    "unit_sha256": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+    "preclaim_failure_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "acknowledged_at": {"$ref": "#/$defs/timestamp"},
+    "preclaim_failure_receipt_path": {"$ref": "#/$defs/absolute_path"},
+    "failure_stage": {
+      "enum": [
+        "producer_contract", "materialize", "consumer_admission", "pre_claim",
+        "submit_generation_fence"
+      ]
+    },
+    "error_code": {"type": "string", "minLength": 1},
+    "ack_action": {"const": "explicit_subject_resume_repair"},
+    "model_call_count": {"const": 0},
+    "provider_request_count": {"const": 0},
+    "mcp_tool_call_count": {"const": 0},
+    "formal_write_count": {"const": 0},
+    "sol_enabled": {"const": false},
+    "authority": {"$ref": "#/$defs/authority"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "timestamp": {"type": "string", "format": "date-time", "minLength": 1},
+    "absolute_path": {"type": "string", "pattern": "^/", "minLength": 2},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "authority": {
+      "type": "object",
+      "required": ["schema_version", "algorithm", "key_id", "purpose", "hmac_sha256"],
+      "properties": {
+        "schema_version": {"const": "study-intake-dispatch-authority-v1"},
+        "algorithm": {"const": "HMAC-SHA256"},
+        "key_id": {"$ref": "#/$defs/sha256"},
+        "purpose": {"const": "dispatch-production-canary-preclaim-repair-ack"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

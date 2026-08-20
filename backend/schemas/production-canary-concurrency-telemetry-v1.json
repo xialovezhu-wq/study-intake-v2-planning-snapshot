@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "study-intake-production-canary-concurrency-telemetry-v1",
+  "type": "object",
+  "required": [
+    "activation_ids",
+    "active_by_subject",
+    "authority",
+    "counter_scope",
+    "fast_mode_effective",
+    "fast_mode_requested",
+    "formal_write_count",
+    "global_active_task_count",
+    "global_peak_active",
+    "model_call_count",
+    "peak_source",
+    "provider_request_count",
+    "release_id",
+    "requested_service_tier",
+    "runner_evidenced_task_count_by_subject",
+    "runner_evidenced_task_count_global",
+    "runner_interval_missing_count_by_subject",
+    "runner_interval_missing_count_global",
+    "runner_interval_policy",
+    "scheduler_claim_global_peak_active",
+    "scheduler_claim_subject_peak_active",
+    "schema_version",
+    "sol_enabled",
+    "subject_peak_active",
+    "terminal_by_outcome_by_subject",
+    "terminal_by_outcome_global",
+    "terminal_failure_bindings_by_subject",
+    "terminal_index_sha256_by_subject",
+    "terminal_task_count_by_subject",
+    "terminal_task_count_global",
+    "updated_at",
+    "verified_runner_active_by_subject",
+    "verified_runner_global_active_task_count",
+    "zero_duration_runner_interval_count_by_subject",
+    "zero_duration_runner_interval_count_global"
+  ],
+  "properties": {
+    "activation_ids": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "active_by_subject": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "authority": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "counter_scope": {},
+    "fast_mode_effective": {
+      "const": "not_requested"
+    },
+    "fast_mode_requested": {
+      "const": false
+    },
+    "formal_write_count": {
+      "const": 0
+    },
+    "global_active_task_count": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "global_peak_active": {},
+    "model_call_count": {
+      "const": 0
+    },
+    "peak_source": {},
+    "provider_request_count": {
+      "const": 0
+    },
+    "release_id": {},
+    "requested_service_tier": {
+      "type": "null"
+    },
+    "runner_evidenced_task_count_by_subject": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "runner_evidenced_task_count_global": {},
+    "runner_interval_missing_count_by_subject": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "runner_interval_missing_count_global": {},
+    "runner_interval_policy": {},
+    "scheduler_claim_global_peak_active": {},
+    "scheduler_claim_subject_peak_active": {},
+    "schema_version": {
+      "const": "study-intake-production-canary-concurrency-telemetry-v1"
+    },
+    "sol_enabled": {
+      "const": false
+    },
+    "subject_peak_active": {},
+    "terminal_by_outcome_by_subject": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "terminal_by_outcome_global": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "terminal_failure_bindings_by_subject": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "terminal_index_sha256_by_subject": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "terminal_task_count_by_subject": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "terminal_task_count_global": {},
+    "updated_at": {},
+    "verified_runner_active_by_subject": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "verified_runner_global_active_task_count": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "zero_duration_runner_interval_count_by_subject": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "zero_duration_runner_interval_count_global": {}
+  },
+  "additionalProperties": false
+}

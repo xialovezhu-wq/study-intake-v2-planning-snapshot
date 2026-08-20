@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "https://local.invalid/study-intake/multi-agent-stage-execution-receipt-v1.json",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "role", "requested_model", "requested_reasoning_effort", "runtime_identity_status", "parent_agent_id", "agent_id", "branch_id", "spawn_event_sha256", "terminal_event_sha256", "started_at", "ended_at", "duration_ms", "status", "raw_event_chain_sha256", "output_sha256", "formal_write_count"],
+  "properties": {
+    "schema_version": {"const": "multi_agent_stage_execution_receipt_v1"}, "role": {"enum": ["orchestrator", "reader", "critical_reviewer"]},
+    "requested_model": {"enum": ["gpt-5.6-terra", "gpt-5.6-luna"]}, "requested_reasoning_effort": {"enum": ["ultra", "max"]}, "runtime_identity_status": {"enum": ["verified", "requested_unverified", "invalid"]},
+    "parent_agent_id": {"type": ["string", "null"]}, "agent_id": {"type": "string", "minLength": 1}, "branch_id": {"type": ["string", "null"]},
+    "spawn_event_sha256": {"$ref": "#/$defs/sha"}, "terminal_event_sha256": {"$ref": "#/$defs/sha"}, "started_at": {"type": "string", "format": "date-time"}, "ended_at": {"type": "string", "format": "date-time"}, "duration_ms": {"type": "number", "minimum": 0}, "status": {"enum": ["succeeded", "failed", "cancelled", "timed_out"]}, "raw_event_chain_sha256": {"$ref": "#/$defs/sha"}, "output_sha256": {"$ref": "#/$defs/sha"},
+    "formal_write_count": {"const": 0}
+  },
+  "$defs": {"sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+}

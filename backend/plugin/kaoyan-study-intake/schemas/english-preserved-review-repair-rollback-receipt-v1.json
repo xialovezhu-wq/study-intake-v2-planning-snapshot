@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "study-intake-english-preserved-review-repair-rollback-receipt-v1",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "repair_receipt_sha256", "subject", "status",
+    "source_queue_restored_sha256", "target_queue_absent", "staged_gate_restored_sha256",
+    "source_terminal_index_retained_sha256", "staged_terminal_index_restored_sha256",
+    "batch_restored_sha256", "batch_pointer_restored_sha256", "writer_restored_sha256",
+    "historical_evidence_retained", "model_call_count", "provider_request_count",
+    "mcp_tool_call_count", "sol_call_count", "formal_write_count", "rolled_back_at", "authority"],
+  "properties": {
+    "schema_version": {"const": "study-intake-english-preserved-review-repair-rollback-receipt-v1"},
+    "repair_receipt_sha256": {"$ref": "#/$defs/sha256"}, "subject": {"const": "english"},
+    "status": {"const": "rolled_back"}, "source_queue_restored_sha256": {"$ref": "#/$defs/sha256"},
+    "target_queue_absent": {"const": true}, "staged_gate_restored_sha256": {"$ref": "#/$defs/sha256"},
+    "source_terminal_index_retained_sha256": {"$ref": "#/$defs/sha256"},
+    "staged_terminal_index_restored_sha256": {"$ref": "#/$defs/sha256"},
+    "batch_restored_sha256": {"$ref": "#/$defs/sha256"},
+    "batch_pointer_restored_sha256": {"$ref": "#/$defs/sha256"},
+    "writer_restored_sha256": {"$ref": "#/$defs/sha256"},
+    "historical_evidence_retained": {"const": true},
+    "model_call_count": {"const": 0}, "provider_request_count": {"const": 0},
+    "mcp_tool_call_count": {"const": 0}, "sol_call_count": {"const": 0},
+    "formal_write_count": {"const": 0}, "rolled_back_at": {"type": "string", "format": "date-time"},
+    "authority": {"$ref": "#/$defs/authority"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "authority": {"type": "object", "additionalProperties": false,
+      "required": ["schema_version", "algorithm", "key_id", "purpose", "hmac_sha256"],
+      "properties": {"schema_version": {"const": "study-intake-dispatch-authority-v1"},
+        "algorithm": {"const": "HMAC-SHA256"}, "key_id": {"$ref": "#/$defs/sha256"},
+        "purpose": {"const": "dispatch-english-preserved-review-repair-rollback-v1"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}}
+    }
+  }
+}

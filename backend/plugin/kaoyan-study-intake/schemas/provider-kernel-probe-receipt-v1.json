@@ -1,0 +1,341 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "study-intake-provider-kernel-probe-receipt-v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "sequence",
+    "unit_sha256",
+    "frozen_payload_sha256",
+    "subject",
+    "capture_id",
+    "release_id",
+    "owner_id",
+    "lease_fence",
+    "stage_name",
+    "provider_process_identity_sha256",
+    "provider_process_identity_path",
+    "provider_pid",
+    "provider_pgid",
+    "process_start_token",
+    "probe_nonce_sha256",
+    "previous_probe_receipt_sha256",
+    "baseline_progress_receipt_sha256",
+    "observed_progress_receipt_sha256",
+    "control_channel_ok",
+    "response_identity_verified",
+    "signed_progress_delta_ok",
+    "kernel_activity_signal_available",
+    "baseline_kernel_snapshot_sha256",
+    "baseline_kernel_snapshot",
+    "final_kernel_snapshot_sha256",
+    "final_kernel_snapshot",
+    "kernel_activity_delta",
+    "kernel_activity_detected",
+    "automatic_stall_cancellation_eligible",
+    "probe_started_at",
+    "probe_finished_at",
+    "formal_write_count",
+    "sol_enabled",
+    "authority"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "study-intake-provider-kernel-probe-receipt-v1"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "unit_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "frozen_payload_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "subject": {
+      "$ref": "#/$defs/subject"
+    },
+    "capture_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "release_id": {
+      "$ref": "#/$defs/sha256"
+    },
+    "owner_id": {
+      "type": "string",
+      "pattern": "^dispatcher-[1-9][0-9]*-[0-9a-f]{32}$"
+    },
+    "lease_fence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "stage_name": {
+      "type": "string",
+      "pattern": "^(math|cs408|english)_(analysis|critical_review)$"
+    },
+    "provider_process_identity_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "provider_process_identity_path": {
+      "$ref": "#/$defs/absolute_path"
+    },
+    "provider_pid": {
+      "type": "integer",
+      "minimum": 2
+    },
+    "provider_pgid": {
+      "type": "integer",
+      "minimum": 2
+    },
+    "process_start_token": {
+      "$ref": "#/$defs/process_start_token"
+    },
+    "probe_nonce_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "previous_probe_receipt_sha256": {
+      "$ref": "#/$defs/nullable_sha256"
+    },
+    "baseline_progress_receipt_sha256": {
+      "$ref": "#/$defs/nullable_sha256"
+    },
+    "observed_progress_receipt_sha256": {
+      "$ref": "#/$defs/nullable_sha256"
+    },
+    "control_channel_ok": {
+      "type": "boolean"
+    },
+    "response_identity_verified": {
+      "type": "boolean"
+    },
+    "signed_progress_delta_ok": {
+      "type": "boolean"
+    },
+    "kernel_activity_signal_available": {
+      "const": true
+    },
+    "baseline_kernel_snapshot_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "baseline_kernel_snapshot": {
+      "$ref": "#/$defs/kernel_snapshot"
+    },
+    "final_kernel_snapshot_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "final_kernel_snapshot": {
+      "$ref": "#/$defs/kernel_snapshot"
+    },
+    "kernel_activity_delta": {
+      "$ref": "#/$defs/kernel_delta"
+    },
+    "kernel_activity_detected": {
+      "type": "boolean"
+    },
+    "automatic_stall_cancellation_eligible": {
+      "const": true
+    },
+    "probe_started_at": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "probe_finished_at": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "formal_write_count": {
+      "const": 0
+    },
+    "sol_enabled": {
+      "const": false
+    },
+    "authority": {
+      "$ref": "#/$defs/authority"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"sequence": {"const": 1}},
+        "required": ["sequence"]
+      },
+      "then": {
+        "properties": {"previous_probe_receipt_sha256": {"type": "null"}}
+      },
+      "else": {
+        "properties": {
+          "previous_probe_receipt_sha256": {"$ref": "#/$defs/sha256"}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "response_identity_verified": {
+            "const": true
+          }
+        },
+        "required": ["response_identity_verified"]
+      },
+      "then": {
+        "properties": {
+          "control_channel_ok": {
+            "const": true
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "signed_progress_delta_ok": {
+            "const": true
+          }
+        },
+        "required": ["signed_progress_delta_ok"]
+      },
+      "then": {
+        "properties": {
+          "observed_progress_receipt_sha256": {
+            "$ref": "#/$defs/sha256"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "nullable_sha256": {
+      "oneOf": [
+        {"$ref": "#/$defs/sha256"},
+        {"type": "null"}
+      ]
+    },
+    "subject": {
+      "enum": ["math", "cs408", "english"]
+    },
+    "absolute_path": {
+      "type": "string",
+      "pattern": "^/[^\\u0000]+$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "minLength": 20,
+      "maxLength": 40
+    },
+    "process_start_token": {
+      "type": "string",
+      "pattern": "^darwin-libproc-bsdinfo-v1:[1-9][0-9]*:[1-9][0-9]*:[0-9]{6}$"
+    },
+    "counters": {
+      "type": "object",
+      "required": [
+        "cpu_user_nanoseconds",
+        "cpu_system_nanoseconds",
+        "context_switch_count",
+        "mach_message_sent_count",
+        "mach_message_received_count",
+        "mach_syscall_count",
+        "unix_syscall_count",
+        "page_fault_count",
+        "pagein_count",
+        "disk_read_bytes",
+        "disk_written_bytes"
+      ],
+      "properties": {
+        "cpu_user_nanoseconds": {"type": "integer", "minimum": 0},
+        "cpu_system_nanoseconds": {"type": "integer", "minimum": 0},
+        "context_switch_count": {"type": "integer", "minimum": 0},
+        "mach_message_sent_count": {"type": "integer", "minimum": 0},
+        "mach_message_received_count": {"type": "integer", "minimum": 0},
+        "mach_syscall_count": {"type": "integer", "minimum": 0},
+        "unix_syscall_count": {"type": "integer", "minimum": 0},
+        "page_fault_count": {"type": "integer", "minimum": 0},
+        "pagein_count": {"type": "integer", "minimum": 0},
+        "disk_read_bytes": {"type": "integer", "minimum": 0},
+        "disk_written_bytes": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "kernel_snapshot": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "signal_source",
+        "provider_pid",
+        "provider_pgid",
+        "process_start_token",
+        "counters"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "study-intake-darwin-provider-kernel-activity-snapshot-v1"
+        },
+        "signal_source": {
+          "const": "darwin_libproc_taskinfo_rusage_v2"
+        },
+        "provider_pid": {"type": "integer", "minimum": 2},
+        "provider_pgid": {"type": "integer", "minimum": 2},
+        "process_start_token": {
+          "$ref": "#/$defs/process_start_token"
+        },
+        "counters": {"$ref": "#/$defs/counters"}
+      },
+      "additionalProperties": false
+    },
+    "kernel_delta": {
+      "type": "object",
+      "required": [
+        "signal_source",
+        "provider_pid",
+        "provider_pgid",
+        "process_start_token",
+        "counters",
+        "activity_detected"
+      ],
+      "properties": {
+        "signal_source": {
+          "const": "darwin_libproc_taskinfo_rusage_v2"
+        },
+        "provider_pid": {"type": "integer", "minimum": 2},
+        "provider_pgid": {"type": "integer", "minimum": 2},
+        "process_start_token": {
+          "$ref": "#/$defs/process_start_token"
+        },
+        "counters": {"$ref": "#/$defs/counters"},
+        "activity_detected": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "algorithm",
+        "key_id",
+        "purpose",
+        "hmac_sha256"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "study-intake-dispatch-authority-v1"
+        },
+        "algorithm": {
+          "const": "HMAC-SHA256"
+        },
+        "key_id": {"$ref": "#/$defs/sha256"},
+        "purpose": {
+          "const": "dispatch-provider-kernel-probe"
+        },
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

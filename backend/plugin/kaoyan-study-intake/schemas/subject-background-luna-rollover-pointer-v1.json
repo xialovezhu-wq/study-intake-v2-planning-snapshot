@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "subject_background_luna_rollover_pointer_v1",
+  "type": "object",
+  "required": [
+    "schema_version", "subject", "old_batch_id", "old_batch_sha256",
+    "rollover_id", "rollover_receipt_sha256", "rollover_receipt_path",
+    "writer_revision_after", "applied_at", "formal_write_count", "seal"
+  ],
+  "properties": {
+    "schema_version": {"const": "subject_background_luna_rollover_pointer_v1"},
+    "subject": {"$ref": "#/$defs/subject"},
+    "old_batch_id": {"type": "string", "minLength": 1},
+    "old_batch_sha256": {"$ref": "#/$defs/sha256"},
+    "rollover_id": {"$ref": "#/$defs/sha256"},
+    "rollover_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "rollover_receipt_path": {"$ref": "#/$defs/absolute_path"},
+    "writer_revision_after": {"type": "integer", "minimum": 0},
+    "applied_at": {"$ref": "#/$defs/timestamp"},
+    "formal_write_count": {"const": 0},
+    "seal": {"$ref": "#/$defs/seal"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "timestamp": {"type": "string", "format": "date-time", "minLength": 1},
+    "absolute_path": {"type": "string", "pattern": "^/", "minLength": 2},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "seal": {
+      "type": "object",
+      "required": ["algorithm", "purpose", "hmac_sha256"],
+      "properties": {
+        "algorithm": {"const": "HMAC-SHA256"},
+        "purpose": {"const": "subject-background-luna-rollover-pointer"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

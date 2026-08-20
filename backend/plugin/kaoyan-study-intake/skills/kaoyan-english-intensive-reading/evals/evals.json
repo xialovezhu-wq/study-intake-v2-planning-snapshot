@@ -1,0 +1,103 @@
+{
+  "skill_name": "kaoyan-english-intensive-reading",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "我发一篇英语阅读文章，先保存语境，然后我逐句问。题目和选项也要保存，但先不要告诉我答案。",
+      "expected_output": "Hands complete-source intake to kaoyan-english-reading-intake, preserves a practice-safe article and protected-analysis boundary, and prepares for later sentence study without premature formal entry.",
+      "files": [],
+      "expectations": [
+        "Reads prompts/codex_prompt.md and only the task-relevant schema, protected-answer rule, article context, or intake reference before modifying files.",
+        "Keeps questions and options with the practice-safe article while routing answers outside it.",
+        "Does not reveal standard answers unless explicitly asked.",
+        "Does not write master_bank.csv; formal curation is outside this foreground skill."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "分析这句长难句，并判断哪些词句值得入库：The rules that once seemed to protect consumers have instead made them less willing to seek advice.",
+      "expected_output": "Provides a sentence-focused translation, structure breakdown, key phrase analysis and candidate classification, then captures the resolved sentence with formal_write_count=0 rather than writing formal CSV.",
+      "files": [],
+      "expectations": [
+        "Includes original sentence, natural Chinese translation, structure, core phrases, long-sentence point, and entry judgment.",
+        "Uses 长期库候选 rather than representing a daytime proposal as formally entered.",
+        "Does not dump or write a formal CSV row.",
+        "Explains why ordinary words should not be bulk-added.",
+        "Calls capture after the direct explanation is resolved and reports the zero-write receipt."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "把这篇文章里我不会的词做成长期库候选，不要批量入库；如果有跨系统逻辑模式，比如限定条件意识，也提示我。",
+      "expected_output": "Builds screened long-term-bank candidates from article context, separates ordinary vocabulary into 不背单词候选, avoids bulk CSV writes, and flags cross-system logic patterns only as second-brain candidates.",
+      "files": [],
+      "expectations": [
+        "Separates A/B/C or equivalent candidate priority from actual master_bank.csv writes.",
+        "Does not modify CSV in the foreground skill.",
+        "Identifies possible second-brain cross-system candidates without writing stable relationships directly."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "这篇阅读已经用 reading-intake 存进 articles 了。现在逐句问：As boards scrutinize succession plans in response to shareholder pressure, executives who don’t get the nod also may wish to move on. 我没看懂 who 从句和 get the nod。",
+      "expected_output": "Treats this as a guided sentence session: preserves the exact sentence and stated confusion, gives only the minimum framework needed to start, asks one useful diagnostic question about the who-clause or get the nod, and waits without inventing an error or dumping a full vocabulary export.",
+      "files": [],
+      "expectations": [
+        "Recognizes this as a post-reading-intake guided sentence session.",
+        "Asks exactly one diagnostic question and waits instead of immediately giving the full translation and structure.",
+        "Does not invent a user error beyond the stated confusion about the who-clause and get the nod.",
+        "Does not create a full 不背单词清单, A/B/C export, CSV row, or formal write."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "这一句我把 fundamentally inverted 翻错了，帮我精翻并判断要不要入库，不要现在输出整篇新词。",
+      "expected_output": "Corrects the sentence-level translation, identifies fundamentally inverted as a high-value candidate because the user mistranslated it, then calls the deterministic capture CLI and reports its receipt while keeping formal_write_count=0.",
+      "files": [],
+      "expectations": [
+        "Includes user error cause in the sentence answer.",
+        "Treats the mistranslated high-value expression as a source-backed 长期库候选.",
+        "After resolving the sentence, calls english_learning_pipeline.py capture with separate article and sentence hash bindings and returns a real receipt_id.",
+        "The receipt reports formal_write_count=0 or formal_writeback=none.",
+        "Does not update weekly_review.",
+        "Does not produce an article-level 不背单词清单."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "整篇结束，统一输出新词和不背单词清单。",
+      "expected_output": "Stops per-sentence mode and hands off to kaoyan-english-vocab-export if available; if unavailable, reports that and keeps or summarizes candidates according to project rules without directly bulk-writing master_bank.csv.",
+      "files": [],
+      "expectations": [
+        "Recognizes the article-end handoff point.",
+        "Does not continue as a normal single-sentence answer.",
+        "Mentions kaoyan-english-vocab-export as the appropriate next skill.",
+        "Keeps formal_write_count=0 and leaves dated formal curation to the exact-trigger skill."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "逐句精读：The rules that once seemed to protect consumers have instead made them less willing to seek advice. 我的第一遍翻译是：曾经似乎保护消费者的规则，反而让他们不太愿意寻求建议。不要直接给完整讲解，先看我的第一动作和第一个断点。",
+      "expected_output": "Preserves the first translation, recognizes what is already correct, does not invent an error, and asks exactly one useful diagnostic question without revealing a full translation or A/B/C list.",
+      "files": [],
+      "expectations": [
+        "Preserves the user's first translation verbatim.",
+        "Does not fabricate a breakpoint when the translation is already sound.",
+        "Asks exactly one diagnostic question and waits.",
+        "Does not output the direct-explanation template, full answer, CSV row, or A/B/C list."
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "我做完 2011 英语一 Text 4 第 37 题了。我选 B，对不对？请直接告诉我答案，并且只讲这一题。",
+      "expected_output": "Recognizes explicit answer authorization, reads only the minimum protected block for question 37, answers directly, and does not reveal neighboring answers or write files.",
+      "files": [],
+      "expectations": [
+        "Does not over-protect after an explicit answer request.",
+        "Limits protected retrieval and disclosure to question 37.",
+        "Uses local protected evidence rather than model memory.",
+        "Does not modify article, bank, sentence-pattern, or review data."
+      ]
+    }
+  ]
+}

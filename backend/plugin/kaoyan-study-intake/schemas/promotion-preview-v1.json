@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://xiazhibin.local/schemas/promotion-preview-v1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "eligible", "production_apply_allowed", "missing", "production_accepted", "formal_write_count"],
+  "properties": {
+    "schema_version": {"const": "study-intake-promotion-preview-v1"},
+    "eligible": {"type": "boolean"},
+    "production_apply_allowed": {"const": false},
+    "missing": {"type": "array", "items": {"type": "string"}},
+    "production_accepted": {"const": false},
+    "formal_write_count": {"const": 0}
+  }
+}

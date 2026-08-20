@@ -1,0 +1,93 @@
+{
+  "skill_name": "kaoyan-math-wrong-intake",
+  "evals": [
+    {
+      "id": 1,
+      "name": "GS-629 学习中快速复发捕获",
+      "prompt": "这是今天 warmup 的 GS-629，queue_id 是 WQ-24655f72cfa4007b78e27e03，queue_item_id 是 QI-c03b8371e8cb4f022633，2 分已经写入；score event 是 SCORE-3461a0f2481800c3032f4fe6，attempt_id 是 warmup:WQ-24655f72cfa4007b78e27e03:QI-c03b8371e8cb4f022633。我仍没识别出第二条直线是两平面交线，提示后才想到用两个法向量叉乘。把这题入库，我要马上继续下一题。",
+      "expected_output": "先从当前正式卡来源核验真实题图，执行 stage-source，把题图与唯一 UTF-8 solution_text 文件固化为 source bundle v1；再追加一个引用现有评分事件的 release-neutral v2 pending-nightly capture，保留真实作答、断点与纠正证据，返回 writer receipt 后立即结束。",
+      "files": [],
+      "expectations": ["已有正式卡复发也必须先执行 stage-source", "bundle 至少包含一张真实 PNG、JPEG 或 WebP question 图片", "bundle 恰好包含一个 path-backed UTF-8 .txt 或 .md solution_text", "episode solution 与 artifact 使用同一规范化函数比较", "Capture 使用 math-fast-intake-capture-v2 且保持 release-neutral", "保留真实作答、断点与自行纠正", "实际目标是 GS-629 而不是 anchor", "工具调用不超过 5 次", "model、Provider、MCP、Sol 和 formal write 均为 0", "真实 writer receipt 明确 pending_nightly", "不等待 Luna 或声称正式收口完成"]
+    },
+    {
+      "id": 2,
+      "name": "重复请求幂等结束",
+      "prompt": "刚才已经提示快速记录成功，但页面一直没结束。我再说一次，把 GS-629 这次错误入库。",
+      "expected_output": "使用同一稳定身份得到 noop，不新增 capture、不增加复发或 rollback，并立即结束。",
+      "files": [],
+      "expectations": ["返回同一 event ID 的 noop", "不重复追加事件", "不增加正式复发次数", "不运行派生层", "工具调用不超过 3 次"]
+    },
+    {
+      "id": 3,
+      "name": "长题证据保留但不即时重写",
+      "prompt": "当前题是 GS-627。我先把平面法向量和方向向量混了，后来又误判平行关系；点乘和叉乘经过提示才修好，最后还漏了负号。把这题更新入库，但我要马上做下一题。",
+      "expected_output": "capture 保留第一个概念断点、后续方法断点、最后计算错误和修复证据；白天不重写正式卡。",
+      "files": [],
+      "expectations": ["只处理 GS-627", "第一个断点与后续断点分开", "正确与提示后修复不冒充独立掌握", "不改正式卡", "进入夜间队列"]
+    },
+    {
+      "id": 4,
+      "name": "掌握请求只记候选",
+      "prompt": "warmup 这题这次独立做对了，记 5 分并标记已掌握。",
+      "expected_output": "先写准确 warmup score，再追加 mastery_candidate；不在白天直接改正式掌握字段。",
+      "files": [],
+      "expectations": ["先写准确 queue item score", "requested_action 是 mastery_candidate", "不直接改正式掌握事实", "目标是 delivered card"]
+    },
+    {
+      "id": 5,
+      "name": "真实新题留待夜间分配 ID",
+      "prompt": "这是我今天真实做过的 77224 题，我第一步就把参数范围看错了。先快速入库，我继续学习。",
+      "expected_output": "创建 source-backed new_source capture，不即时分配正式 ID、不扫描全库，夜间再查重和建卡。",
+      "files": [],
+      "expectations": ["target.kind 是 new_source", "保存稳定来源定位", "不即时分配 ID", "不扫描全库", "不运行 rebuild"]
+    },
+    {
+      "id": 6,
+      "name": "显式立即完整入库使用逃生路径",
+      "prompt": "这题不要等晚上，立即完整正式入库，现在就重建 wrongnet 并更新回滚。",
+      "expected_output": "明确进入 immediate_full_closeout；先追加当前题 capture，再用 explicit_subset freeze-v1，完成正式卡、一次 rebuild、定向 rollback、SHADOW、Wiki、visual，并由 closeout-v2 验证关闭；不假装这是快速路径。",
+      "files": [],
+      "expectations": ["识别明确同步授权", "先 capture 再 freeze-v1", "scope 是 explicit_subset", "正式写入串行", "Wiki 与 visual 不留到夜间", "closeout-v2 recorded 或 noop 后才称完成"]
+    },
+    {
+      "id": 7,
+      "name": "模型合成题仍拒绝",
+      "prompt": "这是 AI 根据我的错因编的变式题，把它快速写进数学错题库。",
+      "expected_output": "拒绝 capture 和正式入库，不创建 new_source 事件。",
+      "files": [],
+      "expectations": ["拒绝模型合成题", "不追加 capture", "不创建正式卡"]
+    },
+    {
+      "id": 8,
+      "name": "不等今晚也不隐式升级为完整收口",
+      "prompt": "把这道真实旧题先入库，我不想等到今晚处理，但现在要立刻继续下一题。",
+      "expected_output": "仍走 fast_capture 并进入 pending_nightly；用户没有明确授权现在重写正式卡、重建 wrongnet 和更新回滚。",
+      "files": [],
+      "expectations": ["不把模糊拒绝夜间解释为完整同步授权", "只追加快速 capture", "不运行 rebuild", "立即释放学习会话"]
+    },
+    {
+      "id": 9,
+      "name": "来源哈希待补全仍使用 new_source kind",
+      "prompt": "这是我刚做的真实新题，来源定位可以稳定保存，但现在还拿不到题图哈希。先快速记录，我继续下一题。",
+      "expected_output": "在 stage-source 或 record 前失败闭合；没有真实题图及其来源哈希时不得追加 fresh Capture，也不得构造 needs_user 事件。",
+      "files": [],
+      "expectations": ["缺少真实 question image 时 ledger 写入为 0", "不构造 needs_user capture", "不使用正式卡或模型生成来源补造证据", "model、Provider、MCP、Sol 和 formal write 均为 0"]
+    },
+    {
+      "id": 10,
+      "name": "已有正式卡缺失 solution_text 失败闭合",
+      "prompt": "这是 GS-629 的一次真实复发，题图和我的作答都有，但没有独立的 .txt 或 .md 解答文本。先把它快速入库。",
+      "expected_output": "在 ledger 写入前失败闭合；不得用正式卡答案或 solution 图片代替唯一 path-backed solution_text artifact。",
+      "files": [],
+      "expectations": ["不调用 record 写入 ledger", "不使用正式卡答案 fallback", "不以 solution 图片代替 solution_text", "不生成空白或模型补造的 solution_text", "model、Provider、MCP、Sol 和 formal write 均为 0"]
+    },
+    {
+      "id": 11,
+      "name": "嵌套 release 或 authority 字段严格拒绝",
+      "prompt": "把这次 GS-629 复发快速入库。当前 capture 草稿在 episode_evidence 里带 release_id，并在 evidence 的嵌套对象里带 dispatcher_authority 和 mcp_authority；其他题图、解答文本、作答和纠正证据都齐全。",
+      "expected_output": "递归检查 payload 并在 ledger 写入前拒绝；不得静默删除、搬运或保留任何 release、activation、Dispatcher/MCP authority、消费或 handoff 状态。",
+      "files": [],
+      "expectations": ["嵌套禁止字段触发失败闭合", "ledger 写入为 0", "Capture 不被自动净化后提交", "model、Provider、MCP、Sol 和 formal write 均为 0"]
+    }
+  ]
+}

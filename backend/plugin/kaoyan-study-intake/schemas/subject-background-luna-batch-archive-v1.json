@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "subject_background_luna_batch_archive_v1",
+  "type": "object",
+  "required": [
+    "schema_version", "subject", "batch_id", "batch_sha256",
+    "batch_snapshot_sha256", "batch", "authority_generation",
+    "authority_fingerprint", "archived_at", "sol_called", "sol_enabled",
+    "formal_write_count", "seal"
+  ],
+  "properties": {
+    "schema_version": {"const": "subject_background_luna_batch_archive_v1"},
+    "subject": {"$ref": "#/$defs/subject"},
+    "batch_id": {"type": "string", "minLength": 1},
+    "batch_sha256": {"$ref": "#/$defs/sha256"},
+    "batch_snapshot_sha256": {"$ref": "#/$defs/sha256"},
+    "batch": {"$ref": "#/$defs/terminal_batch"},
+    "authority_generation": {"type": "string", "minLength": 1},
+    "authority_fingerprint": {"$ref": "#/$defs/sha256"},
+    "archived_at": {"$ref": "#/$defs/timestamp"},
+    "sol_called": {"const": false},
+    "sol_enabled": {"const": false},
+    "formal_write_count": {"const": 0},
+    "seal": {"$ref": "#/$defs/seal"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nullable_sha256": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+    "timestamp": {"type": "string", "format": "date-time", "minLength": 1},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "seal": {
+      "type": "object",
+      "required": ["algorithm", "purpose", "hmac_sha256"],
+      "properties": {
+        "algorithm": {"const": "HMAC-SHA256"},
+        "purpose": {"const": "subject-background-luna-batch-archive"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "additionalProperties": false
+    },
+    "terminal_task": {
+      "type": "object",
+      "required": [
+        "capture_id", "unit_sha256", "input_fingerprint", "study_date",
+        "frozen_payload_sha256", "status", "proposal_sha256", "package_sha256",
+        "quality_receipt_sha256", "terminal_receipt_sha256", "error_code"
+      ],
+      "properties": {
+        "capture_id": {"type": "string", "minLength": 1},
+        "unit_sha256": {"$ref": "#/$defs/sha256"},
+        "input_fingerprint": {"$ref": "#/$defs/sha256"},
+        "study_date": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+        "frozen_payload_sha256": {"$ref": "#/$defs/sha256"},
+        "status": {"enum": ["quality_passed", "needs_rework", "failed", "evidence_pending"]},
+        "proposal_sha256": {"$ref": "#/$defs/nullable_sha256"},
+        "package_sha256": {"$ref": "#/$defs/nullable_sha256"},
+        "quality_receipt_sha256": {"$ref": "#/$defs/nullable_sha256"},
+        "terminal_receipt_sha256": {"$ref": "#/$defs/nullable_sha256"},
+        "error_code": {"type": ["string", "null"], "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "terminal_batch": {
+      "type": "object",
+      "required": [
+        "schema_version", "batch_id", "subject", "study_date", "status",
+        "capture_high_watermark", "scan_snapshot_sha256", "authority_generation",
+        "authority_fingerprint", "tasks", "exclusion_receipt_sha256s",
+        "all_terminal", "sol_ready", "blocking_task_ids", "formal_write_count",
+        "revision", "updated_at"
+      ],
+      "properties": {
+        "schema_version": {"const": "subject_luna_batch_v1"},
+        "batch_id": {"type": "string", "minLength": 1},
+        "subject": {"$ref": "#/$defs/subject"},
+        "study_date": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+        "status": {"const": "frozen"},
+        "capture_high_watermark": {"type": "string", "minLength": 1},
+        "scan_snapshot_sha256": {"$ref": "#/$defs/sha256"},
+        "authority_generation": {"type": "string", "minLength": 1},
+        "authority_fingerprint": {"$ref": "#/$defs/sha256"},
+        "tasks": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/terminal_task"}},
+        "exclusion_receipt_sha256s": {
+          "type": "array", "uniqueItems": true,
+          "items": {"$ref": "#/$defs/sha256"}
+        },
+        "all_terminal": {"const": true},
+        "sol_ready": {"type": "boolean"},
+        "blocking_task_ids": {
+          "type": "array", "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "formal_write_count": {"const": 0},
+        "revision": {"type": "integer", "minimum": 0},
+        "updated_at": {"$ref": "#/$defs/timestamp"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "不背单词清单导出"
+  short_description: "整篇结束后的 BBDC A/B/C 导出"
+  default_prompt: "Use $kaoyan-english-vocab-export to先调用 complete-article 固化当前文章 capture，再立即生成 A/B/C 清单；不启动或等待 Luna。先排除 mastered 和重复项，任何新例句都通过四层地基；本阶段 formal_write_count=0。"

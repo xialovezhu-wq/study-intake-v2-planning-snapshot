@@ -1,0 +1,190 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Mathematics Luna real business task manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "capture_id",
+    "business_task_id",
+    "formal_id",
+    "state",
+    "directory_mode",
+    "independent_capture",
+    "duplicate_of",
+    "content_fingerprint",
+    "runtime_authority",
+    "solution_policy",
+    "files",
+    "missing_artifacts_consistent_with_record",
+    "blocking_missing_artifacts"
+  ],
+  "properties": {
+    "schema_version": {"const": "math-luna-business-task-manifest-v1"},
+    "capture_id": {"type": "string", "minLength": 1, "maxLength": 160},
+    "business_task_id": {"type": "string", "minLength": 1, "maxLength": 160},
+    "formal_id": {
+      "oneOf": [
+        {"type": "string", "pattern": "^GS-[0-9]+$"},
+        {"type": "null"}
+      ]
+    },
+    "source_locator": {"type": "string", "minLength": 1, "maxLength": 320},
+    "state": {"const": "ready_for_real_luna_business_processing"},
+    "directory_mode": {"const": "operational_writable_for_test_state_and_outputs"},
+    "independent_capture": {"const": true},
+    "duplicate_of": {"type": "null"},
+    "source_fixture_preserved": {"const": true},
+    "content_fingerprint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "value"],
+      "properties": {
+        "algorithm": {"const": "sha256_of_sorted_relative_path_and_file_sha256_lines_excluding_manifest"},
+        "value": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "runtime_authority": {"$ref": "#/$defs/runtime_authority"},
+    "solution_policy": {"$ref": "#/$defs/solution_policy"},
+    "files": {
+      "type": "array",
+      "minItems": 6,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/file"},
+      "allOf": [
+        {
+          "contains": {
+            "properties": {"role": {"const": "question_image"}},
+            "required": ["role"]
+          },
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "properties": {"role": {"enum": ["solution_text", "solution_image"]}},
+            "required": ["role"]
+          },
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "properties": {"role": {"const": "dialogue_sequence_and_provenance"}},
+            "required": ["role"]
+          },
+          "minContains": 1
+        }
+      ]
+    },
+    "missing_artifacts_consistent_with_record": {"const": true},
+    "blocking_missing_artifacts": {"type": "array", "maxItems": 0}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"formal_id": {"type": "null"}},
+        "required": ["formal_id"]
+      },
+      "then": {"required": ["source_locator"]}
+    },
+    {
+      "if": {
+        "properties": {"formal_id": {"type": "string"}},
+        "required": ["formal_id"]
+      },
+      "then": {"required": ["source_fixture_preserved"]}
+    }
+  ],
+  "$defs": {
+    "runtime_authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["luna", "sol", "quick_intake", "current_formal_write_count"],
+      "properties": {
+        "luna": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["processing_authorized", "local_database_read_authorized", "output_role", "formal_library_write_authorized"],
+          "properties": {
+            "processing_authorized": {"const": true},
+            "local_database_read_authorized": {"const": true},
+            "output_role": {"const": "preprocessing_proposal"},
+            "formal_library_write_authorized": {"const": false}
+          }
+        },
+        "sol": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["formal_library_writer", "execution_authorization"],
+          "properties": {
+            "formal_library_writer": {"const": true},
+            "execution_authorization": {"const": "governed_by_downstream_formal_workflow"}
+          }
+        },
+        "quick_intake": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["authorization"],
+          "properties": {
+            "authorization": {"const": "governed_by_live_intake_system"}
+          }
+        },
+        "current_formal_write_count": {"const": 0}
+      }
+    },
+    "solution_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requirement", "satisfied_by", "solution_image_present"],
+      "properties": {
+        "requirement": {"const": "solution_text_or_solution_image"},
+        "satisfied_by": {
+          "oneOf": [
+            {"type": "string", "pattern": "^solution_(?:text\\.md|[0-9]+\\.(?:png|jpg|jpeg|webp))$"},
+            {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {"type": "string", "pattern": "^solution_(?:text\\.md|[0-9]+\\.(?:png|jpg|jpeg|webp))$"}
+            }
+          ]
+        },
+        "solution_image_present": {"type": "boolean"},
+        "absence_is_authentic_business_case": {"type": "boolean"}
+      }
+    },
+    "file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["relative_path", "role", "visibility", "sha256"],
+      "properties": {
+        "relative_path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 320,
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+        },
+        "role": {
+          "enum": [
+            "question_image",
+            "solution_image",
+            "solution_text",
+            "verbatim_user_answer",
+            "verbatim_initial_user_reasoning",
+            "verbatim_user_objection",
+            "verbatim_partial_self_correction",
+            "verbatim_second_self_correction",
+            "verbatim_transfer_and_capture_request",
+            "verbatim_user_volume_reasoning",
+            "verbatim_user_riemann_reasoning",
+            "verbatim_user_resolution",
+            "verbatim_assistant_feedback",
+            "dialogue_sequence_and_provenance",
+            "business_task_record"
+          ]
+        },
+        "visibility": {"enum": ["answer_safe_question_surface", "private_evidence"]},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    }
+  }
+}

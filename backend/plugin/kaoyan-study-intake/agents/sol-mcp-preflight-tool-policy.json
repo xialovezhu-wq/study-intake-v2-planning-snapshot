@@ -1,0 +1,15 @@
+{
+  "schema_version": "study-read-mcp-infrastructure-preflight-tool-policy.v1",
+  "purpose": "infrastructure_preflight",
+  "subject_scoped": true,
+  "enabled_tools": [
+    "list_records",
+    "get_records",
+    "search_records",
+    "query_relations"
+  ],
+  "write_tools_allowed": false,
+  "candidate_eligible": false,
+  "production_evidence": false,
+  "formal_write_allowed": false
+}

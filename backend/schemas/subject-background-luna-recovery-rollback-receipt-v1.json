@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "subject_background_luna_recovery_rollback_receipt_v1",
+  "type": "object",
+  "required": [
+    "schema_version", "subject", "recovery_receipt_sha256",
+    "recovery_receipt_path", "rollback_token", "writer_state_after_sha256",
+    "writer_state_restored_sha256", "batch_pointer_restored_sha256",
+    "background_rollover_pointer_restored_sha256",
+    "preserved_queue_entry_sha256", "model_call_count",
+    "provider_request_count", "mcp_tool_call_count", "formal_write_count",
+    "sol_enabled", "rolled_back_at", "seal"
+  ],
+  "properties": {
+    "schema_version": {"const": "subject_background_luna_recovery_rollback_receipt_v1"},
+    "subject": {"const": "english"},
+    "recovery_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "recovery_receipt_path": {"$ref": "#/$defs/absolute_path"},
+    "rollback_token": {"$ref": "#/$defs/sha256"},
+    "writer_state_after_sha256": {"$ref": "#/$defs/sha256"},
+    "writer_state_restored_sha256": {"$ref": "#/$defs/sha256"},
+    "batch_pointer_restored_sha256": {"$ref": "#/$defs/sha256"},
+    "background_rollover_pointer_restored_sha256": {
+      "oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]
+    },
+    "preserved_queue_entry_sha256": {"$ref": "#/$defs/sha256"},
+    "model_call_count": {"const": 0},
+    "provider_request_count": {"const": 0},
+    "mcp_tool_call_count": {"const": 0},
+    "formal_write_count": {"const": 0},
+    "sol_enabled": {"const": false},
+    "rolled_back_at": {"$ref": "#/$defs/timestamp"},
+    "seal": {"$ref": "#/$defs/seal"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "timestamp": {"type": "string", "format": "date-time", "minLength": 1},
+    "absolute_path": {"type": "string", "pattern": "^/", "minLength": 2},
+    "seal": {
+      "type": "object",
+      "required": ["algorithm", "purpose", "hmac_sha256"],
+      "properties": {
+        "algorithm": {"const": "HMAC-SHA256"},
+        "purpose": {"const": "subject-background-luna-rollback-v1"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,59 @@
+{
+  "schema_version": "study-intake-subject-contract-vector-v2",
+  "subject": "cs408",
+  "foreground_skill": {
+    "id": "kaoyan-408-wrong-intake",
+    "version": "content-sha256-v1"
+  },
+  "producer": {
+    "contract_id": "cs408-current-question-capture-producer",
+    "contract_version": "v3",
+    "entrypoint": "scripts/intake_fact_capture_408.py",
+    "managed_entrypoint": "scripts/managed_408_current_turn.py"
+  },
+  "capture_contract": {
+    "id": "intake_fact_capture",
+    "version": "v1",
+    "synthetic_capture_id": "CAP-SHADOW-CS408-0001",
+    "capture_shape": {
+      "external_schema": "managed-408-answer-current-and-next-v1",
+      "bundle_schema": "current-question-evidence-bundle-v3",
+      "question_mode": "dialogue_only_or_image_question",
+      "same_display_receipt_correction": true,
+      "failure_state": "awaiting_daily_curation"
+    },
+    "receipt_shape": {
+      "producer_binding_status": "attested",
+      "background_handoff": "ready_or_teaching_pending",
+      "luna_call_count": 0,
+      "formal_write_count": 0
+    }
+  },
+  "attestation_schema": "producer_binding_attestation_v1",
+  "scanner_adapter": "cs408-awaiting-curation-v2",
+  "processing_binding": "processing_binding_v3",
+  "background_skill": "background-cs408-processing",
+  "mcp_server": "kaoyan_cs408_read",
+  "mcp_tools": [
+    "get_task_context",
+    "read_task_artifact",
+    "list_records",
+    "get_records",
+    "search_records",
+    "query_relations"
+  ],
+  "expected_pipeline": [
+    "producer_validation",
+    "capture_event",
+    "capture_receipt",
+    "producer_attestation",
+    "scanner_binding",
+    "processing_binding_v3",
+    "frozen_task_identity",
+    "pre_model_tripwire"
+  ],
+  "model_call_count": 0,
+  "provider_request_count": 0,
+  "mcp_call_count": 0,
+  "formal_write_count": 0
+}

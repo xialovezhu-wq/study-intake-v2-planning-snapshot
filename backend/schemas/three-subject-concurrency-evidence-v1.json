@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/three-subject-concurrency-evidence-v1.json",
+  "title": "Three subject concurrency evidence v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "release_id",
+    "subjects",
+    "barrier_expected",
+    "barrier_arrived",
+    "global_peak_active",
+    "per_subject_peak_active",
+    "mcp_read_subject_count",
+    "analysis_completed_subject_count",
+    "report_generated_count",
+    "real_luna_run_count",
+    "requested_service_tier",
+    "effective_service_tier",
+    "model_call_count",
+    "provider_request_count",
+    "mcp_authority_fingerprints",
+    "subject_receipt_sha256s",
+    "formal_surface_sha256",
+    "formal_write_count",
+    "sol_enabled",
+    "production_accepted"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "study-intake-three-subject-concurrency-evidence-v1"
+    },
+    "status": {"const": "passed"},
+    "release_id": {"$ref": "#/$defs/sha256"},
+    "subjects": {"const": ["math", "cs408", "english"]},
+    "barrier_expected": {"const": 3},
+    "barrier_arrived": {"const": 3},
+    "global_peak_active": {"type": "integer", "minimum": 3},
+    "per_subject_peak_active": {"$ref": "#/$defs/subjectPositiveCounts"},
+    "mcp_read_subject_count": {"const": 3},
+    "analysis_completed_subject_count": {"const": 3},
+    "report_generated_count": {"const": 3},
+    "real_luna_run_count": {"const": 3},
+    "requested_service_tier": {"const": "priority"},
+    "effective_service_tier": {
+      "enum": ["priority", "requested_unverified"]
+    },
+    "model_call_count": {"type": "integer", "minimum": 3},
+    "provider_request_count": {"type": "integer", "minimum": 3},
+    "mcp_authority_fingerprints": {"$ref": "#/$defs/subjectHashes"},
+    "subject_receipt_sha256s": {"$ref": "#/$defs/subjectHashes"},
+    "formal_surface_sha256": {"$ref": "#/$defs/sha256"},
+    "formal_write_count": {"const": 0},
+    "sol_enabled": {"const": false},
+    "production_accepted": {"const": false}
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "subjectHashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["math", "cs408", "english"],
+      "properties": {
+        "math": {"$ref": "#/$defs/sha256"},
+        "cs408": {"$ref": "#/$defs/sha256"},
+        "english": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "subjectPositiveCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["math", "cs408", "english"],
+      "properties": {
+        "math": {"type": "integer", "minimum": 1},
+        "cs408": {"type": "integer", "minimum": 1},
+        "english": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

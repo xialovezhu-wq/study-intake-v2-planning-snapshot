@@ -1,0 +1,3423 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Study Intake dashboard projection v4",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "generated_at",
+    "study_date",
+    "en_p0_006_status",
+    "en_p0_006",
+    "dispatchers",
+    "subjects",
+    "concurrency",
+    "global_sol",
+    "configured_global_continuous_concurrency_limit"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "study-intake-dashboard-projection-v4"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "study_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "en_p0_006_status": {
+      "enum": [
+        "unknown",
+        "needs_user_decision",
+        "review_required_not_signable",
+        "no_data",
+        "authorization_ready",
+        "luna_running",
+        "luna_complete_with_failures",
+        "quality_ready",
+        "queued_for_sol",
+        "formal_applying",
+        "recovering",
+        "safe_paused",
+        "complete_with_failures",
+        "verified_complete",
+        "invalid"
+      ]
+    },
+    "en_p0_006": {
+      "$ref": "#/$defs/enP0006"
+    },
+    "dispatchers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "math",
+        "cs408",
+        "english"
+      ],
+      "properties": {
+        "math": {
+          "$ref": "#/$defs/dispatcher"
+        },
+        "cs408": {
+          "$ref": "#/$defs/dispatcher"
+        },
+        "english": {
+          "$ref": "#/$defs/dispatcher"
+        }
+      }
+    },
+    "subjects": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "math",
+        "cs408",
+        "english"
+      ],
+      "properties": {
+        "math": {
+          "$ref": "#/$defs/subject"
+        },
+        "cs408": {
+          "$ref": "#/$defs/subject"
+        },
+        "english": {
+          "$ref": "#/$defs/subject"
+        }
+      }
+    },
+    "concurrency": {
+      "$ref": "#/$defs/concurrency"
+    },
+    "global_sol": {
+      "$ref": "#/$defs/globalSol"
+    },
+    "configured_global_continuous_concurrency_limit": {
+      "const": 60
+    }
+  },
+  "$defs": {
+    "stage": {
+      "enum": [
+        "idle",
+        "frozen_evidence",
+        "ready_for_selection",
+        "queued",
+        "dispatching",
+        "analysis",
+        "critical_review",
+        "quality_ready",
+        "needs_rework",
+        "failed",
+        "stale"
+      ]
+    },
+    "dispatcher": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "last_heartbeat",
+        "release_id",
+        "active_release_id",
+        "heartbeat_release_id",
+        "heartbeat_generation_status",
+        "requested_model",
+        "requested_reasoning_effort",
+        "current_stage",
+        "enabled",
+        "paused",
+        "control_state",
+        "control_reason",
+        "previous_release_heartbeat",
+        "canary_gate"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "starting",
+            "running",
+            "stopping",
+            "paused",
+            "drained",
+            "failed"
+          ]
+        },
+        "last_heartbeat": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "release_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "active_release_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "heartbeat_release_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "heartbeat_generation_status": {
+          "enum": [
+            "current_release",
+            "previous_release_heartbeat"
+          ]
+        },
+        "plugin_id": {
+          "const": "kaoyan-study-intake"
+        },
+        "plugin_version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "plugin_component_lock_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "processing_skill_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "processing_skill_version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "processing_skill_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "mcp_server_id": {
+          "enum": [
+            "kaoyan_math_read",
+            "kaoyan_cs408_read",
+            "kaoyan_english_read"
+          ]
+        },
+        "mcp_server_release": {
+          "type": "string",
+          "pattern": "^0\\.3\\.0\\+sha256\\.[0-9a-f]{64}$"
+        },
+        "minimum_mcp_server_release": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "requested_model": {
+          "const": "gpt-5.6-luna"
+        },
+        "requested_reasoning_effort": {
+          "const": "max"
+        },
+        "current_stage": {
+          "$ref": "#/$defs/stage"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "paused": {
+          "type": "boolean"
+        },
+        "control_state": {
+          "enum": [
+            "running",
+            "draining",
+            "paused",
+            "drained"
+          ]
+        },
+        "control_reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "runtime_identity_status": {
+          "enum": [
+            "requested_unverified",
+            "confirmed",
+            "mismatch",
+            "unavailable"
+          ]
+        },
+        "previous_release_heartbeat": {
+          "type": "boolean"
+        },
+        "canary_gate": {
+          "$ref": "#/$defs/nullableProductionCanaryStateV2"
+        }
+      }
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "selected",
+        "queued",
+        "analysis_running",
+        "critical_review_running",
+        "terminal",
+        "quality_passed",
+        "needs_rework",
+        "failed",
+        "evidence_pending"
+      ],
+      "properties": {
+        "selected": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "queued": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "analysis_running": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "critical_review_running": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "terminal": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "quality_passed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "needs_rework": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "evidence_pending": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "captureHighWatermark": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "value",
+        "authority_generation"
+      ],
+      "properties": {
+        "value": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$"
+        },
+        "authority_generation": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$"
+        }
+      }
+    },
+    "canarySelection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "producer_unit_id",
+        "producer_recorded_at",
+        "producer_input_contract_sha256",
+        "source_event_set_sha256",
+        "unit_sha256",
+        "frozen_payload_sha256"
+      ],
+      "properties": {
+        "producer_unit_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$"
+        },
+        "producer_recorded_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "producer_input_contract_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "source_event_set_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "unit_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "frozen_payload_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "canary_gate_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "canary_gate_authority_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "nullableCanarySelection": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/canarySelection"
+        }
+      ]
+    },
+    "canaryStateAuthority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "algorithm",
+        "key_id",
+        "purpose",
+        "hmac_sha256"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "study-intake-dispatch-authority-v1"
+        },
+        "algorithm": {
+          "const": "HMAC-SHA256"
+        },
+        "key_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "purpose": {
+          "const": "dispatch-production-canary-state"
+        },
+        "hmac_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "nullableProductionCanaryStateV2": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/productionCanaryStateV2"
+        }
+      ]
+    },
+    "productionCanaryStateV2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "status",
+        "state",
+        "subject",
+        "release_id",
+        "activation_id",
+        "activated_at",
+        "producer_authority_fingerprint",
+        "producer_high_watermark_sha256",
+        "activation_receipt_sha256",
+        "activation_gate_authority_sha256",
+        "terminal_index_sha256",
+        "terminal_task_count",
+        "terminal_by_outcome",
+        "producer_capture_enabled",
+        "luna_consumer_enabled",
+        "sol_formal_curation_enabled",
+        "post_activation_only",
+        "initial_canary_inflight_limit",
+        "continuous_concurrency_limit",
+        "keep_backlog_drained",
+        "queue_depth",
+        "oldest_pending_age_seconds",
+        "active_task_count",
+        "active_selections",
+        "selected",
+        "last_selected",
+        "last_success_at",
+        "last_failure_at",
+        "blocking_reason",
+        "backpressure_reason",
+        "unlocked_once",
+        "production_accepted",
+        "next_action",
+        "last_analysis_status",
+        "last_critical_review_status",
+        "last_report_status",
+        "last_read_session_id",
+        "last_evidence_generation",
+        "last_analysis_evidence_refs",
+        "last_critical_review_evidence_refs",
+        "last_preclaim_failure_at",
+        "last_preclaim_failure_stage",
+        "last_preclaim_failure_error_code",
+        "last_emergency_cancel_at",
+        "late_result_fence_status",
+        "fast_mode_requested",
+        "fast_mode_effective",
+        "requested_service_tier",
+        "model_call_count",
+        "provider_request_count",
+        "mcp_tool_call_count",
+        "control_plane_model_call_count",
+        "control_plane_provider_request_count",
+        "control_plane_mcp_tool_call_count",
+        "observability_counter_scope",
+        "observed_model_call_count",
+        "observed_provider_request_count",
+        "observed_mcp_tool_call_count",
+        "formal_write_count",
+        "sol_enabled",
+        "updated_at",
+        "state_authority_sha256",
+        "authority"
+      ],
+      "properties": {
+        "schema_version": {
+          "enum": [
+            "study-intake-production-canary-state-v2",
+            "study-intake-production-canary-state-v3"
+          ]
+        },
+        "status": {
+          "enum": [
+            "production_canary_active",
+            "production_canary_inactive"
+          ]
+        },
+        "state": {
+          "enum": [
+            "armed",
+            "canary_in_flight",
+            "continuous_concurrent_unlocked",
+            "failed_drained",
+            "paused_drained",
+            "inactive_rolled_back"
+          ]
+        },
+        "subject": {
+          "enum": [
+            "math",
+            "cs408",
+            "english"
+          ]
+        },
+        "release_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "activation_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "activated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "producer_authority_fingerprint": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "producer_high_watermark_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "activation_receipt_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "activation_gate_authority_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "terminal_index_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "terminal_task_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "terminal_by_outcome": {
+          "$ref": "#/$defs/terminalCounts"
+        },
+        "producer_capture_enabled": {
+          "const": true
+        },
+        "luna_consumer_enabled": {
+          "type": "boolean"
+        },
+        "sol_formal_curation_enabled": {
+          "const": false
+        },
+        "post_activation_only": {
+          "const": true
+        },
+        "initial_canary_inflight_limit": {
+          "const": 1
+        },
+        "continuous_concurrency_limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 64
+        },
+        "keep_backlog_drained": {
+          "const": true
+        },
+        "queue_depth": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "oldest_pending_age_seconds": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "active_task_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 64
+        },
+        "active_selections": {
+          "type": "object",
+          "maxProperties": 64,
+          "propertyNames": {
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/canarySelection"
+          }
+        },
+        "selected": {
+          "$ref": "#/$defs/nullableCanarySelection"
+        },
+        "last_selected": {
+          "$ref": "#/$defs/nullableCanarySelection"
+        },
+        "last_terminal_receipt_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "last_report_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "last_package_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "last_success_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "last_failure_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "blocking_reason": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$"
+        },
+        "backpressure_reason": {
+          "enum": [
+            null,
+            "initial_canary_inflight_limit_reached",
+            "continuous_concurrency_limit_reached",
+            "luna_consumer_disabled"
+          ]
+        },
+        "next_action": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$"
+        },
+        "last_analysis_status": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$"
+        },
+        "last_critical_review_status": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$"
+        },
+        "last_report_status": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$"
+        },
+        "last_read_session_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$"
+        },
+        "last_evidence_generation": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$"
+        },
+        "last_evidence_authority_fingerprint": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "last_analysis_grounding_manifest_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "last_critical_review_grounding_manifest_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "last_analysis_evidence_refs": {
+          "type": "array",
+          "maxItems": 256,
+          "items": {
+            "type": "string",
+            "pattern": "^mcp-item:(math|cs408|english):[0-9a-f]{64}$"
+          }
+        },
+        "last_critical_review_evidence_refs": {
+          "type": "array",
+          "maxItems": 256,
+          "items": {
+            "type": "string",
+            "pattern": "^mcp-item:(math|cs408|english):[0-9a-f]{64}$"
+          }
+        },
+        "last_preclaim_failure_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "last_preclaim_failure_stage": {
+          "enum": [
+            null,
+            "producer_contract",
+            "materialize",
+            "consumer_admission",
+            "pre_claim",
+            "submit_generation_fence"
+          ]
+        },
+        "last_preclaim_failure_error_code": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$"
+        },
+        "last_preclaim_failure_receipt_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "last_preclaim_failure_evidence_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "preclaim_failure_resume_ack_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "last_emergency_cancel_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "last_emergency_cancel_receipt_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "late_result_fence_status": {
+          "enum": [
+            "not_required",
+            "sealed"
+          ]
+        },
+        "unlocked_once": {
+          "type": "boolean"
+        },
+        "production_accepted": {
+          "const": false
+        },
+        "fast_mode_requested": {
+          "const": false
+        },
+        "fast_mode_effective": {
+          "const": "not_requested"
+        },
+        "requested_service_tier": {
+          "type": "null"
+        },
+        "model_call_count": {
+          "const": 0
+        },
+        "provider_request_count": {
+          "const": 0
+        },
+        "mcp_tool_call_count": {
+          "const": 0
+        },
+        "control_plane_model_call_count": {
+          "const": 0
+        },
+        "control_plane_provider_request_count": {
+          "const": 0
+        },
+        "control_plane_mcp_tool_call_count": {
+          "const": 0
+        },
+        "observability_counter_scope": {
+          "const": "current_activation_cumulative"
+        },
+        "observed_model_call_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "observed_provider_request_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "observed_mcp_tool_call_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "formal_write_count": {
+          "const": 0
+        },
+        "sol_enabled": {
+          "const": false
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "state_authority_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "authority": {
+          "$ref": "#/$defs/canaryStateAuthority"
+        }
+      }
+    },
+    "concurrencyAuthority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "algorithm",
+        "key_id",
+        "purpose",
+        "hmac_sha256"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "study-intake-dispatch-authority-v1"
+        },
+        "algorithm": {
+          "const": "HMAC-SHA256"
+        },
+        "key_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "purpose": {
+          "const": "dispatch-production-canary-concurrency-telemetry"
+        },
+        "hmac_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "subjectCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "math",
+        "cs408",
+        "english"
+      ],
+      "properties": {
+        "math": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cs408": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "english": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "subjectActivationIds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "math",
+        "cs408",
+        "english"
+      ],
+      "properties": {
+        "math": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "cs408": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "english": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "subjectObservedAt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "math",
+        "cs408",
+        "english"
+      ],
+      "properties": {
+        "math": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "cs408": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "english": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+    "terminalCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "succeeded",
+        "failed",
+        "cancelled",
+        "timed_out",
+        "needs_rework"
+      ],
+      "properties": {
+        "succeeded": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cancelled": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "timed_out": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "stalled": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "needs_rework": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "terminalOutcomesBySubject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "math",
+        "cs408",
+        "english"
+      ],
+      "properties": {
+        "math": {
+          "$ref": "#/$defs/terminalCounts"
+        },
+        "cs408": {
+          "$ref": "#/$defs/terminalCounts"
+        },
+        "english": {
+          "$ref": "#/$defs/terminalCounts"
+        }
+      }
+    },
+    "terminalFailureBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "unit_sha256",
+        "outcome",
+        "error_code",
+        "terminal_kind",
+        "terminal_receipt_sha256"
+      ],
+      "properties": {
+        "unit_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "outcome": {
+          "enum": [
+            "failed",
+            "cancelled",
+            "timed_out",
+            "stalled",
+            "needs_rework"
+          ]
+        },
+        "error_code": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$"
+        },
+        "terminal_kind": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$"
+        },
+        "terminal_receipt_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "terminalFailureBindings": {
+      "type": "array",
+      "maxItems": 4096,
+      "items": {
+        "$ref": "#/$defs/terminalFailureBinding"
+      }
+    },
+    "terminalFailureBindingsBySubject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "math",
+        "cs408",
+        "english"
+      ],
+      "properties": {
+        "math": {
+          "$ref": "#/$defs/terminalFailureBindings"
+        },
+        "cs408": {
+          "$ref": "#/$defs/terminalFailureBindings"
+        },
+        "english": {
+          "$ref": "#/$defs/terminalFailureBindings"
+        }
+      }
+    },
+    "concurrencyTelemetry": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "release_id",
+        "activation_ids",
+        "active_by_subject",
+        "subject_peak_active",
+        "global_active_task_count",
+        "global_peak_active",
+        "verified_runner_active_by_subject",
+        "verified_runner_global_active_task_count",
+        "scheduler_claim_subject_peak_active",
+        "scheduler_claim_global_peak_active",
+        "runner_evidenced_task_count_by_subject",
+        "runner_evidenced_task_count_global",
+        "runner_interval_missing_count_by_subject",
+        "runner_interval_missing_count_global",
+        "zero_duration_runner_interval_count_by_subject",
+        "zero_duration_runner_interval_count_global",
+        "terminal_index_sha256_by_subject",
+        "terminal_task_count_by_subject",
+        "terminal_task_count_global",
+        "terminal_by_outcome_by_subject",
+        "terminal_by_outcome_global",
+        "terminal_failure_bindings_by_subject",
+        "counter_scope",
+        "peak_source",
+        "runner_interval_policy",
+        "requested_service_tier",
+        "fast_mode_requested",
+        "fast_mode_effective",
+        "updated_at",
+        "model_call_count",
+        "provider_request_count",
+        "formal_write_count",
+        "sol_enabled",
+        "authority_sha256",
+        "authority"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "study-intake-production-canary-concurrency-telemetry-v1"
+        },
+        "release_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "activation_ids": {
+          "$ref": "#/$defs/subjectActivationIds"
+        },
+        "active_by_subject": {
+          "$ref": "#/$defs/subjectCounts"
+        },
+        "subject_peak_active": {
+          "$ref": "#/$defs/subjectCounts"
+        },
+        "global_active_task_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "global_peak_active": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "verified_runner_active_by_subject": {
+          "$ref": "#/$defs/subjectCounts"
+        },
+        "verified_runner_global_active_task_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "scheduler_claim_subject_peak_active": {
+          "$ref": "#/$defs/subjectCounts"
+        },
+        "scheduler_claim_global_peak_active": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "runner_evidenced_task_count_by_subject": {
+          "$ref": "#/$defs/subjectCounts"
+        },
+        "runner_evidenced_task_count_global": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "runner_interval_missing_count_by_subject": {
+          "$ref": "#/$defs/subjectCounts"
+        },
+        "runner_interval_missing_count_global": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "zero_duration_runner_interval_count_by_subject": {
+          "$ref": "#/$defs/subjectCounts"
+        },
+        "zero_duration_runner_interval_count_global": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "terminal_index_sha256_by_subject": {
+          "$ref": "#/$defs/subjectActivationIds"
+        },
+        "terminal_task_count_by_subject": {
+          "$ref": "#/$defs/subjectCounts"
+        },
+        "terminal_task_count_global": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "terminal_by_outcome_by_subject": {
+          "$ref": "#/$defs/terminalOutcomesBySubject"
+        },
+        "terminal_by_outcome_global": {
+          "$ref": "#/$defs/terminalCounts"
+        },
+        "terminal_failure_bindings_by_subject": {
+          "$ref": "#/$defs/terminalFailureBindingsBySubject"
+        },
+        "counter_scope": {
+          "const": "same_release_current_activation_task_process_lifecycle"
+        },
+        "peak_source": {
+          "const": "hmac_task_process_identity_and_exit_half_open_intervals"
+        },
+        "runner_interval_policy": {
+          "const": "half_open_end_before_start_zero_duration_nonoverlap"
+        },
+        "requested_service_tier": {
+          "type": "null"
+        },
+        "fast_mode_requested": {
+          "const": false
+        },
+        "fast_mode_effective": {
+          "const": "not_requested"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "model_call_count": {
+          "const": 0
+        },
+        "provider_request_count": {
+          "const": 0
+        },
+        "formal_write_count": {
+          "const": 0
+        },
+        "sol_enabled": {
+          "const": false
+        },
+        "authority_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "authority": {
+          "$ref": "#/$defs/concurrencyAuthority"
+        }
+      }
+    },
+    "concurrency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "status",
+        "release_id",
+        "generated_at",
+        "source",
+        "source_telemetry",
+        "telemetry_authority_sha256",
+        "peak_semantics",
+        "global_active_task_count",
+        "global_peak_active",
+        "verified_runner_global_active_task_count",
+        "scheduler_claim_global_peak_active",
+        "runner_evidenced_task_count_global",
+        "runner_interval_missing_count_global",
+        "zero_duration_runner_interval_count_global",
+        "terminal_task_count_global",
+        "terminal_by_outcome_global",
+        "terminal_failure_binding_count_global",
+        "effective_concurrency_limit",
+        "effective_concurrency_limit_mode",
+        "available_concurrency_slots",
+        "backpressure_reason",
+        "subject_observed_at"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "study-intake-dashboard-concurrency-v1"
+        },
+        "status": {
+          "enum": [
+            "verified",
+            "partial",
+            "unavailable"
+          ]
+        },
+        "release_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "generated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "lease_store_subject_status_v1",
+            null
+          ]
+        },
+        "source_telemetry": {
+          "$ref": "#/$defs/concurrencyTelemetry"
+        },
+        "telemetry_authority_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "peak_semantics": {
+          "const": "hmac_task_process_half_open_intervals"
+        },
+        "global_active_task_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "global_peak_active": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "verified_runner_global_active_task_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "scheduler_claim_global_peak_active": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "runner_evidenced_task_count_global": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "runner_interval_missing_count_global": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "zero_duration_runner_interval_count_global": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "terminal_task_count_global": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "terminal_by_outcome_global": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/terminalCounts"
+            }
+          ]
+        },
+        "terminal_failure_binding_count_global": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "effective_concurrency_limit": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "effective_concurrency_limit_mode": {
+          "enum": [
+            "bounded",
+            "unbounded",
+            "unavailable"
+          ]
+        },
+        "available_concurrency_slots": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "backpressure_reason": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$"
+        },
+        "subject_observed_at": {
+          "$ref": "#/$defs/subjectObservedAt"
+        }
+      }
+    },
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "capture_id",
+        "subject",
+        "study_date",
+        "queue_state",
+        "unit_sha256",
+        "generation",
+        "input_fingerprint",
+        "frozen_payload_sha256",
+        "release_id",
+        "rule_version",
+        "server_queue_status",
+        "local_dispatch_status",
+        "server_queue_confirmation",
+        "evidence_access_status",
+        "analysis_execution_status",
+        "analysis_report_status",
+        "review_execution_status",
+        "review_report_status",
+        "sol_review_status",
+        "formal_write_status",
+        "warning_codes",
+        "elapsed_runtime_seconds",
+        "last_meaningful_progress_at",
+        "soft_timeout_warning",
+        "stall_probe_status",
+        "exact_error_code",
+        "authority_snapshot_sha256",
+        "analysis_execution_receipt_sha256",
+        "analysis_raw_output_sha256",
+        "analysis_normalization_receipt_sha256",
+        "analysis_report_sha256",
+        "critical_review_execution_receipt_sha256",
+        "critical_review_raw_output_sha256",
+        "critical_review_normalization_receipt_sha256",
+        "critical_review_report_sha256",
+        "sol_handoff_envelope_sha256",
+        "terminal_receipt_sha256"
+      ],
+      "properties": {
+        "capture_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$"
+        },
+        "subject": {
+          "enum": [
+            "math",
+            "cs408",
+            "english"
+          ]
+        },
+        "study_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "queue_state": {
+          "enum": [
+            "queued",
+            "running",
+            "ready",
+            "needs_rework",
+            "failed",
+            "stale",
+            "evidence_pending",
+            "workflow_complete",
+            "workflow_complete_with_warnings",
+            "workflow_partial",
+            "execution_failed",
+            "cancelled",
+            "stalled"
+          ]
+        },
+        "local_dispatch_status": {
+          "enum": [
+            "pending",
+            "pending_consumer_paused",
+            "claimed",
+            "running",
+            "retrying",
+            "terminal",
+            "cancelled",
+            "stalled"
+          ]
+        },
+        "model_stage": {
+          "enum": [
+            "not_started",
+            "analysis",
+            "critical_review",
+            "quality_closed",
+            "failed",
+            "cancelled"
+          ]
+        },
+        "terminal_status": {
+          "enum": [
+            null,
+            "ready",
+            "needs_rework",
+            "failed",
+            "stale",
+            "evidence_pending"
+          ]
+        },
+        "current_stage": {
+          "$ref": "#/$defs/stage"
+        },
+        "quality_outcome": {
+          "enum": [
+            "pending",
+            "accepted",
+            "corrected",
+            "rejected",
+            "failed"
+          ]
+        },
+        "sol_reviewed": {
+          "type": "boolean"
+        },
+        "sol_committed": {
+          "type": "boolean"
+        },
+        "event_written": {
+          "type": "boolean"
+        },
+        "dispatcher_accepted": {
+          "type": "boolean"
+        },
+        "package_visible": {
+          "type": "boolean"
+        },
+        "quick_intake_complete": {
+          "type": "boolean"
+        },
+        "foreground_completion_stage": {
+          "enum": [
+            "event_written",
+            "dispatcher_accepted",
+            "package_visible"
+          ]
+        },
+        "selected_by": {
+          "enum": [
+            "none",
+            "signed_latest_authoritative"
+          ]
+        },
+        "selector_type": {
+          "const": "signed_latest_authoritative"
+        },
+        "selector_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "proposal_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "authoritative_package_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "processing_outcome": {
+          "enum": [
+            "succeeded",
+            "failed",
+            "timed_out",
+            "cancelled",
+            null
+          ]
+        },
+        "selection_authority_status": {
+          "enum": [
+            "missing",
+            "invalid",
+            "hmac_verified"
+          ]
+        },
+        "selection_error_code": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$"
+        },
+        "unit_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "generation": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "attempt": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "fence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "input_fingerprint": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 320
+        },
+        "frozen_payload_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "release_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "rule_version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "server_queue_status": {
+          "enum": [
+            "unknown",
+            "confirmed_rate_limited",
+            "clear"
+          ]
+        },
+        "server_queue_confirmation": {
+          "enum": [
+            "unconfirmed",
+            "confirmed_event",
+            "provider_receipt_verified"
+          ]
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "captured_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "last_state_change_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "started_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "target_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "target_label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "luna_status": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "pipeline_status": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "two_stage_status": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "quality_gate_status": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "duration_seconds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "elapsed_seconds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "retry_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requested_model": {
+          "const": "gpt-5.6-luna"
+        },
+        "requested_reasoning_effort": {
+          "const": "max"
+        },
+        "runtime_identity_status": {
+          "enum": [
+            "requested_unverified",
+            "confirmed",
+            "mismatch",
+            "unavailable"
+          ]
+        },
+        "runtime_model": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "runtime_reasoning_effort": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        "local_model_submitted": {
+          "type": "boolean"
+        },
+        "semantic_contract_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "authority_key_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "processing_contract_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "rule_version_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "evidence_manifest_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "evidence_bundle_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "evidence_readiness_receipt_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "legacy_compatibility_receipt_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "semantic_reuse_receipt_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "semantic_reuse_source_release_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "quality_receipt_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "package_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "sol_decision_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "superseded_input_fingerprint": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 320
+        },
+        "evidence_status": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "projection_origin": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "last_error_code": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$"
+        },
+        "processing_error_code": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$"
+        },
+        "task_detail_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "stage_receipts": {
+          "type": "object"
+        },
+        "evidence_refs": {
+          "type": "array",
+          "maxItems": 512,
+          "items": {
+            "type": "string"
+          }
+        },
+        "safe_summary": {
+          "type": "string"
+        },
+        "suggestion_summary": {
+          "type": "string"
+        },
+        "first_break": {
+          "type": "string"
+        },
+        "risks": {
+          "type": "array",
+          "maxItems": 256,
+          "items": {
+            "type": "string"
+          }
+        },
+        "raw_prompt": {
+          "type": "string"
+        },
+        "final_answer": {
+          "type": "string"
+        },
+        "obsidian_url": {
+          "type": "string"
+        },
+        "package_fingerprint": {
+          "type": "string"
+        },
+        "package_version": {
+          "type": "string"
+        },
+        "delivery_status": {
+          "enum": [
+            "offered",
+            "consumed"
+          ]
+        },
+        "adoption_status": {
+          "enum": [
+            "direct_adopted",
+            "minor_edit_adopted",
+            "major_edit_adopted",
+            "modified_adopted",
+            "rejected",
+            "fallback",
+            "unknown"
+          ]
+        },
+        "adoption_reason_code": {
+          "type": "string",
+          "maxLength": 160
+        },
+        "adoption_receipt_id": {
+          "type": "string",
+          "maxLength": 320
+        },
+        "adoption_recorded_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "evidence_claim_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "evidence_claims_with_refs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "evidence_coverage_pct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "evidence_hash_status": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "unknown_evidence_ref_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "visual_evidence_required": {
+          "type": "boolean"
+        },
+        "visual_claim_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "visual_claims_with_refs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "visual_coverage_pct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "article_id": {
+          "type": "string",
+          "maxLength": 160
+        },
+        "sentence_id": {
+          "type": "string",
+          "maxLength": 160
+        },
+        "sentence_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "capture_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "batch_trigger": {
+          "type": "string",
+          "maxLength": 160
+        },
+        "english_status": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "candidate_validation_status": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "candidate_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "candidate_item_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "receipt_status": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "receipt_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "blocker_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "observed_model": {
+          "type": "string",
+          "maxLength": 160
+        },
+        "observed_reasoning_effort": {
+          "type": "string",
+          "maxLength": 32
+        },
+        "observed_identity_provenance": {
+          "type": "string",
+          "maxLength": 160
+        },
+        "source_sentence": {
+          "type": "string"
+        },
+        "user_verbatim": {
+          "type": "string"
+        },
+        "candidate_path": {
+          "type": "string"
+        },
+        "historical_package_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "quick_capture_status": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "luna_report_status": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "sol_review_status": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "formal_curation_status": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "processor_attribution": {
+          "type": "string",
+          "maxLength": 160
+        },
+        "processor_display_name": {
+          "type": "string",
+          "maxLength": 160
+        },
+        "report_json_ref": {
+          "type": "string"
+        },
+        "report_json_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "report_markdown_ref": {
+          "type": "string"
+        },
+        "report_markdown_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "contains_answer_material": {
+          "type": "boolean"
+        },
+        "private_current_answer": {
+          "type": "string"
+        },
+        "report": {
+          "type": "object"
+        },
+        "rendered_markdown": {
+          "type": "string"
+        },
+        "answer_material_warning": {
+          "type": "string"
+        },
+        "retry_at_hint": {
+          "type": "string",
+          "maxLength": 160
+        },
+        "critical_resume_status": {
+          "type": "string",
+          "maxLength": 160
+        },
+        "evidence_access_status": {
+          "enum": [
+            "unverified",
+            "ready",
+            "missing",
+            "quarantined"
+          ]
+        },
+        "analysis_execution_status": {
+          "enum": [
+            "not_started",
+            "running",
+            "completed",
+            "failed",
+            "cancelled",
+            "stalled"
+          ]
+        },
+        "review_execution_status": {
+          "enum": [
+            "not_started",
+            "running",
+            "completed",
+            "failed",
+            "cancelled",
+            "stalled"
+          ]
+        },
+        "analysis_report_status": {
+          "enum": [
+            "not_started",
+            "available",
+            "available_with_warnings",
+            "normalization_failed",
+            "quarantined"
+          ]
+        },
+        "review_report_status": {
+          "enum": [
+            "not_started",
+            "available",
+            "available_with_warnings",
+            "normalization_failed",
+            "quarantined"
+          ]
+        },
+        "formal_write_status": {
+          "enum": [
+            "not_authorized",
+            "pending",
+            "committed",
+            "failed"
+          ]
+        },
+        "warning_codes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "elapsed_runtime_seconds": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "last_meaningful_progress_at": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "soft_timeout_warning": {
+          "type": "boolean"
+        },
+        "stall_probe_status": {
+          "enum": [
+            "not_applicable",
+            "healthy",
+            "stall_suspected",
+            "probing",
+            "stalled",
+            "cancelled"
+          ]
+        },
+        "exact_error_code": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "authority_snapshot_sha256": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "analysis_execution_receipt_sha256": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "analysis_raw_output_sha256": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "analysis_normalization_receipt_sha256": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "analysis_report_sha256": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "critical_review_execution_receipt_sha256": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "critical_review_raw_output_sha256": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "critical_review_normalization_receipt_sha256": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "critical_review_report_sha256": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sol_handoff_envelope_sha256": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "terminal_receipt_sha256": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "preclaim_failure_stage": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._:-]{1,160}$"
+        },
+        "preclaim_failed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "primary_preclaim_failure_receipt_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "queue_preserved_for_recovery": {
+          "const": true
+        },
+        "recovery_status": {
+          "const": "waiting_explicit_resume"
+        },
+        "preclaim_attempt_count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 256
+        },
+        "latest_preclaim_attempt_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "latest_preclaim_attempt_error_code": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._:-]{1,160}$"
+        },
+        "preclaim_attempt_history": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 256,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "receipt_sha256",
+              "unit_sha256",
+              "frozen_payload_sha256",
+              "failure_stage",
+              "error_code",
+              "failed_at",
+              "queue_entry_preserved",
+              "primary"
+            ],
+            "properties": {
+              "receipt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+              "unit_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+              "frozen_payload_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+              "failure_stage": {"type": "string", "pattern": "^[A-Za-z0-9._:-]{1,160}$"},
+              "error_code": {"type": "string", "pattern": "^[A-Za-z0-9._:-]{1,160}$"},
+              "failed_at": {"type": "string", "format": "date-time"},
+              "queue_entry_preserved": {"type": "boolean"},
+              "primary": {"type": "boolean"}
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "server_queue_status": {"const": "unknown"}
+            },
+            "required": ["server_queue_status"]
+          },
+          "then": {
+            "properties": {
+              "server_queue_confirmation": {"const": "unconfirmed"}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "server_queue_status": {"const": "confirmed_rate_limited"}
+            },
+            "required": ["server_queue_status"]
+          },
+          "then": {
+            "properties": {
+              "server_queue_confirmation": {
+                "enum": ["confirmed_event", "provider_receipt_verified"]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "server_queue_status": {"const": "clear"}
+            },
+            "required": ["server_queue_status"]
+          },
+          "then": {
+            "properties": {
+              "server_queue_confirmation": {"const": "provider_receipt_verified"}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "subject": {
+                "const": "english"
+              }
+            },
+            "required": [
+              "subject"
+            ]
+          },
+          "then": {
+            "required": [
+              "event_written",
+              "dispatcher_accepted",
+              "package_visible",
+              "quick_intake_complete",
+              "foreground_completion_stage",
+              "selected_by",
+              "selector_type",
+              "selector_sha256",
+              "proposal_sha256",
+              "authoritative_package_sha256",
+              "processing_outcome",
+              "selection_authority_status"
+            ]
+          }
+        }
+      ]
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "enabled",
+        "status",
+        "control_state",
+        "control_reason",
+        "current_stage",
+        "counts",
+        "items",
+        "metrics",
+        "metric_sources",
+        "batch_state_available",
+        "batch_id",
+        "batch_status",
+        "capture_high_watermark",
+        "scan_snapshot_sha256",
+        "authority_generation",
+        "all_terminal",
+        "sol_ready",
+        "blockers",
+        "sol_handoff_status",
+        "concurrency_status",
+        "concurrency_state",
+        "concurrency_source",
+        "concurrency_observed_at",
+        "concurrency_error_code",
+        "subject_active_task_count",
+        "subject_pending_task_count",
+        "subject_peak_active",
+        "subject_verified_runner_active_task_count",
+        "subject_runner_evidenced_task_count",
+        "subject_runner_interval_missing_count",
+        "scheduler_claim_subject_peak_active",
+        "terminal_index_sha256",
+        "terminal_task_count",
+        "terminal_by_outcome",
+        "terminal_failure_bindings",
+        "lease_retry_wait_task_count",
+        "lease_stale_task_count",
+        "effective_concurrency_limit",
+        "effective_concurrency_limit_mode",
+        "available_concurrency_slots",
+        "backpressure_reason",
+        "canary_gate",
+        "batch_partition",
+        "blocking_batch",
+        "capacity"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "status": {
+          "enum": [
+            "active",
+            "disabled",
+            "source_error"
+          ]
+        },
+        "control_state": {
+          "enum": [
+            "running",
+            "draining",
+            "paused",
+            "drained"
+          ]
+        },
+        "control_reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "current_stage": {
+          "$ref": "#/$defs/stage"
+        },
+        "counts": {
+          "$ref": "#/$defs/counts"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/item"
+          }
+        },
+        "pipeline": {
+          "type": "object"
+        },
+        "metrics": {
+          "type": "object"
+        },
+        "metric_sources": {
+          "type": "object"
+        },
+        "batch_state_available": {
+          "type": "boolean"
+        },
+        "batch_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 160
+        },
+        "batch_status": {
+          "enum": [
+            "no_data",
+            "open",
+            "frozen"
+          ]
+        },
+        "capture_high_watermark": {
+          "$ref": "#/$defs/captureHighWatermark"
+        },
+        "scan_snapshot_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "authority_generation": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$"
+        },
+        "all_terminal": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "sol_ready": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "blockers": {
+          "type": "array",
+          "maxItems": 256,
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]+$"
+          }
+        },
+        "blocking_batch": {
+          "oneOf": [
+            {"type": "null"},
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "batch_id",
+                "study_date",
+                "status",
+                "all_terminal",
+                "sol_ready",
+                "writer_bound",
+                "writer_handoff_status",
+                "blocker_code"
+              ],
+              "properties": {
+                "batch_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$"},
+                "study_date": {"type": "string", "format": "date"},
+                "status": {"type": "string", "pattern": "^[A-Za-z0-9._:-]{1,40}$"},
+                "all_terminal": {"type": "boolean"},
+                "sol_ready": {"type": "boolean"},
+                "writer_bound": {"type": "boolean"},
+                "writer_handoff_status": {"type": "string", "pattern": "^[A-Za-z0-9._:-]{1,40}$"},
+                "blocker_code": {"enum": ["cross_date_batch_writer_bound", "cross_date_batch_still_current"]}
+              }
+            }
+          ]
+        },
+        "sol_handoff_status": {
+          "enum": [
+            "unknown",
+            "not_ready",
+            "awaiting_authorization",
+            "authorized",
+            "queued_for_sol",
+            "sol_reviewing",
+            "formal_applying",
+            "committed",
+            "safe_paused"
+          ]
+        },
+        "sol_reviewed_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "sol_committed_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "processing_error_code": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$"
+        },
+        "error_code": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$"
+        },
+        "concurrency_status": {
+          "enum": [
+            "verified",
+            "partial",
+            "unavailable"
+          ]
+        },
+        "concurrency_state": {
+          "enum": [
+            "first_canary_armed",
+            "first_canary_single_in_flight",
+            "continuous_concurrent_unlocked",
+            "failed_drained",
+            "paused_drained",
+            "inactive_rolled_back",
+            "canary_not_configured"
+          ]
+        },
+        "concurrency_source": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "lease_store_subject_status_v1",
+            null
+          ]
+        },
+        "concurrency_observed_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "concurrency_error_code": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$"
+        },
+        "subject_active_task_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "subject_pending_task_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "subject_peak_active": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "subject_verified_runner_active_task_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "subject_runner_evidenced_task_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "subject_runner_interval_missing_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "scheduler_claim_subject_peak_active": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "terminal_index_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "terminal_task_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "terminal_by_outcome": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/terminalCounts"
+            }
+          ]
+        },
+        "terminal_failure_bindings": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/terminalFailureBindings"
+            }
+          ]
+        },
+        "lease_retry_wait_task_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "lease_stale_task_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "effective_concurrency_limit": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "effective_concurrency_limit_mode": {
+          "enum": [
+            "bounded",
+            "unbounded",
+            "unavailable"
+          ]
+        },
+        "available_concurrency_slots": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "backpressure_reason": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$"
+        },
+        "canary_gate": {
+          "$ref": "#/$defs/nullableProductionCanaryStateV2"
+        },
+        "batch_partition": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "current_batch_task_count",
+            "current_batch_terminal_task_count",
+            "current_batch_failed_task_count",
+            "current_batch_sol_candidate_task_count",
+            "current_batch_diagnostic_task_count",
+            "outside_batch_pending_task_count",
+            "outside_batch_failed_preserved_task_count"
+          ],
+          "properties": {
+            "current_batch_task_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "current_batch_terminal_task_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "current_batch_failed_task_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "current_batch_sol_candidate_task_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "current_batch_diagnostic_task_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "outside_batch_pending_task_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "outside_batch_failed_preserved_task_count": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "capacity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "capacity_mode",
+            "initial_canary_inflight_limit",
+            "continuous_concurrency_limit",
+            "effective_concurrency_limit"
+          ],
+          "properties": {
+            "capacity_mode": {
+              "enum": [
+                "disabled",
+                "initial_canary",
+                "continuous_concurrent"
+              ]
+            },
+            "initial_canary_inflight_limit": {
+              "const": 1
+            },
+            "continuous_concurrency_limit": {
+              "const": 20
+            },
+            "effective_concurrency_limit": {
+              "enum": [
+                0,
+                1,
+                20
+              ]
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {"capacity_mode": {"const": "disabled"}},
+                "required": ["capacity_mode"]
+              },
+              "then": {
+                "properties": {"effective_concurrency_limit": {"const": 0}}
+              }
+            },
+            {
+              "if": {
+                "properties": {"capacity_mode": {"const": "initial_canary"}},
+                "required": ["capacity_mode"]
+              },
+              "then": {
+                "properties": {"effective_concurrency_limit": {"const": 1}}
+              }
+            },
+            {
+              "if": {
+                "properties": {"capacity_mode": {"const": "continuous_concurrent"}},
+                "required": ["capacity_mode"]
+              },
+              "then": {
+                "properties": {"effective_concurrency_limit": {"const": 20}}
+              }
+            }
+          ]
+        }
+      }
+    },
+    "queueEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "subject",
+        "batch_id",
+        "authorized_at",
+        "authorization_receipt_sha256",
+        "daily_sol_batch_sha256",
+        "status"
+      ],
+      "properties": {
+        "subject": {
+          "enum": [
+            "math",
+            "cs408",
+            "english"
+          ]
+        },
+        "batch_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "authorized_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "authorization_receipt_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "daily_sol_batch_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "status": {
+          "enum": [
+            "queued",
+            "active",
+            "reviewed",
+            "committed",
+            "failed",
+            "safe_paused"
+          ]
+        }
+      }
+    },
+    "globalSol": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state_available",
+        "status",
+        "active_subject",
+        "active_batch_id",
+        "current_item",
+        "authorized_queue",
+        "fencing_token",
+        "active_writer_count",
+        "committed_count",
+        "remaining_count",
+        "formal_write_count",
+        "updated_at"
+      ],
+      "properties": {
+        "state_available": {
+          "type": "boolean"
+        },
+        "status": {
+          "enum": [
+            "no_data",
+            "idle",
+            "queued",
+            "reviewing",
+            "applying",
+            "recovering",
+            "safe_paused",
+            "failed"
+          ]
+        },
+        "active_subject": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "math",
+            "cs408",
+            "english",
+            null
+          ]
+        },
+        "active_batch_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 160
+        },
+        "current_item": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 160
+        },
+        "authorized_queue": {
+          "type": "array",
+          "maxItems": 256,
+          "items": {
+            "$ref": "#/$defs/queueEntry"
+          }
+        },
+        "fencing_token": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "active_writer_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "committed_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "remaining_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "formal_write_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "updated_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+    "enP0006Inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state_available",
+        "target_count",
+        "inventory_sha256",
+        "target_set_sha256",
+        "batch_authorization_sha256",
+        "source"
+      ],
+      "properties": {
+        "state_available": {
+          "type": "boolean"
+        },
+        "target_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "inventory_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "target_set_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "batch_authorization_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "source": {
+          "enum": [
+            "no_data",
+            "candidate_bound_work_item_batch",
+            "verified_sol_batch"
+          ]
+        }
+      }
+    },
+    "enP0006Luna": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state_available",
+        "status",
+        "selected_count",
+        "running_count",
+        "terminal_count",
+        "quality_passed_count",
+        "failed_count",
+        "remaining_count",
+        "all_terminal",
+        "quality_ready"
+      ],
+      "properties": {
+        "state_available": {
+          "type": "boolean"
+        },
+        "status": {
+          "enum": [
+            "no_data",
+            "not_started",
+            "running",
+            "quality_ready",
+            "complete_with_failures"
+          ]
+        },
+        "selected_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "running_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "terminal_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "quality_passed_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "failed_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "remaining_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "all_terminal": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "quality_ready": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        }
+      }
+    },
+    "enP0006Sol": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state_available",
+        "status",
+        "batch_id",
+        "current_ordinal",
+        "current_target_id",
+        "fencing_token",
+        "attempt",
+        "committed_count",
+        "already_current_count",
+        "failed_count",
+        "failure_attempt_count",
+        "recovery_count",
+        "recovery_pending_count",
+        "formal_write_count",
+        "final_closure_status",
+        "execution_closure_sha256",
+        "updated_at"
+      ],
+      "properties": {
+        "state_available": {
+          "type": "boolean"
+        },
+        "status": {
+          "enum": [
+            "no_data",
+            "queued",
+            "active",
+            "recovering",
+            "safe_paused",
+            "complete"
+          ]
+        },
+        "batch_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 160
+        },
+        "current_ordinal": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "current_target_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 240
+        },
+        "fencing_token": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "attempt": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "committed_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "already_current_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "failed_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "failure_attempt_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "recovery_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "recovery_pending_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "formal_write_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "final_closure_status": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "verified_complete",
+            "complete_with_failures",
+            null
+          ]
+        },
+        "execution_closure_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "updated_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+    "enP0006": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state_available",
+        "status",
+        "blocker_codes",
+        "inventory",
+        "luna",
+        "sol"
+      ],
+      "properties": {
+        "state_available": {
+          "type": "boolean"
+        },
+        "status": {
+          "enum": [
+            "no_data",
+            "authorization_ready",
+            "luna_running",
+            "luna_complete_with_failures",
+            "quality_ready",
+            "queued_for_sol",
+            "formal_applying",
+            "recovering",
+            "safe_paused",
+            "complete_with_failures",
+            "verified_complete",
+            "invalid"
+          ]
+        },
+        "blocker_codes": {
+          "type": "array",
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]+$"
+          }
+        },
+        "inventory": {
+          "$ref": "#/$defs/enP0006Inventory"
+        },
+        "luna": {
+          "$ref": "#/$defs/enP0006Luna"
+        },
+        "sol": {
+          "$ref": "#/$defs/enP0006Sol"
+        }
+      }
+    }
+  },
+  "$id": "https://local.invalid/study-intake/dashboard-projection-v4.json"
+}

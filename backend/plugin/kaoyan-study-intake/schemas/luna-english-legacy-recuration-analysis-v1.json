@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Luna English legacy recuration analysis v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "target_id",
+    "target_kind",
+    "observed_target_ids",
+    "proposal",
+    "rationale",
+    "evidence_refs",
+    "formal_write_count"
+  ],
+  "properties": {
+    "schema_version": {"const": "luna_english_legacy_recuration_analysis_v1"},
+    "target_id": {"type": "string", "minLength": 1, "maxLength": 240},
+    "target_kind": {
+      "enum": ["master_bank_row", "sentence_pattern_card", "article_learning_page"]
+    },
+    "observed_target_ids": {
+      "type": "array",
+      "maxItems": 16,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1, "maxLength": 240}
+    },
+    "proposal": {"$ref": "#/$defs/proposal"},
+    "rationale": {"type": "string", "maxLength": 4000},
+    "evidence_refs": {"$ref": "#/$defs/evidenceRefs"},
+    "formal_write_count": {"const": 0}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "evidenceRefs": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^mcp-item:english:[0-9a-f]{64}$"}
+    },
+    "proposal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action",
+        "update_kind",
+        "expected_current_object_sha256",
+        "desired_object_sha256",
+        "conflict_codes",
+        "evidence_refs"
+      ],
+      "properties": {
+        "action": {
+          "enum": [
+            "update_existing_proposal",
+            "already_current_proposal",
+            "conflict",
+            "evidence_incomplete"
+          ]
+        },
+        "update_kind": {"enum": ["typed_update", "none"]},
+        "expected_current_object_sha256": {"$ref": "#/$defs/sha256"},
+        "desired_object_sha256": {"$ref": "#/$defs/sha256"},
+        "conflict_codes": {
+          "type": "array",
+          "maxItems": 16,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "identity_missing",
+              "identity_ambiguous",
+              "stable_id_mismatch",
+              "semantic_key_mismatch",
+              "source_evidence_incomplete",
+              "authority_drift"
+            ]
+          }
+        },
+        "evidence_refs": {"$ref": "#/$defs/evidenceRefs"}
+      }
+    }
+  }
+}

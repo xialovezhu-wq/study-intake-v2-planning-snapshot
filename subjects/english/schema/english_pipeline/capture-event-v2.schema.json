@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.kaoyan-english/schema/english_pipeline/capture-event-v2.schema.json",
+  "title": "English immutable capture event v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "event_id", "event_type", "idempotency_key", "request_sha256", "occurred_at", "article", "producer", "formal_write_count", "formal_writeback"],
+  "properties": {
+    "schema_version": {"const": "english_capture_event_v2"},
+    "event_id": {"type": "string", "pattern": "^EVT-[0-9]{8}-[A-F0-9]{16}$"},
+    "event_type": {"enum": ["sentence_captured", "sentence_correction", "article_completed"]},
+    "idempotency_key": {"type": "string", "minLength": 1},
+    "request_sha256": {"$ref": "#/$defs/sha256"},
+    "occurred_at": {"type": "string", "format": "date-time"},
+    "article": {"type": "object"},
+    "source": {"type": "object"},
+    "learning": {"type": "object"},
+    "candidates": {"type": "array", "items": {"$ref": "#/$defs/candidate"}},
+    "observed_signals": {"type": "array", "items": {"$ref": "#/$defs/signal"}},
+    "source_signal_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "capture_coverage": {"$ref": "#/$defs/coverage"},
+    "supersedes_event_id": {"type": "string"},
+    "correction_reason": {"type": "string"},
+    "completion": {"type": "object"},
+    "producer": {"type": "object"},
+    "formal_write_count": {"const": 0},
+    "formal_writeback": {"const": "none"}
+  },
+  "allOf": [
+    {"if": {"properties": {"event_type": {"enum": ["sentence_captured", "sentence_correction"]}}}, "then": {"required": ["source", "learning", "candidates", "observed_signals", "source_signal_ids", "capture_coverage"]}}
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "candidate": {
+      "type": "object", "additionalProperties": false,
+      "required": ["item", "candidate_type", "meaning", "decision", "source_signal_ids"],
+      "properties": {
+        "item": {"type": "string", "minLength": 1}, "candidate_type": {"type": "string"}, "meaning": {"type": "string"},
+        "usage": {"type": "string"}, "review_note": {"type": "string"}, "reason": {"type": "string"}, "tier_hint": {"type": "string"},
+        "decision": {"enum": ["long_term_candidate", "bbdc_candidate", "article_only", "not_recommended"]},
+        "source_signal_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}
+      }
+    },
+    "signal": {
+      "type": "object", "additionalProperties": false,
+      "required": ["signal_id", "signal_type", "canonical_term", "surface_form", "knowledge_state", "provenance", "evidence_refs"],
+      "properties": {
+        "signal_id": {"type": "string"}, "signal_type": {"enum": ["vocabulary", "phrase", "structure"]},
+        "canonical_term": {"type": "string", "minLength": 1}, "surface_form": {"type": "string", "minLength": 1},
+        "knowledge_state": {"enum": ["unknown", "mistranslated", "structure_unresolved"]},
+        "provenance": {"type": "string"}, "evidence_refs": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+      }
+    },
+    "coverage": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "declared_signal_count", "covered_signal_count", "signals"],
+      "properties": {
+        "schema_version": {"const": "english_capture_coverage_v2"}, "declared_signal_count": {"type": "integer", "minimum": 0},
+        "covered_signal_count": {"type": "integer", "minimum": 0},
+        "signals": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["signal_id", "terminal_status"], "properties": {"signal_id": {"type": "string"}, "terminal_status": {"enum": ["candidate", "unmatched"]}}}}
+      }
+    }
+  }
+}

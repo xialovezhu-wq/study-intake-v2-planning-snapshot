@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/user-sol-authorization-receipt-v1.json",
+  "title": "Independent User Sol Authorization Receipt v1",
+  "$ref": "daily-sol-batch-v2.json#/$defs/authorization"
+}

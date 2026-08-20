@@ -1,0 +1,299 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/three-subject-canary-activation-receipt-v4.json",
+  "title": "Three-subject production canary activation receipt v4",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "activation_id",
+    "release_id",
+    "activated_at",
+    "post_activation_only",
+    "historical_backlog_drained",
+    "initial_canary_inflight_limit",
+    "continuous_concurrency_limit",
+    "requested_service_tier",
+    "fast_mode_requested",
+    "fast_mode_effective",
+    "producer_high_watermark_sha256s",
+    "slots",
+    "canary_manifest_sha256",
+    "release_manifest_sha256",
+    "pre_activation_verification_sha256",
+    "post_activation_verification_sha256",
+    "service_release_ids",
+    "deployment_prepare_receipt_sha256",
+    "subject_batch_recovery_binding",
+    "cs408_writer_retirement_binding",
+    "model_call_count",
+    "provider_request_count",
+    "real_luna_runs",
+    "formal_write_count",
+    "sol_enabled",
+    "production_accepted",
+    "authority"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "study-intake-three-subject-canary-activation-receipt-v4"
+    },
+    "status": {"const": "production_canary_active"},
+    "activation_id": {"$ref": "#/$defs/sha256"},
+    "release_id": {"$ref": "#/$defs/sha256"},
+    "activated_at": {"type": "string", "format": "date-time"},
+    "post_activation_only": {"const": true},
+    "historical_backlog_drained": {"const": true},
+    "initial_canary_inflight_limit": {"const": 1},
+    "continuous_concurrency_limit": {"const": 20},
+    "requested_service_tier": {"type": "null"},
+    "fast_mode_requested": {"const": false},
+    "fast_mode_effective": {"const": "not_requested"},
+    "producer_high_watermark_sha256s": {"$ref": "#/$defs/subjectHashes"},
+    "slots": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["math", "cs408", "english"],
+      "properties": {
+        "math": {"$ref": "#/$defs/mathSlot"},
+        "cs408": {"$ref": "#/$defs/cs408Slot"},
+        "english": {"$ref": "#/$defs/englishSlot"}
+      }
+    },
+    "canary_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "release_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "pre_activation_verification_sha256": {"$ref": "#/$defs/sha256"},
+    "post_activation_verification_sha256": {"$ref": "#/$defs/sha256"},
+    "service_release_ids": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["math", "cs408", "english", "dashboard"],
+      "properties": {
+        "math": {"$ref": "#/$defs/sha256"},
+        "cs408": {"$ref": "#/$defs/sha256"},
+        "english": {"$ref": "#/$defs/sha256"},
+        "dashboard": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "deployment_prepare_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "subject_batch_recovery_binding": {
+      "$ref": "#/$defs/subjectBatchRecoveryBinding"
+    },
+    "cs408_writer_retirement_binding": {
+      "$ref": "#/$defs/cs408WriterRetirementBinding"
+    },
+    "model_call_count": {"const": 0},
+    "provider_request_count": {"const": 0},
+    "real_luna_runs": {"const": 0},
+    "formal_write_count": {"const": 0},
+    "sol_enabled": {"const": false},
+    "production_accepted": {"const": false},
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "algorithm",
+        "key_id",
+        "purpose",
+        "hmac_sha256"
+      ],
+      "properties": {
+        "schema_version": {"const": "study-intake-deployment-authority-v1"},
+        "algorithm": {"const": "HMAC-SHA256"},
+        "key_id": {"$ref": "#/$defs/sha256"},
+        "purpose": {"const": "three-subject-production-canary-activation"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "subjectBatchRecoveryBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "subject",
+        "original_preclaim_failure_receipt_sha256",
+        "recovery_receipt_sha256",
+        "target_release_id",
+        "target_activation_id",
+        "staged_activation_proof_sha256",
+        "supersede_receipt_sha256",
+        "replacement_queue_entry_sha256",
+        "replacement_task",
+        "arm_proof_sha256",
+        "formal_write_count",
+        "sol_enabled"
+      ],
+      "properties": {
+        "schema_version": {"const": "study-intake-subject-batch-recovery-canary-binding-v1"},
+        "subject": {"const": "english"},
+        "original_preclaim_failure_receipt_sha256": {"$ref": "#/$defs/sha256"},
+        "recovery_receipt_sha256": {"$ref": "#/$defs/sha256"},
+        "target_release_id": {"$ref": "#/$defs/sha256"},
+        "target_activation_id": {"$ref": "#/$defs/sha256"},
+        "staged_activation_proof_sha256": {"$ref": "#/$defs/sha256"},
+        "supersede_receipt_sha256": {"$ref": "#/$defs/sha256"},
+        "replacement_queue_entry_sha256": {"$ref": "#/$defs/sha256"},
+        "replacement_task": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "unit_sha256",
+            "frozen_payload_sha256",
+            "task_object_sha256",
+            "producer_input_contract_sha256",
+            "source_event_set_sha256"
+          ],
+          "properties": {
+            "unit_sha256": {"$ref": "#/$defs/sha256"},
+            "frozen_payload_sha256": {"$ref": "#/$defs/sha256"},
+            "task_object_sha256": {"$ref": "#/$defs/sha256"},
+            "producer_input_contract_sha256": {"$ref": "#/$defs/sha256"},
+            "source_event_set_sha256": {"$ref": "#/$defs/sha256"}
+          }
+        },
+        "arm_proof_sha256": {"$ref": "#/$defs/sha256"},
+        "formal_write_count": {"const": 0},
+        "sol_enabled": {"const": false}
+      }
+    },
+    "cs408WriterRetirementBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "subject",
+        "mode",
+        "authorization_descriptor_sha256",
+        "batch_id",
+        "batch_sha256",
+        "terminal_receipt_sha256",
+        "writer_preimage_sha256",
+        "batch_pointer_sha256",
+        "snapshot_sha256",
+        "source_generation",
+        "source_authority_fingerprint",
+        "target_generation",
+        "target_authority_fingerprint",
+        "target_release_id",
+        "target_activation_id",
+        "retirement_receipt_sha256",
+        "retirement_receipt_path",
+        "retirement_receipt_path_sha256",
+        "retirement_rollback_token",
+        "writer_postimage_sha256",
+        "postimage_verification_sha256",
+        "post_retirement_readiness_sha256",
+        "locked_preflight_authority_snapshot_mcp_tool_call_count",
+        "retirement_authority_snapshot_mcp_tool_call_count",
+        "english_recovery_authority_snapshot_mcp_tool_call_count",
+        "arm_preflight_authority_snapshot_mcp_tool_call_count",
+        "apply_authority_snapshot_mcp_tool_call_count",
+        "authority_snapshot_count",
+        "authority_snapshot_mcp_tool_call_count",
+        "model_mcp_tool_call_count",
+        "model_call_count",
+        "provider_request_count",
+        "formal_write_count",
+        "sol_enabled",
+        "queue_entry_created_count",
+        "replacement_task_created_count",
+        "capture_replay_count"
+      ],
+      "properties": {
+        "schema_version": {"const": "study-intake-cs408-terminal-retirement-canary-binding-v1"},
+        "subject": {"const": "cs408"},
+        "mode": {"const": "archive_only_zero_replay"},
+        "authorization_descriptor_sha256": {"const": "7539cbcaddfc8e6fa5755473a9e71db8a6916141cc40dee5b594221a2cd0a889"},
+        "batch_id": {"const": "LUNA-CS408-2026-08-12-6FC5AFB45F313F8A0E4D"},
+        "batch_sha256": {"const": "7b22c081aebb0efa912f981e1d71cbdf8b4501da8634e959aec5108c1125ec39"},
+        "terminal_receipt_sha256": {"const": "83c000a307f2af2037afae903ec1b791e85c00da75ebb9f5178088c76f11a5ff"},
+        "writer_preimage_sha256": {"const": "f4dc94f9be21578d37e663e187948af581a4fc0dba633cb2e4fe7f6e12f8a29d"},
+        "batch_pointer_sha256": {"const": "804f5f213d0a56351bb21179110309943577b453aabe2b5ef71e66640cb91e92"},
+        "snapshot_sha256": {"const": "96400ebe760cdda21b4fe62f8a3987ef118f217a01289ea0ef8b6f1d8ff541dc"},
+        "source_generation": {"const": "cs408-26b5390a8f9a2c425e58"},
+        "source_authority_fingerprint": {"const": "26b5390a8f9a2c425e58fbc6bec5b0a450dff85c4e1bd1817d99f133259f35f2"},
+        "target_generation": {"const": "cs408-e51335bd173df83c1736"},
+        "target_authority_fingerprint": {"const": "e51335bd173df83c173666f4b880bdc91a008055818bd7425650959a8d59b08b"},
+        "target_release_id": {"$ref": "#/$defs/sha256"},
+        "target_activation_id": {"$ref": "#/$defs/sha256"},
+        "retirement_receipt_sha256": {"$ref": "#/$defs/sha256"},
+        "retirement_receipt_path": {
+          "type": "string",
+          "pattern": "^/",
+          "minLength": 2
+        },
+        "retirement_receipt_path_sha256": {"$ref": "#/$defs/sha256"},
+        "retirement_rollback_token": {"$ref": "#/$defs/sha256"},
+        "writer_postimage_sha256": {"$ref": "#/$defs/sha256"},
+        "postimage_verification_sha256": {"$ref": "#/$defs/sha256"},
+        "post_retirement_readiness_sha256": {"$ref": "#/$defs/sha256"},
+        "locked_preflight_authority_snapshot_mcp_tool_call_count": {"const": 3},
+        "retirement_authority_snapshot_mcp_tool_call_count": {"const": 2},
+        "english_recovery_authority_snapshot_mcp_tool_call_count": {"const": 2},
+        "arm_preflight_authority_snapshot_mcp_tool_call_count": {"const": 3},
+        "apply_authority_snapshot_mcp_tool_call_count": {"const": 10},
+        "authority_snapshot_count": {"const": 2},
+        "authority_snapshot_mcp_tool_call_count": {"const": 2},
+        "model_mcp_tool_call_count": {"const": 0},
+        "model_call_count": {"const": 0},
+        "provider_request_count": {"const": 0},
+        "formal_write_count": {"const": 0},
+        "sol_enabled": {"const": false},
+        "queue_entry_created_count": {"const": 0},
+        "replacement_task_created_count": {"const": 0},
+        "capture_replay_count": {"const": 0}
+      }
+    },
+    "subjectHashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["math", "cs408", "english"],
+      "properties": {
+        "math": {"$ref": "#/$defs/sha256"},
+        "cs408": {"$ref": "#/$defs/sha256"},
+        "english": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "slot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "subject",
+        "producer_high_watermark_sha256",
+        "state",
+        "capture_id",
+        "completion_receipt_sha256"
+      ],
+      "properties": {
+        "subject": {"enum": ["math", "cs408", "english"]},
+        "producer_high_watermark_sha256": {"$ref": "#/$defs/sha256"},
+        "state": {"const": "armed"},
+        "capture_id": {"type": "null"},
+        "completion_receipt_sha256": {"type": "null"}
+      }
+    },
+    "mathSlot": {
+      "allOf": [
+        {"$ref": "#/$defs/slot"},
+        {"properties": {"subject": {"const": "math"}}}
+      ]
+    },
+    "cs408Slot": {
+      "allOf": [
+        {"$ref": "#/$defs/slot"},
+        {"properties": {"subject": {"const": "cs408"}}}
+      ]
+    },
+    "englishSlot": {
+      "allOf": [
+        {"$ref": "#/$defs/slot"},
+        {"properties": {"subject": {"const": "english"}}}
+      ]
+    }
+  }
+}

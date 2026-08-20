@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Mixed three-subject Luna stress selection v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "campaign_id", "candidate_release_id", "run_mode",
+    "execution_attempt", "execution_runtime_sha256", "max_workers",
+    "subject_scopes", "tasks", "sol_enabled", "formal_write_count"
+  ],
+  "properties": {
+    "schema_version": {"const": "mixed_luna_stress_selection_v1"},
+    "campaign_id": {"type": "string", "minLength": 1, "maxLength": 200},
+    "candidate_release_id": {"$ref": "#/$defs/sha256"},
+    "run_mode": {"enum": ["smoke_3", "smoke_20", "full_108"]},
+    "execution_attempt": {"type": "integer", "minimum": 1},
+    "execution_runtime_sha256": {"$ref": "#/$defs/sha256"},
+    "max_workers": {"enum": [3, 20, 108]},
+    "subject_scopes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["english", "math", "cs408"],
+      "properties": {
+        "english": {"$ref": "#/$defs/sha256"},
+        "math": {"$ref": "#/$defs/sha256"},
+        "cs408": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "tasks": {
+      "type": "array", "minItems": 3, "maxItems": 108,
+      "items": {"$ref": "#/$defs/task"}
+    },
+    "sol_enabled": {"const": false},
+    "formal_write_count": {"const": 0}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ordinal", "task_id", "unit_sha256", "subject",
+        "subject_scope_sha256", "subject_batch_id", "subject_batch_sha256",
+        "dispatcher_id", "mcp_namespace", "generation",
+        "authority_fingerprint", "read_session_binding_sha256",
+        "sol_authorized", "formal_write_count"
+      ],
+      "properties": {
+        "ordinal": {"type": "integer", "minimum": 1, "maximum": 108},
+        "task_id": {"type": "string", "minLength": 1, "maxLength": 240},
+        "unit_sha256": {"$ref": "#/$defs/sha256"},
+        "subject": {"enum": ["english", "math", "cs408"]},
+        "subject_scope_sha256": {"$ref": "#/$defs/sha256"},
+        "subject_batch_id": {"type": "string", "minLength": 1, "maxLength": 240},
+        "subject_batch_sha256": {"$ref": "#/$defs/sha256"},
+        "dispatcher_id": {"type": "string", "minLength": 1, "maxLength": 240},
+        "mcp_namespace": {"type": "string", "minLength": 1, "maxLength": 240},
+        "generation": {"type": "string", "minLength": 1, "maxLength": 240},
+        "authority_fingerprint": {"$ref": "#/$defs/sha256"},
+        "read_session_binding_sha256": {"$ref": "#/$defs/sha256"},
+        "sol_authorized": {"const": false},
+        "formal_write_count": {"const": 0}
+      }
+    }
+  }
+}

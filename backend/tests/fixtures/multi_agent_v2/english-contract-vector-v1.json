@@ -1,0 +1,11 @@
+{
+  "schema_version": "study-intake-subject-contract-vector-v1",
+  "subject": "english",
+  "foreground_skill_id": "kaoyan-english-intensive-reading",
+  "producer_contract_id": "english-learning-pipeline-producer",
+  "capture_contract_id": "english-capture",
+  "capture_id": "EVT-20260817-FIXTURE0000000000",
+  "capture_content_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+  "expected_pipeline": ["producer_validation", "capture_receipt", "producer_attestation", "scanner_binding", "freeze", "read_plan", "branch_results", "read_bundle", "candidate", "risk", "sol_handoff"],
+  "formal_write_count": 0
+}

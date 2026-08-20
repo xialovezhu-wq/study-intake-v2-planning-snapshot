@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "https://local.invalid/study-intake/producer-binding-attestation-v1.json",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "subject", "capture_id", "capture_content_sha256", "foreground_skill", "producer", "capture_contract", "binding_descriptor_sha256", "attestation_required_after", "formal_write_count", "attestation_sha256"],
+  "properties": {
+    "schema_version": {"const": "producer_binding_attestation_v1"}, "subject": {"enum": ["math", "cs408", "english"]}, "capture_id": {"type": "string", "minLength": 1},
+    "capture_content_sha256": {"$ref": "#/$defs/sha"}, "foreground_skill": {"type": "object"}, "producer": {"type": "object"}, "capture_contract": {"type": "object"},
+    "binding_descriptor_sha256": {"$ref": "#/$defs/sha"}, "attestation_required_after": {"type": "string", "format": "date-time"}, "formal_write_count": {"const": 0}, "attestation_sha256": {"$ref": "#/$defs/sha"}
+  }, "$defs": {"sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+}

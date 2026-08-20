@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Kaoyan model MCP stage call receipt v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "phase", "subject", "stage_name", "read_session_id", "read_session_manifest_sha256", "generation", "authority_fingerprint", "calls", "transcript_sha256", "pagination_coverage_complete", "duplicate_read_count", "semantic_stage_count", "provider_request_count", "provider_request_count_status", "mcp_tool_call_count", "attempted_mcp_tool_call_count", "successful_mcp_tool_call_count", "grounding_mcp_tool_call_count", "failed_mcp_tool_call_count", "last_mcp_error_code", "model_call_count", "host_semantic_prefetch", "consumed_terminal_duplicate_read_count", "failure_reason", "created_at", "formal_write_count", "hmac_key_id", "hmac_sha256"],
+  "properties": {
+    "schema_version": {"const": "mcp_stage_call_receipt_v2"},
+    "phase": {"enum": ["model_stage_calls", "model_stage_failed"]},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "stage_name": {"type": "string", "minLength": 1, "maxLength": 160},
+    "read_session_id": {"type": "string", "minLength": 8, "maxLength": 160},
+    "read_session_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "generation": {"type": "string", "minLength": 1, "maxLength": 160},
+    "authority_fingerprint": {"$ref": "#/$defs/sha256"},
+    "calls": {"type": "array", "maxItems": 4096, "items": {"$ref": "#/$defs/call"}},
+    "transcript_sha256": {"$ref": "#/$defs/sha256"},
+    "pagination_coverage_complete": {"type": "boolean"},
+    "duplicate_read_count": {"const": 0},
+    "semantic_stage_count": {"const": 1},
+    "provider_request_count": {"type": "integer", "minimum": 1},
+    "provider_request_count_status": {"const": "derived_from_codex_tool_loop"},
+    "mcp_tool_call_count": {"type": "integer", "minimum": 0},
+    "attempted_mcp_tool_call_count": {"type": "integer", "minimum": 0},
+    "successful_mcp_tool_call_count": {"type": "integer", "minimum": 0},
+    "grounding_mcp_tool_call_count": {"type": "integer", "minimum": 0},
+    "failed_mcp_tool_call_count": {"type": "integer", "minimum": 0},
+    "last_mcp_error_code": {"type": ["string", "null"], "pattern": "^[A-Z][A-Z0-9_]{0,159}$"},
+    "model_call_count": {"const": 1},
+    "host_semantic_prefetch": {"const": false},
+    "consumed_terminal_duplicate_read_count": {"const": 0},
+    "failure_reason": {"type": ["string", "null"], "maxLength": 160},
+    "created_at": {"type": "string", "format": "date-time"},
+    "formal_write_count": {"const": 0},
+    "hmac_key_id": {"$ref": "#/$defs/sha256"},
+    "hmac_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "allOf": [
+    {"if": {"properties": {"phase": {"const": "model_stage_calls"}}}, "then": {"properties": {"pagination_coverage_complete": {"const": true}, "failure_reason": {"type": "null"}, "failed_mcp_tool_call_count": {"const": 0}, "last_mcp_error_code": {"type": "null"}}}},
+    {"if": {"properties": {"phase": {"const": "model_stage_failed"}}}, "then": {"properties": {"pagination_coverage_complete": {"const": false}, "failure_reason": {"type": "string", "minLength": 1}, "failed_mcp_tool_call_count": {"type": "integer", "minimum": 1}, "last_mcp_error_code": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]{0,159}$"}}}}
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "call": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sequence", "tool", "arguments", "arguments_sha256", "result_sha256", "generation", "authority_fingerprint", "total_count", "returned_count", "offset", "next_cursor", "truncated", "complete"],
+      "properties": {
+        "sequence": {"type": "integer", "minimum": 1},
+        "tool": {"enum": ["get_task_context", "read_task_artifact", "list_records", "get_records", "search_records", "query_relations"]},
+        "arguments": {"type": "object"},
+        "arguments_sha256": {"$ref": "#/$defs/sha256"},
+        "result_sha256": {"$ref": "#/$defs/sha256"},
+        "generation": {"type": "string", "minLength": 1, "maxLength": 160},
+        "authority_fingerprint": {"$ref": "#/$defs/sha256"},
+        "total_count": {"type": ["integer", "null"], "minimum": 0},
+        "returned_count": {"type": ["integer", "null"], "minimum": 0},
+        "offset": {"type": ["integer", "null"], "minimum": 0},
+        "next_cursor": {"type": ["string", "null"]},
+        "truncated": {"type": ["boolean", "null"]},
+        "complete": {"type": ["boolean", "null"]}
+      }
+    }
+  }
+}

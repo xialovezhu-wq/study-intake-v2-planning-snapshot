@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/english-legacy-writer-request-v1.json",
+  "title": "English Legacy Isolated Writer Request v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "mode", "runtime_root", "batch_path",
+    "review_receipt_path", "isolated_root", "result_dir", "copy_id",
+    "desired_object", "fault_injection"
+  ],
+  "properties": {
+    "schema_version": {"const": "english_legacy_writer_request_v1"},
+    "mode": {"enum": ["dry_run", "apply"]},
+    "runtime_root": {"$ref": "#/$defs/absolute_path"},
+    "batch_path": {"$ref": "#/$defs/absolute_path"},
+    "review_receipt_path": {"$ref": "#/$defs/absolute_path"},
+    "isolated_root": {"$ref": "#/$defs/absolute_path"},
+    "result_dir": {"$ref": "#/$defs/absolute_path"},
+    "copy_id": {"type": "string", "minLength": 1},
+    "desired_object": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "string"},
+        {
+          "type": "object",
+          "additionalProperties": {"type": "string"}
+        }
+      ]
+    },
+    "fault_injection": {
+      "oneOf": [
+        {"type": "null"},
+        {"const": "after_replace_before_verify"}
+      ]
+    }
+  },
+  "$defs": {
+    "absolute_path": {
+      "type": "string",
+      "pattern": "^/",
+      "minLength": 2
+    }
+  }
+}

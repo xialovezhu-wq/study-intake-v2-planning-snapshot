@@ -1,0 +1,79 @@
+{
+  "skill_name": "kaoyan-english-vocab-export",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "整篇阅读做完了，输出不背单词清单，但不要写 master_bank。",
+      "expected_output": "Produces the project-defined 不背单词 A/B/C card list from article candidates, reads mastered_items.csv before master_bank.csv, reports matches and exclusions, and explicitly does not modify master_bank.csv or weekly_review.md.",
+      "files": [],
+      "expectations": [
+        "Recognizes this as an article-end vocabulary export request.",
+        "Calls english_learning_pipeline.py complete-article with the canonical source_id and reports a real completion receipt.",
+        "Produces A/B/C immediately from the foreground snapshot without waiting for Luna.",
+        "Uses the A/B/C card format from references/bbdc-export-format.md.",
+        "Excludes mastered_items.csv entries from export tiers.",
+        "States that formal CSV writing is a separate next step."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "把这篇文章不会的词按 A/B/C 分层输出，先排除已掌握和重复项。",
+      "expected_output": "Checks mastered_items.csv, de-duplicates current candidates, compares master_bank.csv, and classifies only source-backed items into A/B/C while keeping low-value words out of priority tiers.",
+      "files": [],
+      "expectations": [
+        "Reads the active article or asks for the article path if missing.",
+        "Does not invent source sentences or user unknown words.",
+        "Separates 已掌握或重复项 from export tiers.",
+        "Includes master_bank matching status."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "生成不背单词 App 导入模板；如果我想正式写 CSV，告诉我下一步。",
+      "expected_output": "Calls complete-article, outputs the BBDC A/B/C template immediately without waiting for Luna, and points any later dated formal curation to the exact-trigger daily skill instead of writing CSV itself.",
+      "files": [],
+      "expectations": [
+        "Includes 文章来源, 统计摘要, A/B/C sections, article-only items, duplicates, master_bank matches, and mastered conflicts.",
+        "Uses sentence_patterns.md only when a natural SP-id fit exists.",
+        "Does not update weekly_review.md or real article data by default.",
+        "Uses the exact dated formal-curation handoff and does not route formal writes through intensive reading."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "整篇结束，输出不背单词清单；旧词联动造句时优先用今天符合记忆曲线的错词，没有就用最久没复现的词。",
+      "expected_output": "Generates the BBDC A/B/C export, excludes mastered items, selects old-word linkage candidates by memory-curve due windows using last_seen/date, falls back to oldest active natural candidates when no due word fits, and does not update master_bank.csv or review files by default.",
+      "files": [],
+      "expectations": [
+        "Reads mastered_items.csv before master_bank.csv.",
+        "Uses memory-curve due labels such as D1, D3, D7, D15, D30, D60, D90+ or oldest-fallback.",
+        "Avoids recently repeated old words unless there is no better natural candidate.",
+        "Does not update appear_count, last_seen, master_bank.csv, or weekly_review.md merely because a word appears in a generated example."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "整篇结束，给 discern 生成旧词联动例句，但我现在没有提供原句；不要写任何 bank、句式卡或 review。",
+      "expected_output": "Applies the four-layer grounding contract, returns needs_context because source_sentence is missing, omits the final example and invented IDs, and keeps all formal data read-only.",
+      "files": [],
+      "expectations": [
+        "Explicitly reads or follows schema/reference_grounded_examples.md.",
+        "Returns needs_context or the equivalent evidence gap.",
+        "Does not generate a final English example or fabricate source/reference IDs.",
+        "Does not modify master_bank, mastered_items, sentence_patterns, article, or review files."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "输出这篇文章的 A/B/C 清单，并为 A 类词生成旧词联动句。如果四层地基图谱已经过期，就按规则处理，不要绕过。",
+      "expected_output": "Classifies source-backed candidates, checks graph freshness before any generated example, rebuilds and verify-only once when stale, retries selector once, and fails closed without formal writes if validation still fails.",
+      "files": [],
+      "expectations": [
+        "Checks mastered items and source context before classification.",
+        "Does not bypass a stale graph with static-file or model-memory selection.",
+        "Uses one rebuild/verify/retry loop and then stops on failure.",
+        "Keeps formal bank, sentence-pattern, article, and review data unchanged."
+      ]
+    }
+  ]
+}

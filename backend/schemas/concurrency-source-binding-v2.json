@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/concurrency-source-binding-v2.json",
+  "title": "Concurrency source binding v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "evidence_scope",
+    "campaign_id",
+    "release_id",
+    "current_release_usable",
+    "generated_at",
+    "global_activation",
+    "subjects",
+    "concurrency_calculation_source",
+    "telemetry_role",
+    "formal_surface_guard",
+    "formal_write_count",
+    "sol_enabled",
+    "production_accepted"
+  ],
+  "properties": {
+    "schema_version": {"const": "study-intake-concurrency-source-binding-v2"},
+    "evidence_scope": {
+      "enum": ["real_production_hmac_v2", "zero_model_fixture_v2"]
+    },
+    "campaign_id": {"$ref": "#/$defs/sha256"},
+    "release_id": {"$ref": "#/$defs/sha256"},
+    "current_release_usable": {"type": "boolean"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "global_activation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["receipt_path", "receipt_sha256", "hmac_sha256"],
+      "properties": {
+        "receipt_path": {"type": "string", "minLength": 1},
+        "receipt_sha256": {"$ref": "#/$defs/sha256"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "subjects": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["math", "cs408", "english"],
+      "properties": {
+        "math": {"$ref": "#/$defs/subjectBinding"},
+        "cs408": {"$ref": "#/$defs/subjectBinding"},
+        "english": {"$ref": "#/$defs/subjectBinding"}
+      }
+    },
+    "concurrency_calculation_source": {
+      "const": "hmac_terminal_index_task_supervisor_lifecycle"
+    },
+    "telemetry_role": {"const": "cross_check_only_non_authoritative"},
+    "formal_surface_guard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "baseline_file_sha256",
+        "config_file_sha256",
+        "baseline_manifest_sha256",
+        "current_manifest_sha256"
+      ],
+      "properties": {
+        "baseline_file_sha256": {"$ref": "#/$defs/sha256"},
+        "config_file_sha256": {"$ref": "#/$defs/sha256"},
+        "baseline_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "current_manifest_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "formal_write_count": {"const": 0},
+    "sol_enabled": {"const": false},
+    "production_accepted": {"const": false}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "evidence_scope": {"const": "zero_model_fixture_v2"}
+        }
+      },
+      "then": {
+        "properties": {"current_release_usable": {"const": false}}
+      },
+      "else": {
+        "properties": {"current_release_usable": {"const": true}}
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "nullableSha256": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "subjectBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state_sha256",
+        "terminal_index_path",
+        "terminal_index_sha256",
+        "selected_unit_sha256",
+        "terminal_receipt_sha256",
+        "provider_execution_contract_status",
+        "provider_stage_identity_sha256s",
+        "provider_stage_exit_sha256s",
+        "provider_executable_sha256",
+        "task_runner_executable_sha256"
+      ],
+      "properties": {
+        "state_sha256": {"$ref": "#/$defs/sha256"},
+        "terminal_index_path": {"type": "string", "minLength": 1},
+        "terminal_index_sha256": {"$ref": "#/$defs/sha256"},
+        "selected_unit_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "terminal_receipt_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "provider_execution_contract_status": {
+          "enum": [
+            "verified_no_fast_mode_argv_environment",
+            "zero_model_fixture_not_applicable",
+            "not_verified"
+          ]
+        },
+        "provider_stage_identity_sha256s": {
+          "$ref": "#/$defs/providerStageHashes"
+        },
+        "provider_stage_exit_sha256s": {
+          "$ref": "#/$defs/providerStageHashes"
+        },
+        "provider_executable_sha256": {
+          "$ref": "#/$defs/nullableSha256"
+        },
+        "task_runner_executable_sha256": {
+          "$ref": "#/$defs/nullableSha256"
+        }
+      }
+    },
+    "providerStageHashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["analysis", "critical_review"],
+      "properties": {
+        "analysis": {"$ref": "#/$defs/nullableSha256"},
+        "critical_review": {"$ref": "#/$defs/nullableSha256"}
+      }
+    }
+  }
+}

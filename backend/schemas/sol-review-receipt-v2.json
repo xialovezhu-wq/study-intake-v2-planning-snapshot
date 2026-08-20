@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/sol-review-receipt-v2.json",
+  "title": "Sol review receipt v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "batch_id",
+    "daily_sol_batch_sha256",
+    "subject",
+    "fencing_token",
+    "writer",
+    "writer_adapter",
+    "canonical_evidence_sha256",
+    "decisions",
+    "status",
+    "dispatcher_effect",
+    "formal_write_count",
+    "completed_at",
+    "seal"
+  ],
+  "properties": {
+    "schema_version": {"const": "sol_review_receipt_v2"},
+    "batch_id": {"$ref": "#/$defs/nonempty"},
+    "daily_sol_batch_sha256": {"$ref": "#/$defs/sha256"},
+    "subject": {"$ref": "#/$defs/subject"},
+    "fencing_token": {"type": "integer", "minimum": 1},
+    "writer": {"const": "sol"},
+    "writer_adapter": {"$ref": "#/$defs/writerAdapter"},
+    "canonical_evidence_sha256": {"$ref": "#/$defs/sha256"},
+    "decisions": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/decision"}
+    },
+    "status": {"enum": ["approved", "needs_user", "rejected", "failed"]},
+    "dispatcher_effect": {"$ref": "#/$defs/dispatcherEffect"},
+    "formal_write_count": {"const": 0},
+    "completed_at": {"$ref": "#/$defs/nonempty"},
+    "seal": {"$ref": "#/$defs/seal"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nullableSha256": {
+      "anyOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]
+    },
+    "nonempty": {"type": "string", "minLength": 1},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "writerAdapter": {
+      "enum": [
+        "math_nightly_writer_v1",
+        "cs408_daily_intake_writer_v1",
+        "english_daily_intake_writer_v1"
+      ]
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "capture_id",
+        "unit_sha256",
+        "sol_handoff_envelope_sha256",
+        "decision",
+        "replacement_proposal_sha256",
+        "replacement_package_sha256",
+        "reason"
+      ],
+      "properties": {
+        "capture_id": {"$ref": "#/$defs/nonempty"},
+        "unit_sha256": {"$ref": "#/$defs/sha256"},
+        "sol_handoff_envelope_sha256": {"$ref": "#/$defs/sha256"},
+        "decision": {"enum": ["adopted", "modified", "rejected"]},
+        "replacement_proposal_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "replacement_package_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "reason": {"$ref": "#/$defs/nonempty"}
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["decision"],
+            "properties": {"decision": {"const": "modified"}}
+          },
+          "then": {
+            "properties": {
+              "replacement_proposal_sha256": {"$ref": "#/$defs/sha256"},
+              "replacement_package_sha256": {"$ref": "#/$defs/sha256"}
+            }
+          },
+          "else": {
+            "properties": {
+              "replacement_proposal_sha256": {"type": "null"},
+              "replacement_package_sha256": {"type": "null"}
+            }
+          }
+        }
+      ]
+    },
+    "dispatcherEffect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scope",
+        "subject",
+        "paused_subjects",
+        "drained_subjects",
+        "other_subjects_unchanged"
+      ],
+      "properties": {
+        "scope": {"const": "subject"},
+        "subject": {"$ref": "#/$defs/subject"},
+        "paused_subjects": {"const": []},
+        "drained_subjects": {"const": []},
+        "other_subjects_unchanged": {"const": true}
+      }
+    },
+    "seal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "purpose", "hmac_sha256"],
+      "properties": {
+        "algorithm": {"const": "HMAC-SHA256"},
+        "purpose": {"const": "writer-adapter-sol-review-receipt-v2"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

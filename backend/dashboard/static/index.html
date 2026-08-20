@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#f5f6f8">
+  <title>Study Intake Dashboard</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到任务看板</a>
+
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="brand-block">
+        <div class="brand-mark" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </div>
+        <div>
+          <p class="eyebrow" translate="no">Study Intake</p>
+          <h1>今天的快速入库</h1>
+          <p class="header-note">只读展示正式 Dashboard API，不修改队列或后台状态</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <p id="refresh-status" class="refresh-status" role="status" aria-live="polite">等待载入正式 Dashboard API</p>
+        <button id="refresh-button" class="button button--quiet" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.34 5.66M20 4v7h-7"/></svg>
+          刷新任务
+        </button>
+      </div>
+    </header>
+
+    <nav class="primary-nav" aria-label="Dashboard 视图">
+      <button class="nav-tab is-active" type="button" data-view="board" aria-current="page" aria-controls="board-view">
+        任务看板
+      </button>
+      <button class="nav-tab" type="button" data-view="errors" aria-controls="errors-view">
+        技术异常
+        <span id="error-count" class="nav-count" aria-label="0 个技术异常">0</span>
+      </button>
+      <span class="contract-state">正式 API · 只读</span>
+    </nav>
+
+    <main id="main-content" tabindex="-1">
+      <section class="toolbar" aria-label="任务筛选">
+        <div>
+          <p class="toolbar-label">科目</p>
+          <div class="subject-filter" role="group" aria-label="按科目筛选">
+            <button type="button" class="filter-button is-active" data-subject="all" aria-pressed="true">全部</button>
+            <button type="button" class="filter-button" data-subject="math" aria-pressed="false">数学</button>
+            <button type="button" class="filter-button" data-subject="cs408" aria-pressed="false">408</button>
+            <button type="button" class="filter-button" data-subject="english" aria-pressed="false">英语</button>
+          </div>
+        </div>
+        <div class="toolbar-meta" translate="no">
+          <span class="read-only-dot" aria-hidden="true"></span>
+          Dashboard API · GET only
+        </div>
+      </section>
+
+      <section id="board-view" class="view-panel" aria-labelledby="board-heading">
+        <div class="view-intro">
+          <div>
+            <p class="eyebrow">当前处理面</p>
+            <h2 id="board-heading">任务流转一眼可见</h2>
+          </div>
+          <p>卡片只展示任务名称、当前阶段、时间、报告与质量提示。</p>
+        </div>
+
+        <div id="lane-tabs" class="lane-tabs" role="tablist" aria-label="选择看板列">
+          <button id="lane-tab-waiting" type="button" role="tab" aria-selected="true" aria-controls="lane-waiting" tabindex="0" data-lane-tab="waiting">等待 <span data-lane-tab-count="waiting">0</span></button>
+          <button id="lane-tab-processing" type="button" role="tab" aria-selected="false" aria-controls="lane-processing" tabindex="-1" data-lane-tab="processing">处理中 <span data-lane-tab-count="processing">0</span></button>
+          <button id="lane-tab-completed" type="button" role="tab" aria-selected="false" aria-controls="lane-completed" tabindex="-1" data-lane-tab="completed">已完成 <span data-lane-tab-count="completed">0</span></button>
+        </div>
+
+        <div id="board" class="board" aria-label="任务看板">
+          <section id="lane-waiting" class="lane lane--waiting is-active" role="tabpanel" aria-labelledby="lane-tab-waiting" data-lane="waiting">
+            <header class="lane-header">
+              <div>
+                <p class="lane-kicker">Queue</p>
+                <h3>等待处理</h3>
+              </div>
+              <span class="lane-count" data-lane-count="waiting">0</span>
+            </header>
+            <p class="lane-description">已进入正式队列，尚未被领取</p>
+            <div class="lane-cards" data-lane-cards="waiting"></div>
+          </section>
+
+          <section id="lane-processing" class="lane lane--processing" role="tabpanel" aria-labelledby="lane-tab-processing" data-lane="processing">
+            <header class="lane-header">
+              <div>
+                <p class="lane-kicker">Terra × Luna</p>
+                <h3>多代理处理中</h3>
+              </div>
+              <span class="lane-count" data-lane-count="processing">0</span>
+            </header>
+            <p class="lane-description">展示父协调、读取分支、分波和 fresh-context 复核状态</p>
+            <div class="lane-cards" data-lane-cards="processing"></div>
+          </section>
+
+          <section id="lane-completed" class="lane lane--report lane--completed" role="tabpanel" aria-labelledby="lane-tab-completed" data-lane="completed">
+            <header class="lane-header">
+              <div>
+                <p class="lane-kicker">Review package</p>
+                <h3>已完成</h3>
+              </div>
+              <span class="lane-count" data-lane-count="completed">0</span>
+            </header>
+            <p class="lane-description">执行成功与质量状态保持分离</p>
+            <div class="lane-cards" data-lane-cards="completed"></div>
+          </section>
+        </div>
+      </section>
+
+      <section id="errors-view" class="view-panel" aria-labelledby="errors-heading" hidden>
+        <div class="view-intro view-intro--errors">
+          <div>
+            <p class="eyebrow">Technical failures only</p>
+            <h2 id="errors-heading">技术异常</h2>
+          </div>
+          <p>质量问题不会进入此处；本页只读取 API 明确标记的技术失败。</p>
+        </div>
+        <div id="error-list" class="error-list"></div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="task-dialog" class="task-dialog" aria-labelledby="dialog-title">
+    <header class="dialog-header">
+      <div>
+        <p id="dialog-eyebrow" class="eyebrow">任务详情 · 正式 API</p>
+        <h2 id="dialog-title">任务详情</h2>
+      </div>
+      <button id="dialog-close" class="icon-button" type="button" aria-label="关闭任务详情">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </header>
+    <div id="dialog-content" class="dialog-content"></div>
+    <footer class="dialog-footer">
+      <span>内容来自正式 Dashboard GET API</span>
+      <span>无确认、重试或写入操作</span>
+    </footer>
+  </dialog>
+
+  <template id="task-card-template">
+    <button class="task-card" type="button">
+      <span class="card-topline">
+        <span class="subject-chip"></span>
+        <span class="status-label"></span>
+      </span>
+      <span class="task-title"></span>
+      <span class="phase-row">
+        <span class="phase-label"></span>
+        <span class="time-label"></span>
+      </span>
+      <span class="evidence-mini" aria-hidden="true"></span>
+      <span class="card-footer-row">
+        <span class="report-label"></span>
+        <span class="quality-label" hidden></span>
+      </span>
+    </button>
+  </template>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

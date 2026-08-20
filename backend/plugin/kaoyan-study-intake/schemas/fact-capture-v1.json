@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Kaoyan immutable fact capture v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "capture_id", "subject", "scene", "item_identity", "source_artifacts", "dialogue", "explicit_signals", "captured_at", "formal_write_count"],
+  "properties": {
+    "schema_version": {"const": "fact_capture_v1"},
+    "capture_id": {"type": "string", "minLength": 1, "maxLength": 160},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "scene": {"enum": ["formal_problem", "morning_review", "intensive_reading"]},
+    "item_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "stable_id", "content_fingerprint"],
+      "properties": {
+        "kind": {"enum": ["existing", "unresolved", "new_candidate"]},
+        "stable_id": {"type": ["string", "null"]},
+        "content_fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "source_artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["artifact_id", "role", "sha256"],
+        "properties": {
+          "artifact_id": {"type": "string", "minLength": 1, "maxLength": 160},
+          "role": {"enum": ["question_image", "solution_image", "solution_text", "article", "answer", "explanation", "study_record", "other"]},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "dialogue": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "text"],
+        "properties": {
+          "role": {"enum": ["user", "assistant"]},
+          "text": {"type": "string"}
+        }
+      }
+    },
+    "explicit_signals": {"type": "array", "items": {"type": "object"}},
+    "captured_at": {"type": "string", "format": "date-time"},
+    "formal_write_count": {"const": 0}
+  }
+}

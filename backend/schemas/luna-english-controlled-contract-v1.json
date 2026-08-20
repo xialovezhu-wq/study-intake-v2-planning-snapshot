@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "schema_version": "luna-english-controlled-contract-v1",
+  "subject": "english",
+  "model_execution": {
+    "model": "gpt-5.6-luna",
+    "reasoning_effort": "max",
+    "stages": ["analysis", "critical_review"],
+    "consumable_pipeline_status": "two_pass_ready",
+    "single_pass_consumable": false
+  },
+  "evidence": {
+    "immutable_microbatch_only": true,
+    "source_fields_host_bound": true,
+    "model_driven_mcp": true,
+    "host_semantic_prefetch": false,
+    "full_library_pagination": true,
+    "subject": "english"
+  },
+  "safety": {
+    "answer_material_forbidden": true,
+    "hidden_chain_of_thought_exposed": false,
+    "formal_write_count": 0
+  },
+  "formal_write_count": 0
+}

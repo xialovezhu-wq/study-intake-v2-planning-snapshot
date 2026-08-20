@@ -1,0 +1,4 @@
+interface:
+  display_name: "数学可视化复盘"
+  short_description: "从已验证证据生成 10–15 分钟数学复盘或安全本地 HTML 成品。"
+  default_prompt: "Use $kaoyan-math-visual-review to produce one evidence-backed 10–15 minute review. Keep ordinary reviews chat-only; create one safe artifact only when HTML or saving is explicitly requested, render-check it, and route formal intake or unified filtering to their dedicated skills."

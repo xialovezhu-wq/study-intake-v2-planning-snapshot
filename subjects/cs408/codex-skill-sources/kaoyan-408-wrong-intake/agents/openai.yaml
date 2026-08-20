@@ -1,0 +1,6 @@
+interface:
+  display_name: "408 错题入库"
+  short_description: "学习中快速捕获事实，或立即完整维护一道 408 错题"
+  default_prompt: "使用 $kaoyan-408-wrong-intake 快速捕获当前题事实；若我明确要求立即完整入库，再执行单题正式全流程。"
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/stale-claim-quarantine-receipt-v1.json",
+  "title": "Drained stale claim quarantine receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "quarantine_id",
+    "subject",
+    "unit_sha256",
+    "owner_id",
+    "owner_pid",
+    "lease_fence_before",
+    "lease_fence_after",
+    "lease_before_sha256",
+    "task_detail_sha256",
+    "drain_sha256",
+    "drain_started_at",
+    "heartbeat_at",
+    "ttl_seconds",
+    "lease_expired_at",
+    "quarantine_effective_at",
+    "production_canary_state_present",
+    "status_before",
+    "status_after",
+    "owner_process_status",
+    "late_result_publish_allowed",
+    "model_call_count",
+    "provider_request_count",
+    "formal_write_count",
+    "sol_enabled",
+    "authority"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "study-intake-stale-claim-quarantine-receipt-v1"
+    },
+    "quarantine_id": {
+      "$ref": "#/$defs/sha256"
+    },
+    "subject": {
+      "enum": [
+        "math",
+        "cs408",
+        "english"
+      ]
+    },
+    "unit_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "owner_id": {
+      "type": "string",
+      "pattern": "^dispatcher-[1-9][0-9]*-[0-9a-f]{32}$"
+    },
+    "owner_pid": {
+      "type": "integer",
+      "minimum": 2
+    },
+    "lease_fence_before": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "lease_fence_after": {
+      "type": "integer",
+      "minimum": 2
+    },
+    "lease_before_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "task_detail_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "drain_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "drain_started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "heartbeat_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ttl_seconds": {
+      "const": 120
+    },
+    "lease_expired_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "quarantine_effective_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "production_canary_state_present": {
+      "const": false
+    },
+    "status_before": {
+      "const": "claimed"
+    },
+    "status_after": {
+      "const": "quarantined"
+    },
+    "owner_process_status": {
+      "const": "absent"
+    },
+    "late_result_publish_allowed": {
+      "const": false
+    },
+    "model_call_count": {
+      "const": 0
+    },
+    "provider_request_count": {
+      "const": 0
+    },
+    "formal_write_count": {
+      "const": 0
+    },
+    "sol_enabled": {
+      "const": false
+    },
+    "authority": {
+      "$ref": "#/$defs/authority"
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "algorithm",
+        "key_id",
+        "purpose",
+        "hmac_sha256"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "study-intake-dispatch-authority-v1"
+        },
+        "algorithm": {
+          "const": "HMAC-SHA256"
+        },
+        "key_id": {
+          "$ref": "#/$defs/sha256"
+        },
+        "purpose": {
+          "const": "dispatch-stale-claim-quarantine"
+        },
+        "hmac_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  }
+}

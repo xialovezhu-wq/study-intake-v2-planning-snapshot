@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "cs408_terminal_batch_writer_retirement_rollback_receipt_v1",
+  "type": "object",
+  "required": [
+    "schema_version", "subject", "retirement_receipt_sha256",
+    "retirement_receipt_path", "authorization_descriptor_sha256",
+    "rollback_token", "writer_state_after_sha256",
+    "writer_state_restored_sha256", "batch_pointer_unchanged_sha256",
+    "batch_snapshot_unchanged_sha256", "terminal_receipt_unchanged_sha256",
+    "retirement_pointer_withdrawn", "retirement_intent_withdrawn",
+    "rollback_postimage_verification_sha256", "queue_entry_created_count",
+    "replacement_task_created_count", "capture_replay_count",
+    "authority_snapshot_count", "authority_snapshot_mcp_tool_call_count",
+    "model_mcp_tool_call_count", "mcp_tool_call_count", "model_call_count",
+    "provider_request_count", "formal_write_count", "sol_enabled",
+    "rolled_back_at", "seal"
+  ],
+  "properties": {
+    "schema_version": {"const": "cs408_terminal_batch_writer_retirement_rollback_receipt_v1"},
+    "subject": {"const": "cs408"},
+    "retirement_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "retirement_receipt_path": {"type": "string", "pattern": "^/"},
+    "authorization_descriptor_sha256": {"$ref": "#/$defs/sha256"},
+    "rollback_token": {"$ref": "#/$defs/sha256"},
+    "writer_state_after_sha256": {"$ref": "#/$defs/sha256"},
+    "writer_state_restored_sha256": {"const": "f4dc94f9be21578d37e663e187948af581a4fc0dba633cb2e4fe7f6e12f8a29d"},
+    "batch_pointer_unchanged_sha256": {"const": "804f5f213d0a56351bb21179110309943577b453aabe2b5ef71e66640cb91e92"},
+    "batch_snapshot_unchanged_sha256": {"const": "96400ebe760cdda21b4fe62f8a3987ef118f217a01289ea0ef8b6f1d8ff541dc"},
+    "terminal_receipt_unchanged_sha256": {"const": "83c000a307f2af2037afae903ec1b791e85c00da75ebb9f5178088c76f11a5ff"},
+    "retirement_pointer_withdrawn": {"const": true},
+    "retirement_intent_withdrawn": {"const": true},
+    "rollback_postimage_verification_sha256": {"$ref": "#/$defs/sha256"},
+    "queue_entry_created_count": {"const": 0},
+    "replacement_task_created_count": {"const": 0},
+    "capture_replay_count": {"const": 0},
+    "authority_snapshot_count": {"const": 0},
+    "authority_snapshot_mcp_tool_call_count": {"const": 0},
+    "model_mcp_tool_call_count": {"const": 0},
+    "mcp_tool_call_count": {"const": 0},
+    "model_call_count": {"const": 0},
+    "provider_request_count": {"const": 0},
+    "formal_write_count": {"const": 0},
+    "sol_enabled": {"const": false},
+    "rolled_back_at": {"type": "string", "format": "date-time"},
+    "seal": {"$ref": "#/$defs/seal"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "seal": {
+      "type": "object", "required": ["algorithm", "purpose", "hmac_sha256"],
+      "properties": {
+        "algorithm": {"const": "HMAC-SHA256"},
+        "purpose": {"const": "cs408-terminal-batch-writer-retirement-rollback-v1"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

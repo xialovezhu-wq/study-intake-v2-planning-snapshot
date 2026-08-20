@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/english-legacy-authorization-expansion-closure-v1.json",
+  "title": "English Legacy Authorization Expansion Closure v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "issue_id", "subject", "batch_authorization_sha256",
+    "intent_sha256", "inventory_sha256", "target_set_sha256",
+    "authority_generation", "authority_fingerprint", "authorized_operations",
+    "target_authorizations", "target_count", "materialized_target_count",
+    "unidentified_target_count", "omitted_target_count", "duplicate_target_count",
+    "unknown_target_count", "authority_key_id", "model_call_count",
+    "formal_write_count", "issued_at", "seal"
+  ],
+  "properties": {
+    "schema_version": {"const": "english_legacy_authorization_expansion_closure_v1"},
+    "issue_id": {"const": "EN-P0-006"},
+    "subject": {"const": "english"},
+    "batch_authorization_sha256": {"$ref": "#/$defs/sha256"},
+    "intent_sha256": {"$ref": "#/$defs/sha256"},
+    "inventory_sha256": {"$ref": "#/$defs/sha256"},
+    "target_set_sha256": {"$ref": "#/$defs/sha256"},
+    "authority_generation": {"type": "string", "minLength": 1},
+    "authority_fingerprint": {"$ref": "#/$defs/sha256"},
+    "authorized_operations": {"const": ["luna_recuration", "sol_review", "sol_apply"]},
+    "target_authorizations": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/target_authorization"}},
+    "target_count": {"type": "integer", "minimum": 1},
+    "materialized_target_count": {"type": "integer", "minimum": 1},
+    "unidentified_target_count": {"const": 0},
+    "omitted_target_count": {"const": 0},
+    "duplicate_target_count": {"const": 0},
+    "unknown_target_count": {"const": 0},
+    "authority_key_id": {"$ref": "#/$defs/sha256"},
+    "model_call_count": {"const": 0},
+    "formal_write_count": {"const": 0},
+    "issued_at": {"type": "string", "format": "date-time"},
+    "seal": {"$ref": "#/$defs/seal"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "target_authorization": {
+      "type": "object", "additionalProperties": false,
+      "required": ["ordinal", "target_id", "authorization_event_sha256", "disposition_receipt_sha256"],
+      "properties": {
+        "ordinal": {"type": "integer", "minimum": 1},
+        "target_id": {"type": "string", "minLength": 1},
+        "authorization_event_sha256": {"$ref": "#/$defs/sha256"},
+        "disposition_receipt_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "seal": {
+      "type": "object", "additionalProperties": false,
+      "required": ["algorithm", "purpose", "hmac_sha256"],
+      "properties": {
+        "algorithm": {"const": "HMAC-SHA256"},
+        "purpose": {"const": "english-legacy-authorization-expansion-closure-v1"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

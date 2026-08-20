@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/english-legacy-inventory-independent-review-receipt-v1.json",
+  "title": "English Legacy Inventory Independent Review Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "issue_id", "subject", "review_id",
+    "reviewer_identity", "review_method", "status", "verdict",
+    "rollout_sha256", "authority_generation", "authority_fingerprint",
+    "target_set_sha256", "target_count", "write_set_proof_sha256",
+    "unidentified_target_count", "omitted_target_count",
+    "duplicate_target_count", "unknown_target_count", "reviewed_at",
+    "model_call_count", "formal_write_count", "authority_key_id", "seal"
+  ],
+  "properties": {
+    "schema_version": {"const": "english_legacy_inventory_independent_review_receipt_v1"},
+    "issue_id": {"const": "EN-P0-006"},
+    "subject": {"const": "english"},
+    "review_id": {"type": "string", "minLength": 1},
+    "reviewer_identity": {"type": "string", "minLength": 1},
+    "review_method": {"const": "independent_mutation_to_authority_bidirectional_review"},
+    "status": {"const": "completed"},
+    "verdict": {"const": "complete_zero_diff_verified"},
+    "rollout_sha256": {"$ref": "#/$defs/sha256"},
+    "authority_generation": {"type": "string", "minLength": 1},
+    "authority_fingerprint": {"$ref": "#/$defs/sha256"},
+    "target_set_sha256": {"$ref": "#/$defs/sha256"},
+    "target_count": {"type": "integer", "minimum": 1},
+    "write_set_proof_sha256": {"$ref": "#/$defs/sha256"},
+    "unidentified_target_count": {"const": 0},
+    "omitted_target_count": {"const": 0},
+    "duplicate_target_count": {"const": 0},
+    "unknown_target_count": {"const": 0},
+    "reviewed_at": {"type": "string", "format": "date-time"},
+    "model_call_count": {"const": 0},
+    "formal_write_count": {"const": 0},
+    "authority_key_id": {"$ref": "#/$defs/sha256"},
+    "seal": {"$ref": "#/$defs/seal"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "seal": {
+      "type": "object", "additionalProperties": false,
+      "required": ["algorithm", "purpose", "hmac_sha256"],
+      "properties": {
+        "algorithm": {"const": "HMAC-SHA256"},
+        "purpose": {"const": "english-legacy-inventory-independent-review-receipt-v1"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

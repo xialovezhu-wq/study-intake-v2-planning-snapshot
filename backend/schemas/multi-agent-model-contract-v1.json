@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/multi-agent-model-contract-v1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "roles", "strict_config", "ephemeral", "ignore_user_config", "requested_service_tier", "formal_write_count", "contract_sha256"],
+  "properties": {
+    "schema_version": {"const": "study-intake-multi-agent-model-contract-v1"},
+    "roles": {
+      "type": "object", "additionalProperties": false,
+      "required": ["orchestrator", "reader", "critical_reviewer"],
+      "properties": {
+        "orchestrator": {"allOf": [{"$ref": "#/$defs/role"}, {"properties": {"model": {"const": "gpt-5.6-terra"}, "reasoning_effort": {"const": "ultra"}, "agents_enabled": {"const": true}, "sandbox_mode": {"const": "workspace-write"}}}]},
+        "reader": {"allOf": [{"$ref": "#/$defs/role"}, {"properties": {"model": {"const": "gpt-5.6-luna"}, "reasoning_effort": {"const": "max"}, "agents_enabled": {"const": false}, "sandbox_mode": {"const": "read-only"}}}]},
+        "critical_reviewer": {"allOf": [{"$ref": "#/$defs/role"}, {"properties": {"model": {"const": "gpt-5.6-terra"}, "reasoning_effort": {"const": "ultra"}, "agents_enabled": {"const": false}, "sandbox_mode": {"const": "read-only"}}}]}
+      }
+    },
+    "strict_config": {"const": true}, "ephemeral": {"const": true}, "ignore_user_config": {"const": true},
+    "requested_service_tier": {"type": "null"}, "formal_write_count": {"const": 0},
+    "contract_sha256": {"$ref": "#/$defs/sha"}
+  },
+  "$defs": {
+    "sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "role": {
+      "type": "object", "additionalProperties": false,
+      "required": ["model", "reasoning_effort", "agents_enabled", "fresh_context", "sandbox_mode", "agent_config_path", "agent_config_sha256", "tool_policy_path", "tool_policy_sha256"],
+      "properties": {
+        "model": {"type": "string"}, "reasoning_effort": {"type": "string"}, "agents_enabled": {"type": "boolean"},
+        "fresh_context": {"const": true}, "sandbox_mode": {"type": "string"},
+        "agent_config_path": {"type": "string", "pattern": "^/"}, "agent_config_sha256": {"$ref": "#/$defs/sha"},
+        "tool_policy_path": {"type": "string", "pattern": "^/"}, "tool_policy_sha256": {"$ref": "#/$defs/sha"}
+      }
+    }
+  }
+}

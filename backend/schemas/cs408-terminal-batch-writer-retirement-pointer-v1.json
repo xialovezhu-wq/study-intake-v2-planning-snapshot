@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "cs408_terminal_batch_writer_retirement_pointer_v1",
+  "type": "object",
+  "required": [
+    "schema_version", "subject", "retirement_id", "old_batch_id",
+    "old_batch_sha256", "retirement_receipt_sha256",
+    "retirement_receipt_path", "writer_revision_after",
+    "writer_state_after_sha256", "next_generation",
+    "next_authority_fingerprint", "applied_at", "formal_write_count", "seal"
+  ],
+  "properties": {
+    "schema_version": {"const": "cs408_terminal_batch_writer_retirement_pointer_v1"},
+    "subject": {"const": "cs408"},
+    "retirement_id": {"$ref": "#/$defs/sha256"},
+    "old_batch_id": {"const": "LUNA-CS408-2026-08-12-6FC5AFB45F313F8A0E4D"},
+    "old_batch_sha256": {"const": "7b22c081aebb0efa912f981e1d71cbdf8b4501da8634e959aec5108c1125ec39"},
+    "retirement_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "retirement_receipt_path": {"type": "string", "pattern": "^/"},
+    "writer_revision_after": {"type": "integer", "minimum": 1},
+    "writer_state_after_sha256": {"$ref": "#/$defs/sha256"},
+    "next_generation": {"const": "cs408-e51335bd173df83c1736"},
+    "next_authority_fingerprint": {"const": "e51335bd173df83c173666f4b880bdc91a008055818bd7425650959a8d59b08b"},
+    "applied_at": {"type": "string", "format": "date-time"},
+    "formal_write_count": {"const": 0},
+    "seal": {"$ref": "#/$defs/seal"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "seal": {
+      "type": "object", "required": ["algorithm", "purpose", "hmac_sha256"],
+      "properties": {
+        "algorithm": {"const": "HMAC-SHA256"},
+        "purpose": {"const": "cs408-terminal-batch-writer-retirement-pointer-v1"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

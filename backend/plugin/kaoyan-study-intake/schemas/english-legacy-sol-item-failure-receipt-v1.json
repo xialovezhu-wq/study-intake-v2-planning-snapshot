@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/english-legacy-sol-item-failure-receipt-v1.json",
+  "title": "English Legacy Sol Item Failure Receipt v1",
+  "type": "object", "additionalProperties": false,
+  "required": [
+    "schema_version", "issue_id", "batch_id", "batch_sha256", "subject",
+    "target_id", "target_kind", "ordinal", "fencing_token", "attempt",
+    "previous_checkpoint_sha256", "review_receipt_sha256", "failure_stage", "authority_checkpoint_sha256",
+    "reason", "recovery_position_sha256", "writer_process", "transaction_end",
+    "retryable", "formal_write_count", "failed_at", "seal"
+  ],
+  "properties": {
+    "schema_version": {"const": "english_legacy_sol_item_failure_receipt_v1"},
+    "issue_id": {"const": "EN-P0-006"}, "batch_id": {"type": "string", "minLength": 1},
+    "batch_sha256": {"$ref": "#/$defs/sha256"}, "subject": {"const": "english"},
+    "target_id": {"type": "string", "minLength": 1},
+    "target_kind": {"enum": ["master_bank_row", "sentence_pattern_card", "article_learning_page"]},
+    "ordinal": {"type": "integer", "minimum": 1}, "fencing_token": {"type": "integer", "minimum": 1},
+    "attempt": {"type": "integer", "minimum": 1},
+    "previous_checkpoint_sha256": {"$ref": "#/$defs/nullable_sha256"},
+    "review_receipt_sha256": {"$ref": "#/$defs/nullable_sha256"},
+    "failure_stage": {"enum": ["sol_review", "formal_apply"]},
+    "authority_checkpoint_sha256": {"$ref": "#/$defs/sha256"},
+    "reason": {"type": "string", "minLength": 1}, "recovery_position_sha256": {"$ref": "#/$defs/sha256"},
+    "writer_process": {"$ref": "#/$defs/process"}, "transaction_end": {"$ref": "#/$defs/transaction"},
+    "retryable": {"type": "boolean"}, "formal_write_count": {"const": 0},
+    "failed_at": {"type": "string", "minLength": 1}, "seal": {"$ref": "#/$defs/seal"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nullable_sha256": {"anyOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+    "process": {"type": "object", "additionalProperties": false,
+      "required": ["adapter_run_id", "pid", "terminal_state", "exit_code", "stopped_at", "evidence_sha256"],
+      "properties": {"adapter_run_id": {"type": "string", "minLength": 1}, "pid": {"type": "integer", "minimum": 1},
+        "terminal_state": {"const": "stopped"}, "exit_code": {"type": "integer", "minimum": 0},
+        "stopped_at": {"type": "string", "minLength": 1}, "evidence_sha256": {"$ref": "#/$defs/sha256"}}
+    },
+    "transaction": {"type": "object", "additionalProperties": false,
+      "required": ["transaction_id", "state", "ended_at", "evidence_sha256"],
+      "properties": {"transaction_id": {"type": "string", "minLength": 1},
+        "state": {"enum": ["failed", "rolled_back"]}, "ended_at": {"type": "string", "minLength": 1},
+        "evidence_sha256": {"$ref": "#/$defs/sha256"}}
+    },
+    "seal": {"type": "object", "additionalProperties": false,
+      "required": ["algorithm", "purpose", "hmac_sha256"],
+      "properties": {"algorithm": {"const": "HMAC-SHA256"},
+        "purpose": {"const": "english-legacy-sol-item-failure-receipt-v1"}, "hmac_sha256": {"$ref": "#/$defs/sha256"}}
+    }
+  }
+}

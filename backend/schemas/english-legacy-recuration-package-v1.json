@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EN-P0-006 Luna recuration package v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "work_item_sha256",
+    "remediation_batch_id",
+    "inventory_sha256",
+    "batch_authorization_sha256",
+    "target_authorization_receipt_sha256",
+    "target_id",
+    "target_kind",
+    "record_id",
+    "ordinal",
+    "attempt",
+    "authority",
+    "analysis",
+    "critical_review",
+    "stage_receipts",
+    "processing_publication",
+    "final_read_session_receipt_sha256",
+    "proposal",
+    "proposal_sha256",
+    "quality_outcome",
+    "runtime_identity_status",
+    "model_call_count",
+    "formal_write_count",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": {"const": "english_legacy_recuration_package_v1"},
+    "work_item_sha256": {"$ref": "#/$defs/sha256"},
+    "remediation_batch_id": {"type": "string", "minLength": 1, "maxLength": 160},
+    "inventory_sha256": {"$ref": "#/$defs/sha256"},
+    "batch_authorization_sha256": {"$ref": "#/$defs/sha256"},
+    "target_authorization_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "target_id": {"type": "string", "minLength": 1, "maxLength": 240},
+    "target_kind": {
+      "enum": ["master_bank_row", "sentence_pattern_card", "article_learning_page"]
+    },
+    "record_id": {"type": "string", "minLength": 1, "maxLength": 240},
+    "ordinal": {"type": "integer", "minimum": 1},
+    "attempt": {"type": "integer", "minimum": 1},
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["generation", "authority_fingerprint"],
+      "properties": {
+        "generation": {"type": "string", "minLength": 1, "maxLength": 160},
+        "authority_fingerprint": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "analysis": {"$ref": "#/$defs/stage"},
+    "critical_review": {"$ref": "#/$defs/stage"},
+    "stage_receipts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["analysis", "critical_review", "read_session"],
+      "properties": {
+        "analysis": {"type": "object"},
+        "critical_review": {"type": "object"},
+        "read_session": {"type": "object"}
+      }
+    },
+    "processing_publication": {"type": "object"},
+    "final_read_session_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "proposal": {"type": "object"},
+    "proposal_sha256": {"$ref": "#/$defs/sha256"},
+    "quality_outcome": {"enum": ["accepted", "corrected"]},
+    "runtime_identity_status": {"const": "requested_unverified"},
+    "model_call_count": {"const": 2},
+    "formal_write_count": {"const": 0},
+    "created_at": {"type": "string", "format": "date-time"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "stage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "output_sha256",
+        "transcript_sha256",
+        "call_receipt_sha256",
+        "provider_request_count",
+        "mcp_tool_call_count"
+      ],
+      "properties": {
+        "output_sha256": {"$ref": "#/$defs/sha256"},
+        "transcript_sha256": {"$ref": "#/$defs/sha256"},
+        "call_receipt_sha256": {"$ref": "#/$defs/sha256"},
+        "provider_request_count": {"type": "integer", "minimum": 2},
+        "mcp_tool_call_count": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

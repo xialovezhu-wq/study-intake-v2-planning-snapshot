@@ -1,0 +1,190 @@
+schema_version: study-intake-workspace-manifest.v1
+generated_at: "2026-08-20T14:00:07+08:00"
+local_closeout_status: PARTIAL
+git_topology: MIXED
+scope:
+  direct:
+    - central_backend_authoring
+    - shared_read_mcp_successor_binding
+    - coordination_handoff_documents
+    - reviewed_gitignore_changes
+  verification_only:
+    - math
+    - cs408
+    - english
+  prohibited:
+    - deploy
+    - current_release_switch
+    - production_promotion
+    - formal_write
+    - git_add
+    - git_commit
+    - git_init
+    - remote_change
+    - git_push
+projects:
+  backend:
+    role: three-subject Study Intake preprocessor and validation control plane
+    path: /Users/xiazhibin/Documents/Codex/2026-08-10/lunamax-mcp-lunamax-lunamax-provider-codex/work/three-subject-successor
+    git_root: null
+    worktree: null
+    branch: null
+    head: null
+    remote: null
+    deployed_current_release: ad1807186ac277c6bacfb7fd8d83b9cbc86cf75027698e70f994f3228d815cc9
+    candidate_build: NOT_RUN
+    candidate_verify: NOT_RUN
+    build_gate: blocked_by_historical_provider_lifecycle_full_core_failure
+    entrypoints:
+      - bin/preprocess_dispatcher.py
+      - bin/preprocess_worker.py
+      - dashboard/server.py
+      - scripts/release_manager.py
+    tests:
+      - "python3 -B -m unittest discover -s tests -p 'test_*.py' -q"
+      - "python3 -B -m unittest discover -s dashboard/tests -p 'test_*.py' -q"
+    state_files:
+      - CURRENT_STATUS.md
+      - WORKSPACE_MANIFEST.yaml
+  shared_mcp:
+    role: local-only read-only MCP shared by math, cs408, and english
+    path: /Users/xiazhibin/Documents/Codex/local-study-read-mcp
+    git_root: /Users/xiazhibin/Documents/Codex/local-study-read-mcp
+    worktree: /Users/xiazhibin/Documents/Codex/local-study-read-mcp
+    branch: main
+    head: 0c54694c417441767f68dba02c8b6a54cae70a7c
+    remote: null
+    successor_release_id: 21d738a1d74586aab72c8a63dc62c680aa10c6ac837c2bd5041e757ba0e63425
+    successor_server_release: 0.4.1+sha256.21d738a1d74586aab72c8a63dc62c680aa10c6ac837c2bd5041e757ba0e63425
+    successor_release_manifest_sha256: 3753175de6a66b5cd67efe6b85622a6e8bdb519bee5166834677ee0bad08a5e5
+    successor_release_status: verified_dependency_release_not_deployed
+    entrypoints:
+      - src/study_read_mcp/__main__.py
+      - src/study_read_mcp/launchers.py
+      - scripts/build_release.py
+    test_entrypoint: ".venv/bin/python -B -m unittest discover -s . -p 'test_*.py' -q"
+  math:
+    role: math foreground capture producer and canonical Skill
+    path: /Users/xiazhibin/Documents/kaoyan-math
+    git_root: /Users/xiazhibin/Documents/kaoyan-math
+    worktree: /Users/xiazhibin/Documents/kaoyan-math
+    branch: master
+    head: c3098894a3611fc0e76cc47985e070b454d0f198
+    remote: https://gitee.com/xiazhibin_code/kaoyan-math.git
+    canonical_skill: /Users/xiazhibin/Documents/kaoyan-math/codex-skill-sources/kaoyan-math-wrong-intake
+    installed_skill: /Users/xiazhibin/.codex/skills/kaoyan-math-wrong-intake
+    skill_sha256: 8f09e4092e64095e32f4c16442bf73872775fddf76c66f3d28f091839f192979
+    alignment: ALIGNED
+    stage_b_scope: VERIFICATION_ONLY
+    smoke_result: PASS
+  cs408:
+    role: 408 foreground capture producer and canonical Skill
+    path: /Users/xiazhibin/Documents/kaoyan-408
+    git_root: /Users/xiazhibin/Documents/kaoyan-408
+    worktree: /Users/xiazhibin/Documents/kaoyan-408
+    additional_worktree: /Users/xiazhibin/Documents/Codex/worktrees/kaoyan-408-formal-backflow
+    branch: codex/recent-408-study-20260715
+    head: 383987141b7ce1eb9e4e190b3b85e0896542f4da
+    remote: https://gitee.com/xiazhibin_code/kaoyan-408.git
+    canonical_skill: /Users/xiazhibin/Documents/kaoyan-408/codex-skill-sources/kaoyan-408-wrong-intake
+    installed_skill: /Users/xiazhibin/.codex/skills/kaoyan-408-wrong-intake
+    skill_sha256: 8079229c8041407e4097ec89aaea8312cbc4b2c2d1e6e810f8b3fbc2a10407eb
+    alignment: ALIGNED
+    stage_b_scope: VERIFICATION_ONLY
+    smoke_result: PASS
+  english:
+    role: English foreground event producer and canonical Skill
+    path: /Users/xiazhibin/Documents/kaoyan-english
+    git_root: /Users/xiazhibin/Documents/kaoyan-english
+    worktree: /Users/xiazhibin/Documents/kaoyan-english
+    branch: master
+    head: 9bbb7c1cf84fbe769cdaa5f38085068fe4b86414
+    remote: https://gitee.com/xiazhibin_code/kaoyan-english.git
+    canonical_skill: /Users/xiazhibin/Documents/kaoyan-english/codex-skill-sources/kaoyan-english-intensive-reading
+    installed_skill: /Users/xiazhibin/.codex/skills/kaoyan-english-intensive-reading
+    skill_sha256: cb60672254c18b9eaf0b410af2c0af70a5f596046ef474e7bc32e5f81bbdd25f
+    alignment: ALIGNED
+    stage_b_scope: VERIFICATION_ONLY
+    smoke_result: PASS
+schema_successors:
+  restored_historical:
+    mcp-authority-snapshot-v1.json: 623564ff69a8f62157aaf74e0bf316923f4840fc9e23bc7f870d56d8004b0762
+    mcp-authority-snapshot-receipt-v1.json: 829c51cfd67c957ee8e0abbd55110cca51e0695eb4fd717824b846055b7b9077
+    mcp-read-session-v3.json: 0e335fc450f28490b8df179a4a7542688224cbfe6d9bd6dfe531530c5e5d28a8
+  added:
+    mcp-authority-snapshot-v2.json: 7a409ca76733ac6f8f477354c4651a7d72ca036e1e6bafac8b379104015fddbc
+    mcp-authority-snapshot-receipt-v2.json: e7c720bdbbbeb2351c36cb852f4fa99d302d383f1bf87772c7077a5864190a07
+    mcp-read-session-v4.json: 56fac5abd5a7cbeaefa20cb7c1c189d50265378306b75388d6399a6a88daa16e
+  active_read_session: study-read-mcp-read-session.v4
+  active_snapshot: study-read-mcp-authority-snapshot.v2
+  active_snapshot_receipt: mcp_authority_snapshot_receipt_v2
+  legacy_references_remaining: compatibility_and_frozen_tests_only
+tests:
+  schema_byte_freeze: PASS
+  successor_schema_compatibility: PASS
+  affected_host_plugin_mcp_binding: PASS
+  shared_mcp_full_74: PASS
+  three_subject_alignment: PASS
+  math_smoke: PASS
+  cs408_smoke: PASS
+  english_smoke: PASS
+  core_stage_b_initial:
+    result: FAIL
+    tests: 1144
+    failures: 3
+    duration_seconds: 797.243
+  core_stage_b_postfix:
+    result: FAIL
+    tests: 1144
+    failures: 1
+    errors: 1
+    duration_seconds: 786.745
+    classification: HISTORICAL_FAILURE
+    area: Provider hard-cancel process lifecycle race under full-suite load
+  central_hermetic_build: NOT_RUN
+  central_immutable_verify: NOT_RUN
+  deploy: PROHIBITED_NOT_RUN
+repository_mapping_proposal:
+  backend:
+    github_repository: study-intake-v2-backend
+    future_remote_name: origin
+    private: true
+  shared_mcp:
+    github_repository: local-study-read-mcp
+    future_remote_name: origin
+    private: true
+  math:
+    github_repository: kaoyan-math
+    preserve_remote: origin
+    future_github_remote_name: github
+    private: true
+  cs408:
+    github_repository: kaoyan-408
+    preserve_remote: origin
+    future_github_remote_name: github
+    private: true
+  english:
+    github_repository: kaoyan-english
+    preserve_remote: origin
+    future_github_remote_name: github
+    private: true
+  coordination:
+    recommendation: keep_local_for_minimum_baseline
+    optional_future_repository: study-intake-v2-handoff
+security:
+  history_scan_required_before_push: true
+  findings:
+    - cs408_history_contains_key_and_sqlite_paths
+    - english_history_contains_sqlite_wal_shm_paths
+    - math_history_contains_one_19mb_generated_json_blob
+  forbidden_upload_types:
+    - .env
+    - private_keys
+    - tokens
+    - sqlite_databases
+    - wal_and_shm
+    - backups
+    - personal_runtime_state
+    - virtual_environments
+    - node_modules
+    - large_generated_outputs

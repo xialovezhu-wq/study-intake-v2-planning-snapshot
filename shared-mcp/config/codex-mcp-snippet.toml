@@ -1,0 +1,38 @@
+# Source template only. The release builder substitutes no values and never
+# installs this file. Activation tooling must replace every __MCP_*__ token
+# from one verified component-lock entry.
+[mcp_servers.kaoyan_read]
+command = "__MCP_PYTHON_EXECUTABLE__"
+args = [
+  "-I",
+  "-S",
+  "__MCP_SEALED_LAUNCHER_PATH__",
+  "--release-root",
+  "__MCP_RELEASE_ROOT__",
+  "--expected-release-id",
+  "__MCP_RELEASE_ID__",
+  "--expected-release-manifest-sha256",
+  "__MCP_RELEASE_MANIFEST_SHA256__",
+  "--mode",
+  "server",
+  "--profile",
+  "ordinary",
+  "--subjects",
+  "math,cs408,english",
+]
+cwd = "__MCP_RELEASE_ROOT__"
+env = {}
+env_vars = []
+enabled = true
+required = false
+startup_timeout_sec = 5
+tool_timeout_sec = 10
+enabled_tools = [
+  "authority_bundle",
+  "verify_evidence_batch",
+  "math_read_bundle",
+  "cs408_read_bundle",
+  "english_read_bundle",
+]
+disabled_tools = []
+default_tools_approval_mode = "auto"

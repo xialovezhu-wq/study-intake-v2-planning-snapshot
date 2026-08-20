@@ -1,0 +1,11 @@
+{
+  "schema_version": "study-intake-subject-contract-vector-v1",
+  "subject": "cs408",
+  "foreground_skill_id": "kaoyan-408-wrong-intake",
+  "producer_contract_id": "cs408-current-question-capture-producer",
+  "capture_contract_id": "intake_fact_capture",
+  "capture_id": "CAP-20260817-fixture000000",
+  "capture_content_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+  "expected_pipeline": ["producer_validation", "capture_receipt", "producer_attestation", "scanner_binding", "freeze", "read_plan", "branch_results", "read_bundle", "candidate", "risk", "sol_handoff"],
+  "formal_write_count": 0
+}

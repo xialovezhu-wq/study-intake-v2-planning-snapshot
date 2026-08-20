@@ -1,0 +1,214 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/english-legacy-target-inventory-v3.json",
+  "title": "English Legacy Target Inventory v3",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "issue_id", "subject", "originating_thread_id",
+    "inventory_id", "inventory_status", "authority", "mcp_authority", "write_set_proof",
+    "targets", "target_count", "target_set_sha256",
+    "unidentified_target_count", "omitted_target_count",
+    "duplicate_target_count", "unknown_target_count",
+    "mastered_items_boundary", "independent_inventory_review",
+    "model_call_count", "formal_write_count", "issued_at",
+    "authority_key_id", "seal"
+  ],
+  "properties": {
+    "schema_version": {"const": "english_legacy_target_inventory_v3"},
+    "issue_id": {"const": "EN-P0-006"},
+    "subject": {"const": "english"},
+    "originating_thread_id": {"const": "019f4bd8-56dc-7a82-b029-155c11740feb"},
+    "inventory_id": {"type": "string", "minLength": 1},
+    "inventory_status": {"const": "complete"},
+    "authority": {"$ref": "#/$defs/authority"},
+    "mcp_authority": {"$ref": "#/$defs/mcp_authority"},
+    "write_set_proof": {"$ref": "#/$defs/write_set_proof"},
+    "targets": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/target"}},
+    "target_count": {"type": "integer", "minimum": 1},
+    "target_set_sha256": {"$ref": "#/$defs/sha256"},
+    "unidentified_target_count": {"const": 0},
+    "omitted_target_count": {"const": 0},
+    "duplicate_target_count": {"const": 0},
+    "unknown_target_count": {"const": 0},
+    "mastered_items_boundary": {"$ref": "#/$defs/mastered_items"},
+    "independent_inventory_review": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "method", "receipt_sha256", "reviewed_target_set_sha256"],
+      "properties": {
+        "status": {"const": "completed"},
+        "method": {"const": "bidirectional_zero_diff"},
+        "receipt_sha256": {"$ref": "#/$defs/sha256"},
+        "reviewed_target_set_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "model_call_count": {"const": 0},
+    "formal_write_count": {"const": 0},
+    "issued_at": {"type": "string", "format": "date-time"},
+    "authority_key_id": {"$ref": "#/$defs/sha256"},
+    "seal": {"$ref": "#/$defs/seal"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "file": {
+      "type": "object", "additionalProperties": false,
+      "required": ["authority_path", "sha256", "role"],
+      "properties": {
+        "authority_path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "role": {"enum": ["article_learning_page", "master_bank_row", "mastered_items_boundary", "sentence_pattern_card"]}
+      }
+    },
+    "authority": {
+      "type": "object", "additionalProperties": false,
+      "required": ["generation", "fingerprint", "files"],
+      "properties": {
+        "generation": {"type": "string", "minLength": 1},
+        "fingerprint": {"$ref": "#/$defs/sha256"},
+        "files": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"$ref": "#/$defs/file"}}
+      }
+    },
+    "mcp_authority": {
+      "type": "object", "additionalProperties": false,
+      "required": ["generation", "authority_fingerprint"],
+      "properties": {
+        "generation": {"type": "string", "minLength": 1},
+        "authority_fingerprint": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "origin_evidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["call_id", "timestamp", "unified_diff_sha256", "rollout_event_sha256"],
+      "properties": {
+        "call_id": {"type": "string", "minLength": 1},
+        "timestamp": {"type": "string", "format": "date-time"},
+        "unified_diff_sha256": {"$ref": "#/$defs/sha256"},
+        "rollout_event_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "target": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "target_id", "target_kind", "record_id", "ordinal",
+        "historical_operation", "authority_path", "authority_file_sha256",
+        "current_object_sha256", "origin_postimage_sha256",
+        "authority_generation", "authority_fingerprint", "prehash_status",
+        "prehash_sha256", "originating_thread_id", "origin_write_evidence",
+        "independent_identity_review"
+      ],
+      "properties": {
+        "target_id": {"type": "string", "minLength": 1},
+        "target_kind": {"enum": ["article_learning_page", "master_bank_row", "sentence_pattern_card"]},
+        "record_id": {"type": "string", "minLength": 1},
+        "ordinal": {"type": "integer", "minimum": 1},
+        "historical_operation": {"enum": ["created", "updated", "representation_reorder_only"]},
+        "authority_path": {"type": "string", "minLength": 1},
+        "authority_file_sha256": {"$ref": "#/$defs/sha256"},
+        "current_object_sha256": {"$ref": "#/$defs/sha256"},
+        "origin_postimage_sha256": {"$ref": "#/$defs/sha256"},
+        "authority_generation": {"type": "string", "minLength": 1},
+        "authority_fingerprint": {"$ref": "#/$defs/sha256"},
+        "prehash_status": {"enum": ["verified", "evidence_incomplete"]},
+        "prehash_sha256": {"anyOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+        "originating_thread_id": {"type": "string", "minLength": 1},
+        "origin_write_evidence": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/origin_evidence"}},
+        "independent_identity_review": {
+          "type": "object", "additionalProperties": false,
+          "required": ["status", "method", "inventory_review_receipt_sha256"],
+          "properties": {
+            "status": {"const": "completed"},
+            "method": {"const": "mutation_write_set_to_current_authority_reconciliation"},
+            "inventory_review_receipt_sha256": {"$ref": "#/$defs/sha256"}
+          }
+        }
+      }
+    },
+    "write_call": {
+      "type": "object", "additionalProperties": false,
+      "required": ["call_id", "timestamp", "changed_paths", "change_set_sha256", "rollout_event_sha256"],
+      "properties": {
+        "call_id": {"type": "string", "minLength": 1},
+        "timestamp": {"type": "string", "format": "date-time"},
+        "changed_paths": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "change_set_sha256": {"$ref": "#/$defs/sha256"},
+        "rollout_event_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "write_set_proof": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "rollout_path", "rollout_sha256", "mutation_window_start",
+        "mutation_window_end", "successful_apply_patch_call_count",
+        "successful_apply_patch_calls", "mutation_target_count",
+        "current_authority_candidate_count", "missing_from_current_authority",
+        "unexpected_current_candidates", "unmatched_mutation_call_count",
+        "unmatched_hunk_count", "projection_side_effects"
+      ],
+      "properties": {
+        "rollout_path": {"type": "string", "minLength": 1},
+        "rollout_sha256": {"$ref": "#/$defs/sha256"},
+        "mutation_window_start": {"type": "string", "format": "date-time"},
+        "mutation_window_end": {"type": "string", "format": "date-time"},
+        "successful_apply_patch_call_count": {"type": "integer", "minimum": 1},
+        "successful_apply_patch_calls": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/write_call"}},
+        "mutation_target_count": {"type": "integer", "minimum": 1},
+        "current_authority_candidate_count": {"type": "integer", "minimum": 1},
+        "missing_from_current_authority": {"type": "array", "maxItems": 0},
+        "unexpected_current_candidates": {"type": "array", "maxItems": 0},
+        "unmatched_mutation_call_count": {"const": 0},
+        "unmatched_hunk_count": {"const": 0},
+        "projection_side_effects": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "items": {"$ref": "#/$defs/projection_side_effect"}
+        }
+      }
+    },
+    "projection_side_effect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "side_effect_id", "path", "sha256", "role",
+        "counts_as_formal_target", "rebuild_script_path",
+        "rebuild_script_sha256", "verification_mode"
+      ],
+      "properties": {
+        "side_effect_id": {
+          "enum": [
+            "relation_nodes", "relation_edges", "relation_lookup",
+            "relation_summary", "relation_manifest",
+            "relation_wiki_projection"
+          ]
+        },
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "role": {"const": "derived_projection"},
+        "counts_as_formal_target": {"const": false},
+        "rebuild_script_path": {"type": "string", "minLength": 1},
+        "rebuild_script_sha256": {"$ref": "#/$defs/sha256"},
+        "verification_mode": {"const": "deterministic_rebuild_verify_only"}
+      }
+    },
+    "mastered_items": {
+      "type": "object", "additionalProperties": false,
+      "required": ["authority_path", "sha256", "row_count", "inference_forbidden", "used_for_disposition"],
+      "properties": {
+        "authority_path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "row_count": {"type": "integer", "minimum": 0},
+        "inference_forbidden": {"const": true},
+        "used_for_disposition": {"const": false}
+      }
+    },
+    "seal": {
+      "type": "object", "additionalProperties": false,
+      "required": ["algorithm", "purpose", "hmac_sha256"],
+      "properties": {
+        "algorithm": {"const": "HMAC-SHA256"},
+        "purpose": {"const": "english-legacy-target-inventory-v3"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/math-capture-evidence-contract-v1.json",
+  "title": "Math capture evidence contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "capture_type", "stable_formal_id",
+    "source_fingerprint", "content_fingerprint",
+    "verbatim_learning_record_sha256", "full_dialogue_sha256",
+    "question_image_sha256s", "solution_image_sha256s",
+    "canonical_solution_text_sha256", "evidence_status", "missing_roles",
+    "formal_write_count"
+  ],
+  "properties": {
+    "schema_version": {"const": "study-intake-math-capture-evidence-contract-v1"},
+    "capture_type": {
+      "enum": [
+        "formal_problem", "new_source_problem",
+        "existing_formal_card_observation", "fact_observation"
+      ]
+    },
+    "stable_formal_id": {"$ref": "#/$defs/nullableNonempty"},
+    "source_fingerprint": {"$ref": "#/$defs/nullableSha256"},
+    "content_fingerprint": {"$ref": "#/$defs/nullableSha256"},
+    "verbatim_learning_record_sha256": {"$ref": "#/$defs/sha256"},
+    "full_dialogue_sha256": {"$ref": "#/$defs/nullableSha256"},
+    "question_image_sha256s": {"$ref": "#/$defs/sha256Array"},
+    "solution_image_sha256s": {"$ref": "#/$defs/sha256Array"},
+    "canonical_solution_text_sha256": {"$ref": "#/$defs/nullableSha256"},
+    "evidence_status": {"const": "ready"},
+    "missing_roles": {"type": "array", "maxItems": 0},
+    "formal_write_count": {"const": 0}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "capture_type": {"enum": ["formal_problem", "new_source_problem"]}
+        },
+        "required": ["capture_type"]
+      },
+      "then": {
+        "properties": {
+          "question_image_sha256s": {"minItems": 1}
+        },
+        "anyOf": [
+          {"properties": {"solution_image_sha256s": {"minItems": 1}}},
+          {"properties": {"canonical_solution_text_sha256": {"$ref": "#/$defs/sha256"}}}
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "capture_type": {"const": "existing_formal_card_observation"}
+        },
+        "required": ["capture_type"]
+      },
+      "then": {
+        "properties": {
+          "stable_formal_id": {"$ref": "#/$defs/nonempty"},
+          "full_dialogue_sha256": {"$ref": "#/$defs/sha256"}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"capture_type": {"const": "fact_observation"}},
+        "required": ["capture_type"]
+      },
+      "then": {
+        "properties": {
+          "full_dialogue_sha256": {"$ref": "#/$defs/sha256"}
+        },
+        "anyOf": [
+          {"properties": {"source_fingerprint": {"$ref": "#/$defs/sha256"}}},
+          {"properties": {"content_fingerprint": {"$ref": "#/$defs/sha256"}}}
+        ]
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nullableSha256": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+    "nonempty": {"type": "string", "minLength": 1, "maxLength": 512},
+    "nullableNonempty": {"oneOf": [{"$ref": "#/$defs/nonempty"}, {"type": "null"}]},
+    "sha256Array": {
+      "type": "array", "uniqueItems": true,
+      "items": {"$ref": "#/$defs/sha256"}
+    }
+  }
+}

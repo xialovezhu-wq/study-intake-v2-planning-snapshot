@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/subject-quality-receipt-v1.json",
+  "title": "Subject Quality Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "batch_id", "subject", "capture_id", "unit_sha256",
+    "frozen_payload_sha256", "completion_sha256", "dispatch_receipt_sha256", "dispatch_package_sha256",
+    "capture_freeze_receipt_sha256", "mcp_read_session_receipt_sha256", "analysis_output_sha256",
+    "analysis_mcp_transcript_sha256", "critical_review_output_sha256",
+    "critical_review_mcp_transcript_sha256", "draft_sha256", "review_outcome",
+    "proposal_sha256", "package_sha256", "authority", "model_call_count",
+    "formal_write_count", "issued_at", "seal"
+  ],
+  "properties": {
+    "schema_version": {"const": "subject_quality_receipt_v1"},
+    "batch_id": {"type": "string", "minLength": 1},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "capture_id": {"type": "string", "minLength": 1},
+    "unit_sha256": {"$ref": "#/$defs/sha256"},
+    "frozen_payload_sha256": {"$ref": "#/$defs/sha256"},
+    "completion_sha256": {"$ref": "#/$defs/sha256"},
+    "dispatch_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "dispatch_package_sha256": {"$ref": "#/$defs/sha256"},
+    "capture_freeze_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "mcp_read_session_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "analysis_output_sha256": {"$ref": "#/$defs/sha256"},
+    "analysis_mcp_transcript_sha256": {"$ref": "#/$defs/sha256"},
+    "critical_review_output_sha256": {"$ref": "#/$defs/sha256"},
+    "critical_review_mcp_transcript_sha256": {"$ref": "#/$defs/sha256"},
+    "draft_sha256": {"$ref": "#/$defs/sha256"},
+    "review_outcome": {"enum": ["accepted", "corrected", "rejected"]},
+    "proposal_sha256": {"$ref": "#/$defs/sha256"},
+    "package_sha256": {
+      "anyOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]
+    },
+    "authority": {
+      "type": "object", "additionalProperties": false,
+      "required": ["generation", "authority_fingerprint"],
+      "properties": {
+        "generation": {"type": "string", "minLength": 1},
+        "authority_fingerprint": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "model_call_count": {"const": 2},
+    "formal_write_count": {"const": 0},
+    "issued_at": {"type": "string", "minLength": 1},
+    "seal": {"$ref": "#/$defs/seal"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "seal": {
+      "type": "object", "additionalProperties": false,
+      "required": ["algorithm", "purpose", "hmac_sha256"],
+      "properties": {
+        "algorithm": {"const": "HMAC-SHA256"},
+        "purpose": {"const": "subject-quality-receipt"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

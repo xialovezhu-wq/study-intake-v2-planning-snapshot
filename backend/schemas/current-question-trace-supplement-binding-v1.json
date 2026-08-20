@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Exact current-question trace supplement binding",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "capture_id", "context_id", "item_id",
+    "evidence_manifest_sha256", "locator",
+    "object_sha", "created_at", "supplement_kind",
+    "resolution_receipt_sha256", "formal_write_count"
+  ],
+  "properties": {
+    "schema_version": {"const": "current-question-trace-supplement-binding-v1"},
+    "capture_id": {"type": "string", "minLength": 2, "maxLength": 256},
+    "context_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "item_id": {"type": ["string", "null"], "maxLength": 256},
+    "evidence_manifest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "locator": {"type": "string", "pattern": "^current-question-trace-supplement://sha256/[a-f0-9]{64}$"},
+    "object_sha": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "supplement_kind": {"type": "string", "enum": ["legacy_backfill", "resolved_trace"]},
+    "resolution_receipt_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "formal_write_count": {"const": 0}
+  }
+}

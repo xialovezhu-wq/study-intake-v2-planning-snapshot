@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "https://local.invalid/study-intake/dashboard-multi-agent-v1.json",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "execution_mode", "live_gate_locked", "manual_authorization_present", "task_level", "branch_level", "quality", "safety_counts", "production_accepted", "formal_write_count"],
+  "properties": {
+    "schema_version": {"const": "study-intake-dashboard-multi-agent-v1"}, "execution_mode": {"enum": ["fixture", "offline", "live_authorized"]},
+    "live_gate_locked": {"type": "boolean"}, "manual_authorization_present": {"type": "boolean"}, "task_level": {"type": "object"}, "branch_level": {"type": "object"}, "quality": {"type": "object"}, "safety_counts": {"type": "object"},
+    "production_accepted": {"const": false}, "formal_write_count": {"const": 0}
+  }
+}

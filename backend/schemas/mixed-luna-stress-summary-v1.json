@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Mixed three-subject Luna stress HMAC summary v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "campaign_id", "candidate_release_id", "run_mode",
+    "execution_attempt", "execution_runtime_sha256", "max_workers",
+    "subject_scopes", "subject_bindings", "candidate_authority_refresh",
+    "selected_task_count", "distinct_task_count", "distinct_unit_count",
+    "subject_counts", "barrier_expected", "barrier_arrived",
+    "barrier_released_at", "global_peak_active", "per_subject_peak_active",
+    "submitted_at_first", "submitted_at_last", "submitted_at_spread_ms",
+    "stage_submission_count", "stage_submission_limit",
+    "distinct_transcript_count", "distinct_hmac_stage_receipt_count",
+    "distinct_stage_receipt_hmac_count", "distinct_final_session_count",
+    "distinct_package_count", "distinct_quality_receipt_count", "item_traces",
+    "results", "prerequisites", "status", "failure_code", "sol_control",
+    "model_call_count", "formal_write_count", "completed_at", "hmac_key_id",
+    "hmac_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "mixed_luna_stress_summary_v1"},
+    "campaign_id": {"type": "string", "minLength": 1},
+    "candidate_release_id": {"$ref": "#/$defs/sha256"},
+    "run_mode": {"enum": ["smoke_3", "smoke_20", "full_108"]},
+    "execution_attempt": {"type": "integer", "minimum": 1},
+    "execution_runtime_sha256": {"$ref": "#/$defs/sha256"},
+    "max_workers": {"enum": [3, 20, 108]},
+    "subject_scopes": {"type": "object"},
+    "subject_bindings": {"type": "object"},
+    "candidate_authority_refresh": {"type": "object"},
+    "selected_task_count": {"enum": [3, 20, 108]},
+    "distinct_task_count": {"type": "integer", "minimum": 0, "maximum": 108},
+    "distinct_unit_count": {"type": "integer", "minimum": 0, "maximum": 108},
+    "subject_counts": {"type": "object"},
+    "barrier_expected": {"enum": [3, 20, 108]},
+    "barrier_arrived": {"type": "integer", "minimum": 0, "maximum": 108},
+    "barrier_released_at": {"$ref": "#/$defs/nullable_timestamp"},
+    "global_peak_active": {"type": "integer", "minimum": 0, "maximum": 108},
+    "per_subject_peak_active": {"type": "object"},
+    "submitted_at_first": {"$ref": "#/$defs/nullable_timestamp"},
+    "submitted_at_last": {"$ref": "#/$defs/nullable_timestamp"},
+    "submitted_at_spread_ms": {
+      "anyOf": [{"type": "integer", "minimum": 0}, {"type": "null"}]
+    },
+    "stage_submission_count": {"type": "integer", "minimum": 0, "maximum": 216},
+    "stage_submission_limit": {"enum": [6, 40, 216]},
+    "distinct_transcript_count": {"type": "integer", "minimum": 0, "maximum": 216},
+    "distinct_hmac_stage_receipt_count": {"type": "integer", "minimum": 0, "maximum": 216},
+    "distinct_stage_receipt_hmac_count": {"type": "integer", "minimum": 0, "maximum": 216},
+    "distinct_final_session_count": {"type": "integer", "minimum": 0, "maximum": 108},
+    "distinct_package_count": {"type": "integer", "minimum": 0, "maximum": 108},
+    "distinct_quality_receipt_count": {"type": "integer", "minimum": 0, "maximum": 108},
+    "item_traces": {"type": "array", "minItems": 3, "maxItems": 108},
+    "results": {"type": "array", "minItems": 3, "maxItems": 108},
+    "prerequisites": {"type": "object"},
+    "status": {"enum": ["passed", "failed_closed"]},
+    "failure_code": {
+      "anyOf": [{"type": "string", "minLength": 1}, {"type": "null"}]
+    },
+    "sol_control": {"type": "object"},
+    "model_call_count": {"type": "integer", "minimum": 0, "maximum": 216},
+    "formal_write_count": {"const": 0},
+    "completed_at": {"type": "string", "format": "date-time"},
+    "hmac_key_id": {"$ref": "#/$defs/sha256"},
+    "hmac_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nullable_timestamp": {
+      "anyOf": [
+        {"type": "string", "format": "date-time"},
+        {"type": "null"}
+      ]
+    }
+  }
+}

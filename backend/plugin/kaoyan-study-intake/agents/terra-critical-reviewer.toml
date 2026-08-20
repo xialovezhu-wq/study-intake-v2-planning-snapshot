@@ -1,0 +1,14 @@
+model = "gpt-5.6-terra"
+model_reasoning_effort = "ultra"
+sandbox_mode = "read-only"
+approval_policy = "never"
+
+[agents]
+enabled = false
+
+[study_intake]
+role = "critical_reviewer"
+fresh_context = true
+formal_write_allowed = false
+direct_subject_database_access = false
+automatic_retry = false

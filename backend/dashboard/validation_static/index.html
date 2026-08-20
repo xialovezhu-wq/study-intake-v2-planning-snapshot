@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#f4f7fb">
+  <title>Study Intake 上线前验收控制台</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/validation-console/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#console-main">跳到验收状态</a>
+  <div class="console-shell">
+    <header class="console-header">
+      <div class="brand-lock" aria-hidden="true">
+        <span class="lock-shackle"></span>
+        <span class="lock-body"><i></i></span>
+      </div>
+      <div class="brand-copy">
+        <p class="utility-label">Commissioning / Study Intake</p>
+        <h1>上线前验收控制台</h1>
+        <p>确认三科入口、只读 MCP 与自动化交接都在同一条安全闭包内。</p>
+      </div>
+      <div class="header-links">
+        <a href="/" class="quiet-link">返回任务 Dashboard</a>
+        <button id="refresh-button" class="button button--quiet" type="button">刷新状态</button>
+      </div>
+    </header>
+
+    <main id="console-main" tabindex="-1">
+      <section class="status-bench" aria-labelledby="status-heading">
+        <div class="bench-title">
+          <div>
+            <p class="utility-label">Safety bench</p>
+            <h2 id="status-heading">当前生产面保持离线互锁</h2>
+          </div>
+          <span id="updated-at" class="updated-at" role="status" aria-live="polite">读取中</span>
+        </div>
+        <div class="status-grid">
+          <div class="status-cell"><span>Current release</span><strong id="release-value">—</strong></div>
+          <div class="status-cell"><span>Execution mode</span><strong id="execution-value" data-tone="safe">—</strong></div>
+          <div class="status-cell"><span>Live gate</span><strong id="gate-value" data-tone="safe">—</strong></div>
+          <div class="status-cell"><span>Authorization</span><strong id="authorization-value" data-tone="safe">—</strong></div>
+          <div class="status-cell"><span>Production accepted</span><strong id="production-value">—</strong></div>
+          <div class="status-cell"><span>Formal write</span><strong id="formal-value">—</strong></div>
+        </div>
+      </section>
+
+      <section class="interlock-section" aria-labelledby="interlock-heading">
+        <div class="section-heading">
+          <div>
+            <p class="utility-label">Three-stage interlock</p>
+            <h2 id="interlock-heading">Terra → Luna → Sol 交接</h2>
+          </div>
+          <p>后一个阶段只有在前一个阶段产生可验证终态后才可能解锁。</p>
+        </div>
+        <div class="interlock-rail" aria-label="三阶段互锁状态">
+          <div class="rail-line" aria-hidden="true"><span></span><span></span></div>
+          <div class="rail-node" data-stage-node="terra"><span>T</span><b>Terra</b><small>规划与整合</small></div>
+          <div class="rail-node" data-stage-node="luna"><span>L</span><b>Luna</b><small>只读分支</small></div>
+          <div class="rail-node" data-stage-node="sol"><span>S</span><b>Sol 交接</b><small>导出复核包</small></div>
+        </div>
+      </section>
+
+      <section class="readiness-section" aria-labelledby="readiness-heading">
+        <div class="section-heading section-heading--compact">
+          <div>
+            <p class="utility-label">Subject closure</p>
+            <h2 id="readiness-heading">三科前置门</h2>
+          </div>
+        </div>
+        <div class="readiness-table" role="table" aria-label="三科 Skill 与 MCP 状态">
+          <div class="readiness-row readiness-row--head" role="row">
+            <span role="columnheader">科目</span><span role="columnheader">快速入口 Skill</span><span role="columnheader">只读 MCP 预检</span>
+          </div>
+          <div class="readiness-row" role="row" data-subject-row="math"><strong role="cell">数学</strong><span role="cell" data-skill-state>—</span><span role="cell" data-mcp-state>—</span></div>
+          <div class="readiness-row" role="row" data-subject-row="cs408"><strong role="cell">408</strong><span role="cell" data-skill-state>—</span><span role="cell" data-mcp-state>—</span></div>
+          <div class="readiness-row" role="row" data-subject-row="english"><strong role="cell">英语</strong><span role="cell" data-skill-state>—</span><span role="cell" data-mcp-state>—</span></div>
+        </div>
+      </section>
+
+      <section class="stage-cards" aria-label="自动化阶段">
+        <article class="stage-card stage-card--terra" data-stage-card="terra">
+          <header><span class="card-index">T</span><div><p class="utility-label">Orchestrator</p><h2>Terra</h2></div><span class="state-chip" data-stage-state="terra">锁定</span></header>
+          <p class="card-lede">规划、协调、整合与 fresh review。只读取冻结任务，不直接获得学科数据库 MCP。</p>
+          <ul><li>验证 foreground 与 Capture 闭包</li><li>生成结构化 read plan</li><li>等待全部 required branch 终态</li></ul>
+          <footer><button class="button button--primary" data-action="authorize-terra" type="button" disabled>允许自动化处理</button><button class="text-button" data-detail="terra" type="button">查看门禁</button></footer>
+        </article>
+
+        <article class="stage-card stage-card--luna" data-stage-card="luna">
+          <header><span class="card-index">L</span><div><p class="utility-label">Read branches</p><h2>Luna</h2></div><span class="state-chip" data-stage-state="luna">锁定</span></header>
+          <p class="card-lede">执行已验证 read plan 的只读分支。每个 branch 独占 session、launcher 与 evidence chain。</p>
+          <div class="branch-meter" aria-label="Luna branch 状态"><span><b data-branch="planned">0</b>计划</span><span><b data-branch="waiting">0</b>等待</span><span><b data-branch="running">0</b>运行</span><span><b data-branch="terminal">0</b>终态</span></div>
+          <footer><button class="button button--primary" data-action="authorize-luna" type="button" disabled>允许自动化读取</button><button class="text-button" data-detail="luna" type="button">查看 branches</button></footer>
+        </article>
+
+        <article class="stage-card stage-card--sol" data-stage-card="sol">
+          <header><span class="card-index">S</span><div><p class="utility-label">Review handoff</p><h2>Sol 交接</h2></div><span class="state-chip" data-stage-state="sol">未就绪</span></header>
+          <p class="card-lede">冻结候选、证据、冲突与风险，生成串行复核提示。按钮不会调用 Sol，也不会正式入库。</p>
+          <div class="handoff-proof"><span>调用 Sol 模型</span><strong>NO</strong><span>允许正式写入</span><strong>NO</strong></div>
+          <footer><button class="button button--primary" data-action="export-handoff" type="button" disabled>生成 Sol 交接包</button><button class="text-button" data-detail="sol" type="button">查看交接边界</button></footer>
+        </article>
+      </section>
+
+      <section class="action-dock" aria-labelledby="actions-heading">
+        <div><p class="utility-label">Operator actions</p><h2 id="actions-heading">安全操作</h2></div>
+        <div class="dock-actions">
+          <button id="preflight-button" class="button button--quiet" type="button" disabled>运行只读预检</button>
+          <button id="report-button" class="button button--quiet" type="button">查看技术验收报告</button>
+          <button id="audit-button" class="button button--quiet" type="button" disabled>导出审核包</button>
+          <button id="lock-button" class="button button--danger" type="button">紧急锁定</button>
+          <button id="future-button" class="button button--quiet" type="button">未来 Live 验收步骤</button>
+        </div>
+      </section>
+
+      <section class="remaining-panel" aria-labelledby="remaining-heading">
+        <span class="remaining-icon" aria-hidden="true">1</span>
+        <div><p class="utility-label">Remaining gate</p><h2 id="remaining-heading">等待本轮技术复验</h2><p id="remaining-copy">真实模型 Capture 验收仍被明确锁定；技术状态完成后这里会只保留这一项。</p></div>
+      </section>
+
+      <section id="error-panel" class="error-panel" role="alert" hidden>
+        <strong>控制台状态不可用</strong><span id="error-copy">请刷新或查看技术报告。</span>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="detail-dialog" class="detail-dialog" aria-labelledby="detail-title">
+    <header><div><p id="detail-kicker" class="utility-label">Stage details</p><h2 id="detail-title">详情</h2></div><button id="dialog-close" class="icon-button" type="button" aria-label="关闭详情">×</button></header>
+    <div id="detail-body" class="detail-body"></div>
+  </dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <script src="/validation-console/app.js" defer></script>
+</body>
+</html>

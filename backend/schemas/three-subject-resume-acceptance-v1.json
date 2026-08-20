@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/three-subject-resume-acceptance-v1.json",
+  "title": "Three subject resume acceptance v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "release_id",
+    "release_manifest_sha256",
+    "subject_receipts",
+    "concurrency_receipt",
+    "mcp_authority_fingerprints",
+    "formal_surface_guard",
+    "seal_model_call_count",
+    "seal_provider_request_count",
+    "formal_write_count",
+    "sol_enabled"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "study-intake-three-subject-resume-acceptance-v1"
+    },
+    "status": {"const": "passed"},
+    "release_id": {"$ref": "#/$defs/sha256"},
+    "release_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "subject_receipts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["math", "cs408", "english"],
+      "properties": {
+        "math": {"$ref": "#/$defs/fileBinding"},
+        "cs408": {"$ref": "#/$defs/fileBinding"},
+        "english": {"$ref": "#/$defs/fileBinding"}
+      }
+    },
+    "concurrency_receipt": {"$ref": "#/$defs/fileBinding"},
+    "mcp_authority_fingerprints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["math", "cs408", "english"],
+      "properties": {
+        "math": {"$ref": "#/$defs/sha256"},
+        "cs408": {"$ref": "#/$defs/sha256"},
+        "english": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "formal_surface_guard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "baseline_file_sha256",
+        "config_file_sha256",
+        "baseline_manifest_sha256",
+        "before_manifest_sha256",
+        "after_manifest_sha256"
+      ],
+      "properties": {
+        "baseline_file_sha256": {"$ref": "#/$defs/sha256"},
+        "config_file_sha256": {"$ref": "#/$defs/sha256"},
+        "baseline_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "before_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "after_manifest_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "seal_model_call_count": {"const": 0},
+    "seal_provider_request_count": {"const": 0},
+    "formal_write_count": {"const": 0},
+    "sol_enabled": {"const": false}
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "absolutePath": {
+      "type": "string",
+      "pattern": "^/",
+      "minLength": 2,
+      "maxLength": 4096
+    },
+    "fileBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"$ref": "#/$defs/absolutePath"},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

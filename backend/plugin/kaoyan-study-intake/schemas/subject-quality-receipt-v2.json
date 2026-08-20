@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/subject-quality-receipt-v2.json",
+  "title": "Subject execution authenticity receipt v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "batch_id", "subject", "capture_id", "unit_sha256",
+    "frozen_payload_sha256", "completion_sha256", "dispatch_receipt_sha256",
+    "dispatch_package_sha256", "capture_freeze_receipt_sha256",
+    "mcp_read_session_receipt_sha256", "authority_snapshot_sha256",
+    "analysis", "critical_review", "execution_status", "warning_codes",
+    "package_sha256", "sol_handoff_envelope_sha256", "model_call_count",
+    "formal_write_count", "issued_at", "seal"
+  ],
+  "properties": {
+    "schema_version": {"const": "subject_quality_receipt_v2"},
+    "batch_id": {"$ref": "#/$defs/nonempty"},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "capture_id": {"$ref": "#/$defs/nonempty"},
+    "unit_sha256": {"$ref": "#/$defs/sha256"},
+    "frozen_payload_sha256": {"$ref": "#/$defs/sha256"},
+    "completion_sha256": {"$ref": "#/$defs/sha256"},
+    "dispatch_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "dispatch_package_sha256": {"$ref": "#/$defs/sha256"},
+    "capture_freeze_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "mcp_read_session_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "authority_snapshot_sha256": {"$ref": "#/$defs/sha256"},
+    "analysis": {"$ref": "#/$defs/stage"},
+    "critical_review": {"$ref": "#/$defs/stage"},
+    "execution_status": {
+      "enum": ["workflow_complete", "workflow_complete_with_warnings"]
+    },
+    "warning_codes": {
+      "type": "array", "uniqueItems": true,
+      "items": {"$ref": "#/$defs/nonempty"}
+    },
+    "package_sha256": {"$ref": "#/$defs/sha256"},
+    "sol_handoff_envelope_sha256": {"$ref": "#/$defs/sha256"},
+    "model_call_count": {"const": 2},
+    "formal_write_count": {"const": 0},
+    "issued_at": {"type": "string", "format": "date-time"},
+    "seal": {"$ref": "#/$defs/seal"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"execution_status": {"const": "workflow_complete"}}},
+      "then": {
+        "properties": {
+          "warning_codes": {"maxItems": 0},
+          "analysis": {"$ref": "#/$defs/stageComplete"},
+          "critical_review": {"$ref": "#/$defs/stageComplete"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"execution_status": {"const": "workflow_complete_with_warnings"}}},
+      "then": {"properties": {"warning_codes": {"minItems": 1}}}
+    }
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nullableSha256": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+    "nonempty": {"type": "string", "minLength": 1},
+    "stage": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "raw_output_sha256", "execution_receipt_sha256",
+        "normalization_receipt_sha256", "report_sha256",
+        "mcp_transcript_sha256", "warning_codes"
+      ],
+      "properties": {
+        "raw_output_sha256": {"$ref": "#/$defs/sha256"},
+        "execution_receipt_sha256": {"$ref": "#/$defs/sha256"},
+        "normalization_receipt_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "report_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "mcp_transcript_sha256": {"$ref": "#/$defs/sha256"},
+        "warning_codes": {
+          "type": "array", "uniqueItems": true,
+          "items": {"$ref": "#/$defs/nonempty"}
+        }
+      }
+    },
+    "stageComplete": {
+      "allOf": [
+        {"$ref": "#/$defs/stage"},
+        {
+          "properties": {
+            "normalization_receipt_sha256": {"$ref": "#/$defs/sha256"},
+            "report_sha256": {"$ref": "#/$defs/sha256"},
+            "warning_codes": {"maxItems": 0}
+          }
+        }
+      ]
+    },
+    "seal": {
+      "type": "object", "additionalProperties": false,
+      "required": ["algorithm", "purpose", "hmac_sha256"],
+      "properties": {
+        "algorithm": {"const": "HMAC-SHA256"},
+        "purpose": {"const": "subject-quality-receipt-v2"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

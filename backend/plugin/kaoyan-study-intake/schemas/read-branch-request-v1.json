@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "https://local.invalid/study-intake/read-branch-request-v1.json",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "plan_id", "plan_sha256", "branch_id", "subject", "capture_id", "frozen_task_sha256", "release_id", "activation_id", "authority_snapshot_sha256", "generation", "branch", "formal_write_count", "request_sha256"],
+  "properties": {
+    "schema_version": {"const": "read_branch_request_v1"}, "plan_id": {"type": "string"}, "plan_sha256": {"$ref": "#/$defs/sha"}, "branch_id": {"type": "string"},
+    "subject": {"enum": ["math", "cs408", "english"]}, "capture_id": {"type": "string"}, "frozen_task_sha256": {"$ref": "#/$defs/sha"}, "release_id": {"$ref": "#/$defs/sha"}, "activation_id": {"$ref": "#/$defs/sha"}, "authority_snapshot_sha256": {"$ref": "#/$defs/sha"}, "generation": {"type": "string"},
+    "branch": {"type": "object"}, "formal_write_count": {"const": 0}, "request_sha256": {"$ref": "#/$defs/sha"}
+  }, "$defs": {"sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+}

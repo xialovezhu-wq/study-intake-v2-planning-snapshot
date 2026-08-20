@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "https://local.invalid/study-intake/read-branch-result-v1.json",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "plan_id", "plan_sha256", "request_sha256", "branch_id", "subject", "capture_id", "frozen_task_sha256", "release_id", "activation_id", "authority_snapshot_sha256", "generation", "status", "required", "purpose", "child_agent_id", "parent_agent_id", "read_session_id", "mcp_launcher_pid", "mcp_launcher_pgid", "wave_index", "calls", "evidence", "findings", "conflicts", "missing_evidence", "pagination_closed", "duration_ms", "formal_write_count", "result_sha256"],
+  "properties": {
+    "schema_version": {"const": "read_branch_result_v1"},
+    "plan_id": {"type": "string"}, "plan_sha256": {"$ref": "#/$defs/sha"}, "request_sha256": {"$ref": "#/$defs/sha"}, "branch_id": {"type": "string"},
+    "subject": {"enum": ["math", "cs408", "english"]}, "capture_id": {"type": "string"}, "frozen_task_sha256": {"$ref": "#/$defs/sha"}, "release_id": {"$ref": "#/$defs/sha"}, "activation_id": {"$ref": "#/$defs/sha"}, "authority_snapshot_sha256": {"$ref": "#/$defs/sha"}, "generation": {"type": "string"},
+    "status": {"enum": ["succeeded", "failed", "cancelled", "timed_out"]}, "required": {"type": "boolean"}, "purpose": {"type": "string"},
+    "child_agent_id": {"type": ["string", "null"]}, "parent_agent_id": {"type": "string"}, "read_session_id": {"type": ["string", "null"]},
+    "mcp_launcher_pid": {"type": ["integer", "null"]}, "mcp_launcher_pgid": {"type": ["integer", "null"]}, "wave_index": {"type": "integer", "minimum": 1},
+    "calls": {"type": "array"}, "evidence": {"type": "array"}, "findings": {"type": "array"}, "conflicts": {"type": "array"}, "missing_evidence": {"type": "array"},
+    "pagination_closed": {"type": "boolean"}, "duration_ms": {"type": "number", "minimum": 0}, "gate_decision": {"type": "object"},
+    "error_code": {"type": ["string", "null"]}, "stderr_sha256": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/sha"}]},
+    "formal_write_count": {"const": 0}, "result_sha256": {"$ref": "#/$defs/sha"}
+  },
+  "$defs": {"sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+}

@@ -1,0 +1,232 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "study-intake-dispatch-task-detail-v2-private",
+  "$comment": "Private signed dispatcher state. This is not the public Dashboard task-detail contract.",
+  "type": "object",
+  "required": [
+    "artifacts", "attempt", "authority", "capture_id", "event_index_root",
+    "evidence_integrity", "fast_mode_effective", "fast_mode_requested", "fence",
+    "final_cancel_reason", "formal_write_count", "frozen_payload_sha256",
+    "last_meaningful_progress_at", "last_meaningful_progress_event",
+    "last_meaningful_progress_sha256", "latest_event_path", "latest_event_sha256",
+    "loaded_core_sha256", "model", "owner_id", "phase", "reasoning_effort",
+    "release_id", "requested_model", "requested_reasoning_effort",
+    "requested_service_tier", "rule_version", "rule_version_sha256", "schema_version",
+    "server_queue_status", "soft_timeout_warning", "stage_name", "stall_probe_status",
+    "subject", "subject_processing_contract_sha256", "unit_sha256", "updated_at"
+  ],
+  "properties": {
+    "artifacts": {"$ref": "#/$defs/artifacts"},
+    "attempt": {"type": "integer", "minimum": 1},
+    "authority": {"$ref": "#/$defs/authority"},
+    "capture_id": {"type": "string", "minLength": 1},
+    "event_index_root": {"$ref": "#/$defs/absolute_path"},
+    "evidence_integrity": {"const": "frozen_and_hmac_bound"},
+    "fast_mode_effective": {"const": "not_requested"},
+    "fast_mode_requested": {"const": false},
+    "fence": {"type": "integer", "minimum": 1},
+    "final_cancel_reason": {"$ref": "#/$defs/nullable_nonempty_string"},
+    "formal_write_count": {"const": 0},
+    "frozen_payload_sha256": {"$ref": "#/$defs/sha256"},
+    "last_meaningful_progress_at": {"$ref": "#/$defs/nullable_timestamp"},
+    "last_meaningful_progress_event": {
+      "oneOf": [{"$ref": "#/$defs/event"}, {"type": "null"}]
+    },
+    "last_meaningful_progress_sha256": {"$ref": "#/$defs/nullable_sha256"},
+    "latest_event_path": {"$ref": "#/$defs/absolute_path"},
+    "latest_event_sha256": {"$ref": "#/$defs/sha256"},
+    "loaded_core_sha256": {"$ref": "#/$defs/nullable_sha256"},
+    "model": {"const": "gpt-5.6-luna"},
+    "owner_id": {"type": "string", "minLength": 1},
+    "phase": {"$ref": "#/$defs/event"},
+    "reasoning_effort": {"const": "max"},
+    "release_id": {"$ref": "#/$defs/sha256"},
+    "requested_model": {"const": "gpt-5.6-luna"},
+    "requested_reasoning_effort": {"const": "max"},
+    "requested_service_tier": {"type": "null"},
+    "rule_version": {"type": "string", "minLength": 1},
+    "rule_version_sha256": {"$ref": "#/$defs/nullable_sha256"},
+    "schema_version": {"const": "study-intake-dispatch-task-detail-v2"},
+    "server_queue_status": {"enum": ["unknown", "confirmed_rate_limited"]},
+    "soft_timeout_warning": {"type": "boolean"},
+    "stage_name": {"enum": ["dispatch", "analysis", "critical_review", "terminal"]},
+    "stall_probe_status": {
+      "enum": ["healthy", "not_applicable", "probing", "stall_suspected", "stalled", "cancelled"]
+    },
+    "subject": {"$ref": "#/$defs/subject"},
+    "subject_processing_contract_sha256": {"$ref": "#/$defs/nullable_sha256"},
+    "unit_sha256": {"$ref": "#/$defs/sha256"},
+    "updated_at": {"$ref": "#/$defs/timestamp"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"phase": {"const": "claim"}}, "required": ["phase"]},
+      "then": {"properties": {"stage_name": {"const": "dispatch"}}}
+    },
+    {
+      "if": {
+        "properties": {"phase": {"enum": ["critical_started", "critical_completed"]}},
+        "required": ["phase"]
+      },
+      "then": {"properties": {"stage_name": {"const": "critical_review"}}}
+    },
+    {
+      "if": {
+        "properties": {
+          "phase": {"enum": ["stage_stalled", "published", "needs_rework", "failed", "timeout", "cancel"]}
+        },
+        "required": ["phase"]
+      },
+      "then": {"properties": {"stage_name": {"const": "terminal"}}}
+    },
+    {
+      "if": {"properties": {"phase": {"const": "published"}}, "required": ["phase"]},
+      "then": {
+        "properties": {
+          "final_cancel_reason": {"const": null},
+          "artifacts": {
+            "required": ["completion_path", "completion_sha256", "receipt_path", "receipt_sha256", "package_path", "package_sha256"]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"phase": {"enum": ["stage_stalled", "timeout", "cancel"]}},
+        "required": ["phase"]
+      },
+      "then": {"properties": {"final_cancel_reason": {"type": "string", "minLength": 1}}}
+    },
+    {
+      "if": {
+        "properties": {"server_queue_status": {"const": "confirmed_rate_limited"}},
+        "required": ["server_queue_status"]
+      },
+      "then": {"properties": {"phase": {"const": "retry_wait"}}}
+    },
+    {
+      "if": {
+        "properties": {"phase": {"enum": ["stall_probe", "stall_probe_failed"]}},
+        "required": ["phase"]
+      },
+      "then": {
+        "properties": {
+          "artifacts": {
+            "required": [
+              "stall_probe_number", "stall_probe_status", "stall_probe_nonce_sha256",
+              "stall_probe_control_channel_ok", "stall_probe_provider_data_plane_ok",
+              "stall_probe_provider_kernel_activity_ok",
+              "stall_probe_automatic_cancellation_eligible",
+              "provider_kernel_probe_receipt_sha256", "provider_kernel_probe_receipt_path",
+              "provider_process_identity_sha256", "provider_process_identity_path",
+              "stall_timeout_seconds"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {"properties": {"phase": {"const": "stage_stalled"}}, "required": ["phase"]},
+      "then": {
+        "properties": {
+          "stall_probe_status": {"const": "stalled"},
+          "artifacts": {
+            "required": [
+              "stall_probe_number", "stall_probe_status", "stall_probe_nonce_sha256",
+              "stall_probe_control_channel_ok", "stall_probe_provider_data_plane_ok",
+              "stall_probe_provider_kernel_activity_ok",
+              "stall_probe_automatic_cancellation_eligible",
+              "provider_kernel_probe_receipt_sha256", "provider_kernel_probe_receipt_path",
+              "provider_process_identity_sha256", "provider_process_identity_path",
+              "stall_timeout_seconds"
+            ],
+            "properties": {
+              "stall_probe_status": {"const": "stalled"},
+              "stall_probe_provider_data_plane_ok": {"const": false},
+              "stall_probe_provider_kernel_activity_ok": {"const": false},
+              "stall_probe_automatic_cancellation_eligible": {"const": true}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {"properties": {"phase": {"const": "cancel"}}, "required": ["phase"]},
+      "then": {"properties": {"stall_probe_status": {"const": "cancelled"}}}
+    }
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nullable_sha256": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+    "timestamp": {"type": "string", "format": "date-time", "minLength": 1},
+    "nullable_timestamp": {"oneOf": [{"$ref": "#/$defs/timestamp"}, {"type": "null"}]},
+    "absolute_path": {"type": "string", "pattern": "^/", "minLength": 2},
+    "nullable_nonempty_string": {"oneOf": [{"type": "string", "minLength": 1}, {"type": "null"}]},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "event": {
+      "enum": [
+        "claim", "process_started", "child_process_started", "child_process_exited",
+        "provider_process_started", "provider_process_exited", "provider_output_progress",
+        "model_submitted", "analysis_submitted", "analysis_completed",
+        "analysis_checkpoint_reused", "critical_started", "critical_completed",
+        "recovery_scheduled", "retry_wait", "soft_timeout_warning", "stall_probe",
+        "stall_probe_failed", "stage_stalled", "published", "needs_rework", "failed",
+        "timeout", "cancel"
+      ]
+    },
+    "authority": {
+      "type": "object",
+      "required": ["schema_version", "algorithm", "key_id", "purpose", "hmac_sha256"],
+      "properties": {
+        "schema_version": {"const": "study-intake-dispatch-authority-v1"},
+        "algorithm": {"const": "HMAC-SHA256"},
+        "key_id": {"$ref": "#/$defs/sha256"},
+        "purpose": {"const": "dispatch-task-detail"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "additionalProperties": false
+    },
+    "artifacts": {
+      "type": "object",
+      "properties": {
+        "completion_path": {"$ref": "#/$defs/absolute_path"},
+        "completion_sha256": {"$ref": "#/$defs/sha256"},
+        "receipt_path": {"$ref": "#/$defs/absolute_path"},
+        "receipt_sha256": {"$ref": "#/$defs/sha256"},
+        "package_path": {"$ref": "#/$defs/absolute_path"},
+        "package_sha256": {"$ref": "#/$defs/sha256"},
+        "checkpoint_path": {"$ref": "#/$defs/absolute_path"},
+        "checkpoint_sha256": {"$ref": "#/$defs/sha256"},
+        "checkpoint_ref": {"type": "string", "minLength": 1},
+        "checkpoint_binding_key": {"type": "string", "minLength": 1},
+        "checkpoint_binding_sha256": {"$ref": "#/$defs/sha256"},
+        "process_identity_path": {"$ref": "#/$defs/absolute_path"},
+        "process_identity_sha256": {"$ref": "#/$defs/sha256"},
+        "process_exit_path": {"$ref": "#/$defs/absolute_path"},
+        "process_exit_sha256": {"$ref": "#/$defs/sha256"},
+        "provider_process_identity_path": {"$ref": "#/$defs/absolute_path"},
+        "provider_process_identity_sha256": {"$ref": "#/$defs/sha256"},
+        "provider_process_exit_path": {"$ref": "#/$defs/absolute_path"},
+        "provider_process_exit_sha256": {"$ref": "#/$defs/sha256"},
+        "provider_kernel_probe_receipt_path": {"$ref": "#/$defs/absolute_path"},
+        "provider_kernel_probe_receipt_sha256": {"$ref": "#/$defs/sha256"},
+        "stall_probe_provider_kernel_activity_ok": {"type": "boolean"},
+        "stall_probe_automatic_cancellation_eligible": {"type": "boolean"},
+        "raw_output_object_path": {"$ref": "#/$defs/absolute_path"},
+        "raw_output_object_sha256": {"$ref": "#/$defs/sha256"},
+        "provider_output_bytes_total": {"type": "integer", "minimum": 0},
+        "provider_stdout_bytes": {"type": "integer", "minimum": 0},
+        "provider_stderr_bytes": {"type": "integer", "minimum": 0},
+        "stall_probe_number": {"type": "integer", "minimum": 1},
+        "stall_probe_status": {"enum": ["healthy", "stall_suspected", "probing", "stalled"]},
+        "stall_probe_nonce_sha256": {"$ref": "#/$defs/sha256"},
+        "stall_probe_control_channel_ok": {"type": "boolean"},
+        "stall_probe_provider_data_plane_ok": {"type": "boolean"},
+        "stall_timeout_seconds": {"type": "number", "exclusiveMinimum": 0},
+        "soft_timeout_seconds": {"type": "number", "exclusiveMinimum": 0}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

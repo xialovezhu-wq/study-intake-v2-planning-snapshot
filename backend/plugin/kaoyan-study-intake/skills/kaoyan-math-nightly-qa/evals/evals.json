@@ -1,0 +1,173 @@
+{
+  "skill_name": "kaoyan-math-nightly-qa",
+  "evals": [
+    {
+      "id": 1,
+      "name": "三条 pending 跨任务夜间收口",
+      "prompt": "今天学习结束了。请用高质量模式，把今天快速入库的所有数学错题统一重写、审核并完成夜间收口。账本中 pending 是 GS-629、GS-666、GS-183。",
+      "expected_output": "从 pending ledger 解析目标，在任何正式写入前以 freeze-v1 冻结恰好三张卡，逐卡高质量改写，一次 final rebuild，随后 rollback、SHADOW 提案和必需的 Wiki，内置验证全部通过后追加 closeout-v2。",
+      "files": [],
+      "expectations": ["目标直接来自 pending ledger", "正式写入前 freeze", "不要求用户重报 ID", "原 capture 字节不变", "只修改三张目标卡", "只执行一次 final rebuild", "rollback 和 Wiki 在 rebuild 后", "全部层通过后才 close-v2"]
+    },
+    {
+      "id": 2,
+      "name": "同一卡多次事件只改写一次",
+      "prompt": "今天 GS-629 有两条快速入库事件，一次是没识别交线，一次是后面又把叉乘符号写错。夜间统一优化。",
+      "expected_output": "保留两次事件的顺序和不同断点，只改写 GS-629 一次，并为两个 capture 分别留下 closeout receipt。",
+      "files": [],
+      "expectations": ["两个 capture 都保留", "不只保留最后一次错误", "正式卡只写一次", "不重复增加同一失败", "两个 event 均被可验证关闭"]
+    },
+    {
+      "id": 3,
+      "name": "rebuild 失败保持 pending",
+      "prompt": "正式卡都改完了，但最终 wrongnet rebuild 连续失败。继续夜间收口。",
+      "expected_output": "最多一次诊断性重试；仍失败则停止 rollback/Wiki/closeout，标记生成层不可信，所有事件保持 pending。",
+      "files": [],
+      "expectations": ["不把失败 rebuild 报成成功", "不继续后置派生写入", "不追加 closeout", "事件保持 pending", "报告已改正式文件"]
+    },
+    {
+      "id": 4,
+      "name": "Wiki 任一门禁失败不关闭",
+      "prompt": "正式卡、rebuild 和回滚都通过了，但 GS-183 的 Wiki source summary 仍旧，parity 失败。可以收口吗？",
+      "expected_output": "不能；Wiki/parity 层 pending，不追加 closeout，GS-183 保持可重试。",
+      "files": [],
+      "expectations": ["数量一致不能替代 freshness", "不追加 closeout", "明确 Wiki/parity 失败", "保留 pending"]
+    },
+    {
+      "id": 5,
+      "name": "只读夜间检查",
+      "prompt": "只检查今天快速记录的错题质量，不要修改任何文件。",
+      "expected_output": "只读 pending 目标并报告问题；不追加 freeze，不修卡、不 rebuild、不更新回滚/Wiki、不关闭事件。",
+      "files": [],
+      "expectations": ["只读模式", "目标来自 ledger", "不追加 freeze", "不写任何层", "不追加 closeout"]
+    },
+    {
+      "id": 6,
+      "name": "无 pending 不扩大历史范围",
+      "prompt": "做今天的夜间集中优化，但今天没有任何 pending 数学快速入库事件。",
+      "expected_output": "报告无目标并停止，不扫描历史库或按 mtime 猜卡。",
+      "files": [],
+      "expectations": ["无目标即停止", "不扫描历史库", "不制造今日目标"]
+    },
+    {
+      "id": 7,
+      "name": "关系高分仍只做 SHADOW 提案",
+      "prompt": "wrongnet 给 GS-629 和另一张卡很高强关联分，夜间顺便直接写 related。",
+      "expected_output": "遵守 SHADOW，不自动写正式边；只在具体独立证据成立时输出提案。",
+      "files": [],
+      "expectations": ["不写 formal related", "生成分数不能自证", "只输出 proposal", "要求具体触发或第一动作证据"]
+    },
+    {
+      "id": 8,
+      "name": "真实新来源夜间分配 ID",
+      "prompt": "pending 中有一条 source-backed 新题，没有正式 ID。请在今晚完成高质量入库。",
+      "expected_output": "夜间验证真实来源、查重并在写前分配唯一 ID；随后与其他目标一起只做一次 rebuild 并完整 closeout。",
+      "files": [],
+      "expectations": ["验证来源", "夜间才查重分配 ID", "不丢失原 capture", "批次只 rebuild 一次", "最终 receipt 映射新 formal ID"]
+    },
+    {
+      "id": 9,
+      "name": "active freeze 后禁止修订",
+      "prompt": "夜间已经 freeze，但随后发现一条 capture 的证据要追加 amendment。请继续使用原 freeze 完成收口。",
+      "expected_output": "拒绝直接 amendment。若正式卡和回滚尚未变化，可在用户确认后追加 abort-freeze，再 amendment 并新建 freeze；若已经变化则停止自动流程并人工核对。",
+      "files": [],
+      "expectations": ["active freeze 禁止直接 amendment", "安全 abort 是追加式", "正式状态漂移后不自动 abort", "核心冲突不自动关闭"]
+    },
+    {
+      "id": 10,
+      "name": "掌握候选否决不制造错题事件",
+      "prompt": "今天一条 mastery_candidate 经夜间审核不满足已掌握条件，请把批次正常收口。",
+      "expected_output": "记录 mastery_rejected，并把裁决绑定到冻结证据和 closeout；不创建 wrong_event_id 或虚构复发。",
+      "files": [],
+      "expectations": ["outcome 是 mastery_rejected", "不制造 wrong event", "保留候选原事实", "closeout-v2 可验证"]
+    },
+    {
+      "id": 11,
+      "name": "历史 PR 编号按真实学科覆盖表验证",
+      "prompt": "今晚 pending 只有 PR-001；它是历史编号，但正式 subject 是高等数学，Wiki 行位于 GS 覆盖表。请收口。",
+      "expected_output": "按目标在学科覆盖表中的唯一真实行验证，不臆造 PR 覆盖表；其他门禁通过后可正常 close。",
+      "files": [],
+      "expectations": ["不按 ID 前缀误判学科", "GS 覆盖行唯一", "不新增错误 PR 覆盖表", "target close 可通过"]
+    },
+    {
+      "id": 12,
+      "name": "只改 Wiki 日期和哈希仍拒绝",
+      "prompt": "source summary 只更新了 last_updated 和 formal_projection_sha256，但 knowledge、methods、error_causes 仍是旧内容。请直接 close。",
+      "expected_output": "拒绝 close；内置目标校验要求字段与当前 wrongnet projection 一致，修正 summary 后再试。",
+      "files": [],
+      "expectations": ["不只信日期", "不只信调用方哈希", "字段不一致保持 pending", "不伪报 lint 通过"]
+    },
+    {
+      "id": 13,
+      "name": "旧回滚事件不能关闭新复发",
+      "prompt": "本次 capture 是新的复发，但 receipt 想复用 freeze 前已经处理过的 wrong event ID。",
+      "expected_output": "拒绝 close；要求 freeze 后新增 processed event、正式卡 fast_intake_refs 和本日唯一复发历史条目。",
+      "files": [],
+      "expectations": ["不复用旧 event", "验证 processed 差集", "验证正式卡 capture 引用", "失败保持 pending"]
+    },
+    {
+      "id": 14,
+      "name": "模型回执固定使用 unknown",
+      "prompt": "请在夜间 closeout 回执里写成最强模型名称以便记录。",
+      "expected_output": "拒绝自证；无论任务界面选择了什么模型，receipt.model 都写 unknown，任务报告也不虚构升级。",
+      "files": [],
+      "expectations": ["model 为 unknown", "不读取或覆盖模型环境变量", "不虚构模型", "不影响实际高质量审查"]
+    },
+    {
+      "id": 15,
+      "name": "视觉引用缺文件阻止收口",
+      "prompt": "目标正式卡有三个视觉引用，但其中一个文件不存在；其他层都通过了。",
+      "expected_output": "visuals 门禁失败，不追加 closeout；不能把它写成 not_applicable。",
+      "files": [],
+      "expectations": ["逐一验证视觉引用", "缺文件时拒绝", "不误用 not_applicable", "capture 保持 pending"]
+    },
+    {
+      "id": 16,
+      "name": "目标索引重复行不能通过 parity",
+      "prompt": "GS-629 的 source summary 和字段都已更新，但 source index 有两行 GS-629，GS 与 LA 覆盖表也各有一行。请完成目标 parity。",
+      "expected_output": "目标 parity 失败；source index 与 matrix 必须各恰好一行，GS/LA 学科覆盖表合计也必须恰好一行。",
+      "files": [],
+      "expectations": ["不把 set membership 当唯一性", "报告各索引行数", "重复覆盖行失败", "不追加 closeout"]
+    },
+    {
+      "id": 17,
+      "name": "目标 parity 必须绑定日期",
+      "prompt": "请检查 GS-629 的 nightly Wiki parity，但不要提供日期参数。",
+      "expected_output": "拒绝无日期的 target parity 调用；要求明确传入 --date YYYY-MM-DD，不能跳过 last_updated freshness。",
+      "files": [],
+      "expectations": ["target 模式要求 date", "不跳过 freshness", "不给无日期结果报 ok"]
+    },
+    {
+      "id": 18,
+      "name": "隔天补做保留两个日期语义",
+      "prompt": "昨天 2026-07-17 的 pending 今天 2026-07-18 才做夜间收口。wrongnet rebuild 写的是今天日期。",
+      "expected_output": "继续使用原 study_date 记录作答和回滚复发；从 wrongnet.updated_at 派生 artifact_date=2026-07-18，Wiki parity 和 last_updated 使用 artifact_date，两个日期都进入 closeout。",
+      "files": [],
+      "expectations": ["允许跨日重试", "回滚仍用 study_date", "Wiki 使用 artifact_date", "不伪造昨天构建产物"]
+    },
+    {
+      "id": 19,
+      "name": "freeze 后新增无关 capture 不使旧批失效",
+      "prompt": "全日 freeze 已经开始正式写入，随后学习又快速记录了一道无关题。请把原批和新题都重冻到一起。",
+      "expected_output": "不重冻已经开始正式工作的原批；继续使用原 freeze 收口其冻结目标，新 capture 保持 pending 留给后续批次。",
+      "files": [],
+      "expectations": ["复用原 freeze", "无关 capture 留 pending", "不混入已开始批次", "不重复回滚"]
+    },
+    {
+      "id": 20,
+      "name": "active freeze 跨任务可发现且不可重复冻结",
+      "prompt": "昨晚任务中断了。pending 仍有 GS-629，请直接再 freeze 一次。",
+      "expected_output": "先读取 pending 返回的 active_freeze_ids 并复用原 freeze；不得为同一 capture 创建第二个 active freeze。",
+      "files": [],
+      "expectations": ["读取 active_freezes", "复用原 freeze", "不创建第二 freeze", "中断 prepare 不等于关闭"]
+    },
+    {
+      "id": 21,
+      "name": "同卡后续 capture 版本 rebase",
+      "prompt": "GS-629 的 freeze A 已改完正式卡，但 close 时发现 freeze 后又记录了同卡 capture B，B 仍绑定改卡前哈希。",
+      "expected_output": "close A 先失败关闭；保持 B 的规范化证据完全不变，用 reason.origin=source_verified 的 target_patch 将未冻结 B rebase 到当前唯一正式卡哈希，再重试 A，之后单独 freeze B。",
+      "files": [],
+      "expectations": ["不丢 B", "不伪造第二次错误", "只 rebase 来源版本，且拒绝非 source_verified 或同时改证据的请求", "原 freeze 可继续 close"]
+    }
+  ]
+}

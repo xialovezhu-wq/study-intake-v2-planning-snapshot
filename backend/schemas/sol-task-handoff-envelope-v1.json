@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/study-intake/sol-task-handoff-envelope-v1.json",
+  "title": "Sol task handoff envelope v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "batch_id", "subject", "capture_id", "unit_sha256",
+    "input_fingerprint", "study_date", "frozen_payload_sha256",
+    "authority_snapshot_sha256", "analysis", "critical_review",
+    "package_sha256", "terminal_receipt_sha256", "warning_codes",
+    "execution_status", "formal_write_count"
+  ],
+  "properties": {
+    "schema_version": {"const": "sol_task_handoff_envelope_v1"},
+    "batch_id": {"$ref": "#/$defs/nonempty"},
+    "subject": {"enum": ["math", "cs408", "english"]},
+    "capture_id": {"$ref": "#/$defs/nonempty"},
+    "unit_sha256": {"$ref": "#/$defs/sha256"},
+    "input_fingerprint": {"$ref": "#/$defs/sha256"},
+    "study_date": {"$ref": "#/$defs/nonempty"},
+    "frozen_payload_sha256": {"$ref": "#/$defs/sha256"},
+    "authority_snapshot_sha256": {"$ref": "#/$defs/sha256"},
+    "analysis": {"$ref": "#/$defs/stage"},
+    "critical_review": {"$ref": "#/$defs/stage"},
+    "package_sha256": {"$ref": "#/$defs/sha256"},
+    "terminal_receipt_sha256": {"$ref": "#/$defs/sha256"},
+    "warning_codes": {
+      "type": "array", "uniqueItems": true,
+      "items": {"$ref": "#/$defs/nonempty"}
+    },
+    "execution_status": {
+      "enum": ["workflow_complete", "workflow_complete_with_warnings"]
+    },
+    "formal_write_count": {"const": 0}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nullableSha256": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+    "nonempty": {"type": "string", "minLength": 1},
+    "stage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "raw_output_sha256", "execution_receipt_sha256",
+        "normalization_receipt_sha256", "report_sha256", "warning_codes"
+      ],
+      "properties": {
+        "raw_output_sha256": {"$ref": "#/$defs/sha256"},
+        "execution_receipt_sha256": {"$ref": "#/$defs/sha256"},
+        "normalization_receipt_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "report_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "warning_codes": {
+          "type": "array", "uniqueItems": true,
+          "items": {"$ref": "#/$defs/nonempty"}
+        }
+      }
+    }
+  }
+}

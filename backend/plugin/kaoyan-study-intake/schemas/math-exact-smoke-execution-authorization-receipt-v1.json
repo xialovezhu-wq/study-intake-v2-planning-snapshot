@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "study-intake-math-exact-smoke-execution-authorization-receipt-v1",
+  "type": "object",
+  "required": [
+    "schema_version", "scope_id", "authorization_descriptor",
+    "authorization_descriptor_sha256", "preview_sha256", "authority_snapshot",
+    "authority_snapshot_sha256", "authority_snapshot_count",
+    "authority_snapshot_mcp_tool_call_count", "authorized_at",
+    "capture_count", "source_stage_count", "queue_count", "model_call_count",
+    "provider_request_count", "model_mcp_tool_call_count", "sol_enabled",
+    "formal_write_count", "authority"
+  ],
+  "properties": {
+    "schema_version": {"const": "study-intake-math-exact-smoke-execution-authorization-receipt-v1"},
+    "scope_id": {"const": "math-smoke-2026-08-13-five-sample-v1"},
+    "authorization_descriptor": {"type": "object"},
+    "authorization_descriptor_sha256": {"$ref": "#/$defs/sha256"},
+    "preview_sha256": {"$ref": "#/$defs/sha256"},
+    "authority_snapshot": {"type": "object"},
+    "authority_snapshot_sha256": {"$ref": "#/$defs/sha256"},
+    "authority_snapshot_count": {"const": 1},
+    "authority_snapshot_mcp_tool_call_count": {"const": 1},
+    "authorized_at": {"type": "string", "format": "date-time", "minLength": 1},
+    "capture_count": {"const": 0},
+    "source_stage_count": {"const": 0},
+    "queue_count": {"const": 0},
+    "model_call_count": {"const": 0},
+    "provider_request_count": {"const": 0},
+    "model_mcp_tool_call_count": {"const": 0},
+    "sol_enabled": {"const": false},
+    "formal_write_count": {"const": 0},
+    "authority": {"$ref": "#/$defs/authority"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "authority": {
+      "type": "object",
+      "required": ["schema_version", "algorithm", "key_id", "purpose", "hmac_sha256"],
+      "properties": {
+        "schema_version": {"const": "study-intake-dispatch-authority-v1"},
+        "algorithm": {"const": "HMAC-SHA256"},
+        "key_id": {"$ref": "#/$defs/sha256"},
+        "purpose": {"const": "dispatch-math-exact-smoke-execution-authorization"},
+        "hmac_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
