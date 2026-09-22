@@ -1,24 +1,19 @@
-# Study Intake V2 Planning Snapshot
+# 三科学习入库系统：方案与源码快照
 
-This repository is a Private planning snapshot for ChatGPT Pro code review, status auditing, and a new Terra/Luna follow-up plan.
+这是数学、408、英语共享入库系统的一份历史工程快照，用来对照方案、理解跨项目关系和定位当时尚未完成的工作。它不作为当前生产部署来源。
 
-It is not a completed release, not a deployed release, not the formal history migration of any source project, and not the canonical development repository. No original Git history from the backend, shared MCP, math, CS408, English, or coordination workspace is included.
+## 内容
 
-## Current status
+- `backend/`：共享后端的当时版本。
+- `shared-mcp/`：只读学习 MCP 的当时版本。
+- `subjects/`：学科侧的对接代码与合同。
+- `handoff/`：方案、工程状态与交接说明。
+- `SNAPSHOT_MANIFEST.md`：快照来源与范围。
 
-- `LOCAL_CLOSEOUT_STATUS` remains `PARTIAL`.
-- The latest full Core run still has the historical Provider hard-cancel lifecycle race: 1 failure and 1 error in 1144 tests.
-- The current central Hermetic Build and immutable verify were not run after that result.
-- Deployment for the current candidate was not run.
-- Some copied files intentionally retain `/Users/xiazhibin` absolute paths as implementation evidence. Those paths are not treated as credentials for this planning snapshot.
-- `handoff/Stage-B-Final-Report.md` is `MISSING`: no local file was supplied, and no report was reconstructed from summaries.
-- `handoff/ORIGINAL_PLAN_HISTORICAL.zip` preserves the historical plan and original design intent exactly as supplied. It is not the current final requirement and does not grant current implementation authorization. If it conflicts with the latest user instructions, the current GitHub code, or `handoff/CURRENT_STATUS.md`, it is not authoritative.
-- The supplied `handoff/WORKLOG.md` is an older reference worklog and includes historical deployment statements. For current status, `handoff/CURRENT_STATUS.md` and `handoff/WORKSPACE_MANIFEST.yaml` take precedence.
+它与独立的 [后端仓库](https://github.com/xialovezhu-wq/study-intake-v2-backend) 和 [MCP 仓库](https://github.com/xialovezhu-wq/local-study-read-mcp) 有明确区别：这里保留历史横截面，独立仓库保存各项目实现。
 
-## Purpose and boundary
+## 阅读与运行
 
-Use this snapshot to understand code, audit the current partial state, and design the next Terra/Luna work plan. Any later code implementation must return to the original source workspaces or to a formal repository explicitly selected by a new plan.
+先读 [快照说明](README.technical.md) 和 [来源清单](SNAPSHOT_MANIFEST.md)。按各子项目说明配置隔离环境；整份快照没有统一的一键启动入口。历史 `PARTIAL`、测试失败、未部署等结论照实保留，公开不将其改写为已验收完成。
 
-The source projects were not modified while creating this snapshot. No tests, Build, verify, runtime deployment, source-project Git initialization, source-project commit, source-project remote change, or source-project push was performed.
-
-See `SNAPSHOT_MANIFEST.md` for exact sources, whitelists, exclusions, hashes, and known gaps.
+只公开工程代码与方案，不包含原项目完整 Git 历史、真实学习库、对话、健康资料或运行凭据。历史文档中关于 Private 的叙述描述当时用途；本仓库已按所有者本次指令公开。
